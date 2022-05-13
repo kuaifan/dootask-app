@@ -1,0 +1,13 @@
+/.idea
+/.temp
+/common/backup
+/common/differ
+/common/dist
+/common/zip
+/common/tools
+/node_modules
+/plugins-dev
+.DS_Store
+*.xcuserdatad
+package-lock.json
+local.properties

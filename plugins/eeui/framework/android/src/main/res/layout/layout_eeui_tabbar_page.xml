@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- weex -->
+    <View
+        android:id="@+id/v_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"/>
+
+    <app.eeui.framework.ui.component.tabbar.view.TabbarFrameLayoutView
+        android:id="@+id/v_container"
+        android:layout_below="@+id/v_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </app.eeui.framework.ui.component.tabbar.view.TabbarFrameLayoutView>
+
+    <FrameLayout
+        android:id="@+id/v_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/eeui_background"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/v_progressbg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="36dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:scaleType="fitStart"
+            android:src="@drawable/load_page"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+        <ProgressBar
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+    <!-- 错误提示 -->
+    <include layout="@layout/activity_page_error"/>
+
+</RelativeLayout>
+
+
+

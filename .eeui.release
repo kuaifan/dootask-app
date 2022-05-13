@@ -1,0 +1,8 @@
+{
+	"name": "DooTask",
+	"appName": "DooTask",
+	"applicationID": "com.dootask.task",
+	"bundleIdentifier": "com.dootask.task",
+	"release": "2.5.0",
+	"location": "github"
+}

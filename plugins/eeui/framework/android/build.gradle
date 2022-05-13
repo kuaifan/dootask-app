@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion project.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion project.appMinSdkVersion
+        targetSdkVersion project.targetSdkVersion
+        versionCode project.eeuiVersionCode
+        versionName project.eeuiVersionName
+
+        buildConfigField 'int', 'VERSION_CODE', "${project.eeuiVersionCode}"
+        buildConfigField 'String', 'VERSION_NAME', "\"${project.eeuiVersionName}\""
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath = true
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.squareup.picasso:picasso:2.5.2"
+    implementation "org.apache.commons:commons-text:1.8"
+    implementation "com.rabtman.wsmanager:wsmanager:1.0.2"
+    implementation "com.gyf.immersionbar:immersionbar:3.0.0"
+    implementation "com.google.zxing:core:3.3.3"
+    //implementation "app.eeui:zxing:1.0.2" jcenter停用
+    implementation 'com.github.kuaifan:ZXingAsynch:-SNAPSHOT' //启用新的zxing包
+    //
+    compileOnly "androidx.legacy:legacy-support-v4:${project.supportv4Version}"
+    compileOnly "androidx.recyclerview:recyclerview:${project.recyclerviewVersion}"
+    compileOnly "androidx.appcompat:appcompat:${project.appcompatVersion}"
+    compileOnly "com.google.android.material:material:${project.materialVersion}"
+    //
+    compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
+    compileOnly "org.apache.weex:sdk_legacy:${project.weex_sdkLibVersion}"
+    compileOnly "com.taobao.android:weexplugin-processor:${project.weex_processorVersion}"
+    compileOnly "com.google.code.gson:gson:${project.googleGsonVersion}"
+}

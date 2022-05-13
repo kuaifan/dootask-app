@@ -1,0 +1,83 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion project.compileSdkVersion
+
+    defaultConfig {
+        applicationId project.applicationId
+        minSdkVersion project.appMinSdkVersion
+        targetSdkVersion project.targetSdkVersion
+        versionCode project.versionCode
+        versionName project.versionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        ndk {
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+        }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath = true
+            }
+        }
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    signingConfigs {
+        release {
+            storeFile file(Key_StoreFile)
+            storePassword Key_StorePassword
+            keyAlias Key_Alias
+            keyPassword Key_Password
+        }
+    }
+    buildTypes {
+        release {
+            if (file(Key_StoreFile).isFile()) {
+                signingConfig signingConfigs.release
+            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            if (file(Key_StoreFile).isFile()) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.multidex:multidex:${project.multidexVersion}"
+    implementation "androidx.legacy:legacy-support-v4:${project.supportv4Version}"
+    implementation "androidx.appcompat:appcompat:${project.appcompatVersion}"
+    implementation "androidx.recyclerview:recyclerview:${project.recyclerviewVersion}"
+    implementation "androidx.core:core:${project.coreVersion}"
+    implementation "com.google.android.material:material:${project.materialVersion}"
+    //
+    if (project.implementFromWeex) {
+        implementation project(':weex_sdk')
+    } else {
+        implementation "org.apache.weex:sdk_legacy:${project.weex_sdkLibVersion}"
+    }
+    implementation "com.alibaba:fastjson:${project.fastjsonLibVersion}"
+    implementation "com.taobao.android:weexplugin-loader:${project.weex_loaderVersion}"
+    implementation "com.taobao.android:weexplugin-processor:${project.weex_processorVersion}"
+    implementation "com.alibaba.android:bindingx-core:1.1.4"
+    implementation "com.alibaba.android:bindingx_weex_plugin:1.1.1"
+    //
+    implementation "com.google.code.gson:gson:${project.googleGsonVersion}"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.5"
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
+    //
+    implementation project(":eeui")
+}
