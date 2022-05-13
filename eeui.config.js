@@ -5,8 +5,12 @@
 module.exports = {
 	"serviceUrl": "",
 	"homePage": "",
-	"homePageParams": {},
-	"appKey": "ErGy7YLuVSKhNwkdLBR1ONF6v18DwWQh",
+	"homePageParams": {
+		statusBarColor: "#f8f8f8",
+		backgroundColor: "#f8f8f8",
+		softInputMode: "resize",
+	},
+	"appKey": "8mNBgptMSQFe5BXf1TQhlh6WUOEcjefP",
 	"android": {
 		"imageEngine": "picasso"
 	},
@@ -43,14 +47,14 @@ module.exports = {
 	"umeng": {
 		"ios": {
 			"enabled": true,
-			"appKey": "5cfa398c3fc1959f7b000e9b",
-			"channel": "eeuidemo"
+			"appKey": "627ce33b38b8e30d0376e433",
+			"channel": "dootask"
 		},
 		"android": {
 			"enabled": true,
-			"appKey": "5cfa3958570df3a0e8001015",
-			"messageSecret": "49d0bac141dc8dc6df35d210a9c79289",
-			"channel": "eeuidemo",
+			"appKey": "627cde1317ae9915343b26b1",
+			"messageSecret": "563f50eb8d93a25a06978e17dd1f2512",
+			"channel": "dootask",
 			"xiaomiAppId": "",
 			"xiaomiAppKey": "",
 			"huaweiAppId": "",

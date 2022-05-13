@@ -11,3 +11,6 @@
 *.xcuserdatad
 package-lock.json
 local.properties
+platforms/android/eeuiApp/app/src/main/assets/eeui/public
+platforms/ios/eeuiApp/bundlejs/eeui/public
+src/public

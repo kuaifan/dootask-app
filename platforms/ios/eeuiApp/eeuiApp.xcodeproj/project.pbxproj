@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3AE14377282DE98E00B5E14E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE14375282DB85800B5E14E /* UserNotifications.framework */; };
 		532E406F594B06E77A17129D /* libPods-eeuiApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4738D867E50FB2D943A92A /* libPods-eeuiApp.a */; };
 		B210031C2191D6C5001F2CBA /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B210031B2191D6C5001F2CBA /* CoreText.framework */; };
 		B210031E2191D703001F2CBA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B210031D2191D703001F2CBA /* Foundation.framework */; };
@@ -63,6 +64,8 @@
 
 /* Begin PBXFileReference section */
 		21618EA4FE8A980870624E1A /* libPods-eeuiAppUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-eeuiAppUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AE14375282DB85800B5E14E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		3AE14378282E153500B5E14E /* UMDevice.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UMDevice.framework; path = ../../../../../Downloads/UMDevice.framework; sourceTree = "<group>"; };
 		5B7109449833C8668CA8EA08 /* Pods-eeuiApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-eeuiApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-eeuiApp/Pods-eeuiApp.debug.xcconfig"; sourceTree = "<group>"; };
 		B21003132191CB27001F2CBA /* AlipaySDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = AlipaySDK.bundle; path = ../../../../../Downloads/AlipaySDK_No_UTDID/IOS/AlipaySDK.bundle; sourceTree = "<group>"; };
 		B21003142191CB27001F2CBA /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlipaySDK.framework; path = ../../../../../Downloads/AlipaySDK_No_UTDID/IOS/AlipaySDK.framework; sourceTree = "<group>"; };
@@ -134,6 +137,7 @@
 				B2135AA0212406C200EDD991 /* MapKit.framework in Frameworks */,
 				B2135A9E212406BB00EDD991 /* libz.tbd in Frameworks */,
 				B2135A9C212406B000EDD991 /* libxml2.tbd in Frameworks */,
+				3AE14377282DE98E00B5E14E /* UserNotifications.framework in Frameworks */,
 				B2135A9A212406A000EDD991 /* libstdc++.tbd in Frameworks */,
 				B2135A982124068900EDD991 /* libsqlite3.tbd in Frameworks */,
 				B2135A952124067F00EDD991 /* libc++abi.tbd in Frameworks */,
@@ -228,6 +232,8 @@
 		BEB6946D3D54EEE58CEAD551 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3AE14378282E153500B5E14E /* UMDevice.framework */,
+				3AE14375282DB85800B5E14E /* UserNotifications.framework */,
 				B210034521924EEF001F2CBA /* libUMSPosPayOnly.a */,
 				B210031F2191D727001F2CBA /* CoreMotion.framework */,
 				B210031D2191D703001F2CBA /* Foundation.framework */,
@@ -616,8 +622,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = eeuiApp/eeuiApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8V8QNTU33M;
+				DEVELOPMENT_TEAM = G365J5PZA2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -649,8 +656,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = eeuiApp/eeuiApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8V8QNTU33M;
+				DEVELOPMENT_TEAM = G365J5PZA2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

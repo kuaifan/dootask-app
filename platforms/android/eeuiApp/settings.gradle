@@ -5,3 +5,6 @@ project (':eeui').projectDir = new File("../../../plugins/eeui/framework/android
 
 include ":weex_sdk"
 project (':weex_sdk').projectDir = new File("../../../plugins/eeui/WeexSDK/android/sdk")
+
+include ":eeuiUmeng"
+project (":eeuiUmeng").projectDir = new File("../../../plugins/eeui/umeng/android")

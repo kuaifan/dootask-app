@@ -6,6 +6,7 @@ def common
     pod 'eeui', :path => '../../../plugins/eeui/framework/ios'
     pod 'SocketRocket', '0.5.1'
     pod 'BindingX', '~> 1.0.3'
+    pod 'eeuiUmeng', :path => '../../../plugins/eeui/umeng/ios'
 end
 
 target 'eeuiApp' do

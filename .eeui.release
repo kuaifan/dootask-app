@@ -1,8 +1,12 @@
 {
-	"name": "DooTask",
+	"name": "dootaskApp",
 	"appName": "DooTask",
 	"applicationID": "com.dootask.task",
 	"bundleIdentifier": "com.dootask.task",
 	"release": "2.5.0",
-	"location": "github"
+	"location": "github",
+	"versionCode": "1",
+	"versionName": "1.0",
+	"CFBundleVersion": "1",
+	"CFBundleShortVersionString": "1.0"
 }
