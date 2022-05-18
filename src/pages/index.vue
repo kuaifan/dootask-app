@@ -5,7 +5,6 @@
             class="web"
             :hiddenDone="true"
             :progressbarVisibility="false"
-            @stateChanged="onStateChanged"
             @receiveMessage="onReceiveMessage"/>
     </div>
 </template>
@@ -53,22 +52,6 @@ export default {
     },
 
     methods: {
-        /**
-         * web状态变化
-         * @param status
-         */
-        onStateChanged({status}) {
-            switch (status) {
-                case 'start':
-                    eeui.loading();
-                    break;
-
-                case 'success':
-                    eeui.loadingClose();
-                    break;
-            }
-        },
-
         /**
          * 来自网页的消息
          * @param message
