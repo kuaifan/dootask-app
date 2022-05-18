@@ -1,0 +1,9 @@
+{
+	"dependencies": {
+		"eeui/umeng": {
+			"requireName": "eeui/umeng",
+			"name": "eeui/umeng",
+			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/umeng/e09a7e140be4fa5a8e2ef49510f4c1ab.zip"
+		}
+	}
+}

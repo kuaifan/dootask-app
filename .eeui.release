@@ -3,7 +3,7 @@
 	"appName": "DooTask",
 	"applicationID": "com.dootask.task",
 	"bundleIdentifier": "com.dootask.task",
-	"release": "2.5.0",
+	"release": "2.5.1",
 	"location": "github",
 	"versionCode": "1",
 	"versionName": "1.0",
