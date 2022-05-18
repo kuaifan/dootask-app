@@ -6,7 +6,7 @@
 	"release": "2.5.1",
 	"location": "github",
 	"versionCode": "1",
-	"versionName": "1.0",
+	"versionName": "0.14.60",
 	"CFBundleVersion": "1",
-	"CFBundleShortVersionString": "1.0"
+	"CFBundleShortVersionString": "0.14.60"
 }
