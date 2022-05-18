@@ -30,10 +30,6 @@
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>eeuiAppName</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>eeuiApp_xxxxxxxx</string>
-			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeRole</key>
