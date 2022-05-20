@@ -10,9 +10,13 @@ buildscript {
             name 'Google'
         }
         google()
+        maven {
+            url 'https://developer.huawei.com/repo/'
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.huawei.agconnect:agcp:1.6.0.300'
         classpath 'com.taobao.android:weexplugin-gradle-plugin:1.3'
     }
 }
@@ -32,6 +36,9 @@ allprojects {
         }
         maven() {
             url 'http://oss.jfrog.org/oss-snapshot-local/'
+        }
+        maven() {
+            url 'https://developer.huawei.com/repo/'
         }
     }
 }
@@ -62,8 +69,8 @@ ext {
     eeuiVersionCode = 66
     eeuiVersionName = "2.5.1"
 
-    minSdkVersion = 16
-    appMinSdkVersion = 16
+    minSdkVersion = 17
+    appMinSdkVersion = 17
     compileSdkVersion = 30
     supportLibVersion = "28.0.0"
     targetSdkVersion = 29
