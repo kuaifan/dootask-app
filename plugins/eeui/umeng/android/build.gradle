@@ -47,8 +47,8 @@ dependencies {
     implementation 'com.umeng.umsdk:vivo-push:2.3.5'
     implementation 'com.umeng.umsdk:vivo-umengaccs:1.1.0'
 
-    implementation 'com.umeng.umsdk:xiaomi-push:3.8.5'
-    implementation 'com.umeng.umsdk:xiaomi-umengaccs:1.2.1'
+    implementation 'com.umeng.umsdk:xiaomi-push:4.9.1'
+    implementation 'com.umeng.umsdk:xiaomi-umengaccs:1.2.8-fix'
 
     //基础组件库依赖(必须)
     implementation 'com.umeng.umsdk:common:9.3.8'

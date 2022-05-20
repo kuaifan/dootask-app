@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
 		manifestPlaceholders = [
-			huaweiAppId:"",
+			huaweiAppId:"106275915",
 			vivoAppId:"",
 			vivoAppKey:""
 		]
