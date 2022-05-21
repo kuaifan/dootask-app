@@ -23,7 +23,19 @@ export default {
     data() {
         return {
             uniqueId: '',
+            resumeNum: 0,
         }
+    },
+
+    pageResume() {
+        const javascript = `if (typeof window.__onPageResume === "function") && window.__onPageResume(${this.resumeNum})`;
+        this.$refs.web.setJavaScript(javascript);
+        this.resumeNum++;
+    },
+
+    pagePause() {
+        const javascript = `if (typeof window.__onPagePause === "function") && window.__onPagePause()`;
+        this.$refs.web.setJavaScript(javascript);
     },
 
     pageMessage({message}) {
