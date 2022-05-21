@@ -54,7 +54,7 @@ export default {
         }
         //
         eeui.setStatusBarStyle(false)
-        // this.$refs.web.setUrl("http://192.168.0.114:2222");
+        // this.$refs.web.setUrl("http://192.168.0.111:2222");
         // this.$refs.web.setUrl("http://192.168.200.120:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
     },
