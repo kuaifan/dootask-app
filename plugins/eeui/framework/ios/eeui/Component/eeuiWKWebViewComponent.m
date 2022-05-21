@@ -33,7 +33,6 @@
 @property (nonatomic, strong) NSString *content;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *userAgent;
-@property (nonatomic, strong) NSString *customUserAgent;
 @property (nonatomic, assign) CGFloat webContentHeight;
 @property (nonatomic, assign) BOOL isShowProgress;
 @property (nonatomic, assign) BOOL isScrollEnabled;
@@ -68,7 +67,6 @@ WX_EXPORT_METHOD(@selector(goForward:))
         _url = @"";
         _content = @"";
         _userAgent = @"";
-        _customUserAgent = @"";
         _isShowProgress = YES;
         _isScrollEnabled = YES;
         _isEnableApi = YES;
@@ -91,9 +89,16 @@ WX_EXPORT_METHOD(@selector(goForward:))
 {
     //设置userAgent
     __block NSString *originalUserAgent = nil;
-    if (_customUserAgent.length > 0) {
-        originalUserAgent = _customUserAgent;
-    }else{
+    NSString *versionName = (NSString*)[[[NSBundle mainBundle] infoDictionary]  objectForKey:@"CFBundleShortVersionString"];
+    if (@available(iOS 9.0, *)) {
+        originalUserAgent = [NSString stringWithFormat:@";ios_kuaifan_eeui/%@", versionName];
+        if (_userAgent.length > 0) {
+            originalUserAgent = [NSString stringWithFormat:@"%@/%@", originalUserAgent, self->_userAgent];
+        }
+        WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+        [configuration setApplicationNameForUserAgent: originalUserAgent];
+        return [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
+    } else {
         eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
         originalUserAgent = [storage getCachesString:@"__system:originalUserAgent" defaultVal:@""];
         if (![originalUserAgent containsString:@";ios_kuaifan_eeui/"]) {
@@ -115,11 +120,11 @@ WX_EXPORT_METHOD(@selector(goForward:))
         if (_userAgent.length > 0) {
             originalUserAgent = [NSString stringWithFormat:@"%@/%@", originalUserAgent, _userAgent];
         }
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:originalUserAgent, @"UserAgent", nil];
+        [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+        //初始化浏览器对象
+        return [[eeuiWKWebView alloc] init];
     }
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:originalUserAgent, @"UserAgent", nil];
-    [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
-    //初始化浏览器对象
-    return [[eeuiWKWebView alloc] init];
 }
 
 // 去掉 WkWebviewe Done 工具栏
@@ -295,8 +300,6 @@ WX_EXPORT_METHOD(@selector(goForward:))
         _isEnableApi = [WXConvert BOOL:value];
     } else if ([key isEqualToString:@"userAgent"]) {
         _userAgent = [WXConvert NSString:value];
-    } else if ([key isEqualToString:@"customUserAgent"]) {
-        _customUserAgent = [WXConvert NSString:value];
     } else if ([key isEqualToString:@"transparency"]) {
         _isTransparency = [WXConvert BOOL:value];
         if (isUpdate) {
