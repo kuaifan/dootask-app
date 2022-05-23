@@ -4,6 +4,11 @@
 			"requireName": "eeui/umeng",
 			"name": "eeui/umeng",
 			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/umeng/e09a7e140be4fa5a8e2ef49510f4c1ab.zip"
+		},
+		"eeui/deviceInfo": {
+			"requireName": "eeui/deviceInfo",
+			"name": "eeui/deviceInfo",
+			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/deviceInfo/fbec02dd10e90fb4b8b8825a4e84e231.zip"
 		}
 	}
 }

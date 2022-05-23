@@ -6,8 +6,8 @@ android {
     defaultConfig {
 		manifestPlaceholders = [
 			huaweiAppId:"106275915",
-			vivoAppId:"",
-			vivoAppKey:""
+			vivoAppId:"105562603",
+			vivoAppKey:"ea6a826256eb2896a2f36743d859dbd0"
 		]
         applicationId project.applicationId
         minSdkVersion project.appMinSdkVersion
@@ -86,4 +86,5 @@ dependencies {
     //
     implementation project(":eeui")
     implementation project(":eeuiUmeng")
+    implementation project(":eeuiDeviceInfo")
 }

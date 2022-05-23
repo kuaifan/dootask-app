@@ -60,10 +60,10 @@ module.exports = {
 			"huaweiAppId": "106275915",
 			"meizuAppId": "",
 			"meizuAppKey": "",
-			"oppoAppKey": "",
-			"oppoAppSecret": "",
-			"vivoAppId": "",
-			"vivoAppKey": ""
+			"oppoAppKey": "f48b126465804bbeb847433afdbcb799",
+			"oppoAppSecret": "ce23d02b89544df8829ebdd1a9026ef0",
+			"vivoAppId": "105562603",
+			"vivoAppKey": "ea6a826256eb2896a2f36743d859dbd0"
 		}
 	},
 	"tencent": {

@@ -18,6 +18,7 @@
 <script>
 const eeui = app.requireModule('eeui');
 const umengPush = app.requireModule("eeui/umengPush");
+const deviceInfo = app.requireModule("eeui/deviceInfo");
 
 export default {
     data() {
@@ -69,25 +70,36 @@ export default {
          * @param message
          */
         onReceiveMessage({message}) {
-            if (message.action === 'setUmengAlias') {
-                const alias = `${WXEnvironment.platform}-${message.userid}-${this.uniqueId}`;
-                umengPush.addAlias(alias, "userid", ({status}) => {
-                    if (status === 'success') {
-                        // 别名保存到服务器
-                        eeui.ajax({
-                            url: message.url,
-                            method: 'get',
-                            data: {
-                                alias,
-                            },
-                            headers: {
-                                token: message.token,
-                            }
-                        }, result => {
-                            console.log(result);
-                        });
+            switch (message.action) {
+                case 'setUmengAlias':
+                    const alias = `${WXEnvironment.platform}-${message.userid}-${this.uniqueId}`;
+                    umengPush.addAlias(alias, "userid", ({status}) => {
+                        if (status === 'success') {
+                            // 别名保存到服务器
+                            eeui.ajax({
+                                url: message.url,
+                                method: 'get',
+                                data: {
+                                    alias,
+                                },
+                                headers: {
+                                    token: message.token,
+                                }
+                            }, result => {
+                                console.log(result);
+                            });
+                        }
+                    });
+                    break;
+
+                case 'setVibrate':
+                    const time = this.runNum(message.time);
+                    if (time > 0) {
+                        deviceInfo.setVibrate(time);
+                    } else {
+                        deviceInfo.setVibrate();
                     }
-                });
+                    break;
             }
         }
     }

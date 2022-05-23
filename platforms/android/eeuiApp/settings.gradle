@@ -8,3 +8,6 @@ project (':weex_sdk').projectDir = new File("../../../plugins/eeui/WeexSDK/andro
 
 include ":eeuiUmeng"
 project (":eeuiUmeng").projectDir = new File("../../../plugins/eeui/umeng/android")
+
+include ":eeuiDeviceInfo"
+project (":eeuiDeviceInfo").projectDir = new File("../../../plugins/eeui/deviceInfo/android")
