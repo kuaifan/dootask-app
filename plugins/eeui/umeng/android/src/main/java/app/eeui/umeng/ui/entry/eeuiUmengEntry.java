@@ -83,7 +83,8 @@ public class eeuiUmengEntry {
 
         //获取消息推送代理示例
         PushAgent mPushAgent = PushAgent.getInstance(content);
-        mPushAgent.setNotificationPlaySound(MsgConstant.NOTIFICATION_PLAY_SERVER); //服务端控制声音
+        mPushAgent.setNotificationOnForeground(false);  //App处于前台时不显示通知
+        mPushAgent.setNotificationPlaySound(MsgConstant.NOTIFICATION_PLAY_SERVER);  //服务端控制声音
 
         //注册推送服务，每次调用register方法都会回调该接口
         mPushAgent.register(new IUmengRegisterCallback() {
