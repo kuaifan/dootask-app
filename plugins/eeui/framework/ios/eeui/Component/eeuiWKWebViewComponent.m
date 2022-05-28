@@ -401,6 +401,13 @@ WX_EXPORT_METHOD(@selector(goForward:))
     [[DeviceUtil getTopviewControler] presentViewController:alertController animated:YES completion:nil];
 }
 
+// 允许媒体权限
+- (void)webView:(WKWebView *)webView requestMediaCapturePermissionForOrigin:(WKSecurityOrigin *)origin initiatedByFrame:(WKFrameInfo *)frame type:(WKMediaCaptureType)type decisionHandler:(void (^)(WKPermissionDecision decision))decisionHandler  API_AVAILABLE(ios(15.0))
+{
+    decisionHandler(WKPermissionDecisionGrant);
+}
+
+
 //设置浏览器内容
 - (void)setContent:(NSString*)content
 {
