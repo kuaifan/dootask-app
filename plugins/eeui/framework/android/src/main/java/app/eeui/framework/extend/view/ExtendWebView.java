@@ -11,11 +11,15 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -26,6 +30,7 @@ import android.widget.Toast;
 import com.taobao.weex.bridge.JSCallback;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import app.eeui.framework.R;
@@ -34,6 +39,7 @@ import app.eeui.framework.extend.bean.WebCallBean;
 import app.eeui.framework.extend.module.eeuiCommon;
 import app.eeui.framework.extend.module.eeuiMap;
 import app.eeui.framework.extend.module.eeuiParse;
+import app.eeui.framework.extend.module.utilcode.util.PermissionUtils;
 import app.eeui.framework.extend.view.webviewBridge.InjectedChromeClient;
 import app.eeui.framework.ui.module.WebModule;
 import app.eeui.framework.ui.module.WebNavigationBarModule;
@@ -247,6 +253,43 @@ public class ExtendWebView extends WebView {
          */
         public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
             openFileChooser(uploadMsg, acceptType);
+        }
+
+        @SuppressLint("WrongConstant")
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onPermissionRequest(PermissionRequest request) {
+            String key = "";
+            final String[] types = request.getResources();
+            for (String s : types) {
+                if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(s)) {
+                    key = "android.permission.RECORD_AUDIO";
+                    break;
+                }
+            }
+
+            if (key.length() == 0) {
+                request.deny();
+                return;
+            }
+
+            PermissionUtils.permission(key)
+                .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(getContext(), shouldRequest, "录音"))
+                .callback(new PermissionUtils.FullCallback() {
+                    @Override
+                    public void onGranted(List<String> permissionsGranted) {
+                        request.grant(types);
+                        loadUrl("javascript:(function(b){if(typeof b.__onPermissionRequest==='function'){b.__onPermissionRequest('recordAudio',true)}})(window);");
+                    }
+
+                    @Override
+                    public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
+                        if (!permissionsDeniedForever.isEmpty()) {
+                            request.deny();
+                            loadUrl("javascript:(function(b){if(typeof b.__onPermissionRequest==='function'){b.__onPermissionRequest('recordAudio',false)}})(window);");
+                        }
+                    }
+                }).request();
         }
     }
 
