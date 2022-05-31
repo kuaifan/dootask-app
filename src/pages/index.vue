@@ -1,17 +1,17 @@
 <template>
-    <div class="app">
+    <div class="flex">
         <web-view
             ref="web"
-            class="web"
+            class="flex"
             :hiddenDone="true"
             :progressbarVisibility="false"
-            @receiveMessage="onReceiveMessage"/>
+            @receiveMessage="onReceiveMessage"
+            @stateChanged="onStateChanged"/>
     </div>
 </template>
 
 <style scoped>
-.app,
-.web {
+.flex {
     flex: 1;
 }
 </style>
@@ -55,8 +55,8 @@ export default {
         }
         //
         eeui.setStatusBarStyle(false)
-        // this.$refs.web.setUrl("http://192.168.0.111:2222");
-        // this.$refs.web.setUrl("http://192.168.200.120:2222");
+        this.$refs.web.setUrl("http://192.168.0.111:2222");
+        this.$refs.web.setUrl("http://192.168.200.150:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
     },
 
@@ -100,6 +100,18 @@ export default {
                         deviceInfo.setVibrate();
                     }
                     break;
+            }
+        },
+
+        onStateChanged({status, url}) {
+            if (status === 'createTarget') {
+                eeui.openPage({
+                    pageType: 'app',
+                    url: 'web.js',
+                    params: {url},
+                }, function (result) {
+                    //......
+                });
             }
         }
     }
