@@ -58,9 +58,18 @@ public class WebView extends WXVContainer<ViewGroup> {
 
     private void initPagerView() {
         v_webview = mView.findViewById(R.id.v_webview);
+        v_webview.setSupportMultipleWindows(true);
         //
         if (getEvents().contains(eeuiConstants.Event.STATE_CHANGED)) {
             v_webview.setOnStatusClient(new ExtendWebView.StatusCall() {
+                @Override
+                public void onCreateTarget(android.webkit.WebView view, String url) {
+                    Map<String, Object> retData = new HashMap<>();
+                    retData.put("status", "createTarget");
+                    retData.put("url", url);
+                    fireEvent(eeuiConstants.Event.STATE_CHANGED, retData);
+                }
+
                 @Override
                 public void onStatusChanged(android.webkit.WebView view, String status) {
                     Map<String, Object> retData = new HashMap<>();

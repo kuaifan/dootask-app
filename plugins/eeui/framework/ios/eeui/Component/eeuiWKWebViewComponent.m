@@ -10,6 +10,7 @@
 #import "DeviceUtil.h"
 #import "YHWebViewProgressView.h"
 #import "eeuiStorageManager.h"
+#import "eeuiNewPageManager.h"
 #import "JSCallCommon.h"
 
 @interface _NoInputAccessoryView : NSObject
@@ -343,7 +344,8 @@ WX_EXPORT_METHOD(@selector(goForward:))
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
     if (!navigationAction.targetFrame.isMainFrame) {
-        [webView loadRequest:navigationAction.request];
+        NSString * url = [navigationAction.request.URL absoluteString];
+        [self fireEvent:@"stateChanged" params:@{@"status":@"createTarget", @"title":@"", @"url":url, @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
     }
     return nil;
 }

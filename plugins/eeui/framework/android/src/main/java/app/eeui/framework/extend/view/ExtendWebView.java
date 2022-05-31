@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Message;
 import android.provider.MediaStore;
 
 import androidx.annotation.RequiresApi;
@@ -180,6 +181,17 @@ public class ExtendWebView extends WebView {
 
         WebChromeClient(Map<String, Class> data) {
             super(data);
+        }
+
+        @Override
+        public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message resultMsg)
+        {
+            WebView.HitTestResult result = view.getHitTestResult();
+            String url = result.getExtra();
+            if (url != null && !url.isEmpty()) {
+                mStatusCall.onCreateTarget(view, url);
+            }
+            return true;
         }
 
         @Override
@@ -607,6 +619,7 @@ public class ExtendWebView extends WebView {
     }
 
     public interface StatusCall {
+        void onCreateTarget(WebView view, String url);
         void onStatusChanged(WebView view, String status);
         void onTitleChanged(WebView view, String title);
         void onUrlChanged(WebView view, String url);
@@ -667,5 +680,14 @@ public class ExtendWebView extends WebView {
                 ".ephox-snooker-resizer-cols{cursor:col-resize}\n" +
                 ".ephox-snooker-resizer-rows{cursor:row-resize}\n" +
                 ".ephox-snooker-resizer-bar.ephox-snooker-resizer-bar-dragging{opacity:.2}\n";
+    }
+
+    /**
+     * 允许多窗口
+     * @param var1
+     */
+    public void setSupportMultipleWindows(boolean var1) {
+        WebSettings webSettings = getSettings();
+        webSettings.setSupportMultipleWindows(var1);
     }
 }

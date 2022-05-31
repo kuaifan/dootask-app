@@ -622,6 +622,15 @@ public class PageActivity extends AppCompatActivity {
                 mWebView.setProgressbarVisibility(mPageInfo.isLoading());
                 mWebView.setOnStatusClient(new ExtendWebView.StatusCall() {
                     @Override
+                    public void onCreateTarget(WebView view, String url) {
+                        // 需要 setSupportMultipleWindows 才回触发此事件
+                        Map<String, Object> retData = new HashMap<>();
+                        retData.put("webStatus", "createTarget");
+                        retData.put("url", url);
+                        invokeAndKeepAlive("titleChanged", retData);
+                    }
+
+                    @Override
                     public void onStatusChanged(WebView view, String status) {
                         Map<String, Object> retData = new HashMap<>();
                         retData.put("webStatus", status);
