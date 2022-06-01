@@ -98,6 +98,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
         }
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
         [configuration setApplicationNameForUserAgent: originalUserAgent];
+        [configuration setAllowsInlineMediaPlayback:YES];
         return [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     } else {
         eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];

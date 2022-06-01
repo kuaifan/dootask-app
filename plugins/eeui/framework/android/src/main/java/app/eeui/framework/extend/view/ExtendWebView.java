@@ -277,6 +277,9 @@ public class ExtendWebView extends WebView {
                 if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(s)) {
                     key = "android.permission.RECORD_AUDIO";
                     break;
+                } else if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(s)) {
+                    key = "android.permission.CAMERA";
+                    break;
                 }
             }
 
