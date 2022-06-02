@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -1681,7 +1682,6 @@ public class eeui {
 
     /**
      * 隐藏键盘
-     * @return
      */
     public void keyboardHide(Context context) {
         utilcodeModule.KeyboardUtils((Activity) context, "hideSoftInput");
@@ -1693,5 +1693,22 @@ public class eeui {
      */
     public Boolean keyboardStatus(Context context) {
         return (Boolean) utilcodeModule.KeyboardUtils((Activity) context, "isSoftInputVisible");
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 打开屏幕常亮
+     */
+    public void keepScreenOn(Context context) {
+        ((Activity) context).getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    /**
+     * 关闭屏幕常亮
+     */
+    public void keepScreenOff(Context context) {
+        ((Activity) context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 }

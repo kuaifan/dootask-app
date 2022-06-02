@@ -2,6 +2,7 @@ package app.eeui.framework.ui.module;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.taobao.weex.annotation.JSMethod;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -798,7 +799,6 @@ public class WebModule {
 
     /**
      * 动态隐藏软键盘
-     * @return
      */
     public static void keyboardHide(ExtendWebView webView) {
         myApp().keyboardHide(webView.getContext());
@@ -810,5 +810,22 @@ public class WebModule {
      */
     public static Boolean keyboardStatus(ExtendWebView webView) {
         return (Boolean) myApp().keyboardStatus(webView.getContext());
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 打开屏幕常亮
+     */
+    public static void keepScreenOn(ExtendWebView webView) {
+        myApp().keepScreenOn(webView.getContext());
+    }
+
+    /**
+     * 关闭屏幕常亮
+     */
+    public static void keepScreenOff(ExtendWebView webView) {
+        myApp().keepScreenOff(webView.getContext());
     }
 }

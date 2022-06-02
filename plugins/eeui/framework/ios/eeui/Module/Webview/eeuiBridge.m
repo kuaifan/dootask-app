@@ -585,4 +585,16 @@
     return [CustomWeexSDKManager getKeyBoardlsVisible];
 }
 
+//打开屏幕常亮
+- (void) keepScreenOn
+{
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
+}
+
+//关闭屏幕常亮
+- (void) keepScreenOff
+{
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+}
+
 @end

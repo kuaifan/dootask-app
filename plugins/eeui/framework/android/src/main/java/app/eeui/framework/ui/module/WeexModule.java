@@ -879,7 +879,6 @@ public class WeexModule extends WXModule {
 
     /**
      * 动态隐藏软键盘
-     * @return
      */
     @JSMethod
     public void keyboardHide() {
@@ -893,5 +892,25 @@ public class WeexModule extends WXModule {
     @JSMethod(uiThread = false)
     public Boolean keyboardStatus() {
         return (Boolean) myApp().keyboardStatus(mWXSDKInstance.getContext());
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 打开屏幕常亮
+     */
+    @JSMethod
+    public void keepScreenOn() {
+        myApp().keepScreenOn(mWXSDKInstance.getContext());
+    }
+
+    /**
+     * 关闭屏幕常亮
+     * @return
+     */
+    @JSMethod
+    public void keepScreenOff() {
+        myApp().keepScreenOff(mWXSDKInstance.getContext());
     }
 }
