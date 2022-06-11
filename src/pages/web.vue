@@ -1,84 +1,60 @@
 <template>
-    <div class="flex">
-        <navbar class="navbar">
-            <navbar-item type="left">
-                <icon :content="backIcon" class="icon" @click="close"></icon>
-            </navbar-item>
-            <navbar-item type="title">
-                <text class="text">{{webTitle}}</text>
-            </navbar-item>
-            <navbar-item type="right">
-                <icon :content="browserIcon" class="icon" @click="browser"></icon>
-            </navbar-item>
-        </navbar>
-        <web-view ref="web" class="flex" @stateChanged="onStateChanged"/>
-    </div>
+    <web-view
+        ref="web"
+        class="flex"
+        :progressbarVisibility="showProgress"
+        @stateChanged="onStateChanged"/>
 </template>
 
 <style scoped>
 .flex {
     flex: 1;
 }
-.navbar {
-    width: 750px;
-    height: 90px;
-    background-color: #f8f8f8;
-}
-.icon {
-    width: 90px;
-    height: 90px;
-    font-size: 40px;
-    color: #333333;
-}
-.text {
-    width: 550px;
-    font-size: 32px;
-    text-align: center;
-    text-overflow: ellipsis;
-    lines: 1;
-}
 </style>
 <script>
 const eeui = app.requireModule('eeui');
+const navigationBar = app.requireModule('navigationBar');
 
 export default {
     data() {
         return {
-            backIcon: WXEnvironment.platform === 'iOS' ? 'ios-arrow-back' : 'md-arrow-back',
-            browserIcon: WXEnvironment.platform === 'iOS' ? 'ios-share-alt' : 'md-share-alt',
-            title: null,
             url: null,
+            browser: false,
+            titleFixed: false,
+            showProgress: false,
         }
     },
 
     mounted() {
         eeui.setStatusBarStyle(false)
+        //
         this.url = app.config.params.url;
+        this.browser = !!app.config.params.browser;
+        this.titleFixed = !!app.config.params.titleFixed;
+        this.showProgress = !!app.config.params.showProgress;
+        //
+        if (this.browser) {
+            navigationBar.setRightItem({
+                icon: WXEnvironment.platform === 'iOS' ? 'ios-share-alt' : 'md-share-alt',
+                iconSize: 40,
+            }, _ => {
+                if (this.url) {
+                    eeui.openWeb(this.url);
+                }
+            })
+        }
         this.$refs.web.setUrl(this.url);
     },
 
-    computed: {
-        webTitle() {
-            if (this.title === null) {
-                return 'Loading'
-            }
-            return this.title || ''
-        }
-    },
-
     methods: {
-        close() {
-            eeui.closePage();
-        },
-
-        browser() {
-            eeui.openWeb(this.url);
-        },
-
         onStateChanged(info) {
             switch (info.status) {
                 case 'title':
-                    this.title = info.title;
+                    if (!this.titleFixed) {
+                        navigationBar.setTitle({
+                            title: info.title,
+                        })
+                    }
                     break;
 
                 case 'url':
