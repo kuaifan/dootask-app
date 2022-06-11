@@ -75,7 +75,7 @@
 		B210031D2191D703001F2CBA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B210031F2191D727001F2CBA /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		B210034521924EEF001F2CBA /* libUMSPosPayOnly.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUMSPosPayOnly.a; path = eeuiApp/eeui/Utility/Pay/Union/libUMSPosPayOnly.a; sourceTree = "<group>"; };
-		B21356302124045E00EDD991 /* eeuiApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = eeuiApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B21356302124045E00EDD991 /* DooTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DooTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B21356332124045E00EDD991 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B21356342124045E00EDD991 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B21356362124045E00EDD991 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -196,7 +196,7 @@
 		B21356312124045E00EDD991 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B21356302124045E00EDD991 /* eeuiApp.app */,
+				B21356302124045E00EDD991 /* DooTask.app */,
 				B21356482124046000EDD991 /* eeuiAppTests.xctest */,
 				B21356532124046000EDD991 /* eeuiAppUITests.xctest */,
 			);
@@ -292,7 +292,7 @@
 			);
 			name = eeuiApp;
 			productName = eeuiApp;
-			productReference = B21356302124045E00EDD991 /* eeuiApp.app */;
+			productReference = B21356302124045E00EDD991 /* DooTask.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B21356472124046000EDD991 /* eeuiAppTests */ = {
@@ -645,7 +645,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dootask.task;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = DooTask;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -679,7 +679,7 @@
 					"$(PROJECT_DIR)/eeuiApp/eeui/Utility/Pay/Union/WeChat",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dootask.task;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = DooTask;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
