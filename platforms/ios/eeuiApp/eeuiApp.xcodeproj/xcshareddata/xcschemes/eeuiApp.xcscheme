@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B213562F2124045E00EDD991"
-               BuildableName = "eeuiApp.app"
+               BuildableName = "DooTask.app"
                BlueprintName = "eeuiApp"
                ReferencedContainer = "container:eeuiApp.xcodeproj">
             </BuildableReference>
@@ -31,7 +31,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B213562F2124045E00EDD991"
-            BuildableName = "eeuiApp.app"
+            BuildableName = "DooTask.app"
             BlueprintName = "eeuiApp"
             ReferencedContainer = "container:eeuiApp.xcodeproj">
          </BuildableReference>
@@ -74,7 +74,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B213562F2124045E00EDD991"
-            BuildableName = "eeuiApp.app"
+            BuildableName = "DooTask.app"
             BlueprintName = "eeuiApp"
             ReferencedContainer = "container:eeuiApp.xcodeproj">
          </BuildableReference>
@@ -91,7 +91,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B213562F2124045E00EDD991"
-            BuildableName = "eeuiApp.app"
+            BuildableName = "DooTask.app"
             BlueprintName = "eeuiApp"
             ReferencedContainer = "container:eeuiApp.xcodeproj">
          </BuildableReference>
