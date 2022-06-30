@@ -37,6 +37,7 @@ export default {
             navigationBar.setRightItem({
                 icon: WXEnvironment.platform === 'iOS' ? 'ios-share-alt' : 'md-share-alt',
                 iconSize: 40,
+                width: 120,
             }, _ => {
                 if (this.url) {
                     eeui.openWeb(this.url);
