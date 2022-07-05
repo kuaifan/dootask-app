@@ -742,6 +742,12 @@ static int easyNavigationButtonTag = 8000;
 //显示错误页面
 -(void)showErrorBox:(NSString *)errCode
 {
+    #if DEBUG
+    #else
+        if ([errCode hasPrefix:@"-9"]) {
+          return;
+        }
+    #endif
     if (self.errorView == nil) {
         self.errorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         [self.errorView setBackgroundColor:[UIColor whiteColor]];
