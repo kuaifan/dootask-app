@@ -8,6 +8,7 @@ def common
     pod 'BindingX', '~> 1.0.3'
     pod 'eeuiUmeng', :path => '../../../plugins/eeui/umeng/ios'
     pod 'eeuiDeviceInfo', :path => '../../../plugins/eeui/deviceInfo/ios'
+    pod 'eeuiCommunication', :path => '../../../plugins/eeui/communication/ios'
 end
 
 target 'eeuiApp' do

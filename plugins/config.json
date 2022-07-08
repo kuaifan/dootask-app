@@ -9,6 +9,11 @@
 			"requireName": "eeui/deviceInfo",
 			"name": "eeui/deviceInfo",
 			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/deviceInfo/fbec02dd10e90fb4b8b8825a4e84e231.zip"
+		},
+		"eeui/communication": {
+			"requireName": "eeui/communication",
+			"name": "eeui/communication",
+			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/communication/76fae1a69e8c015fbc9e95a8a800771c.zip"
 		}
 	}
 }

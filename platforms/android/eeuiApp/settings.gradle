@@ -11,3 +11,6 @@ project (":eeuiUmeng").projectDir = new File("../../../plugins/eeui/umeng/androi
 
 include ":eeuiDeviceInfo"
 project (":eeuiDeviceInfo").projectDir = new File("../../../plugins/eeui/deviceInfo/android")
+
+include ":eeuiCommunication"
+project (":eeuiCommunication").projectDir = new File("../../../plugins/eeui/communication/android")

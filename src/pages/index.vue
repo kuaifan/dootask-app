@@ -18,7 +18,7 @@
 <script>
 const eeui = app.requireModule('eeui');
 const umengPush = app.requireModule("eeui/umengPush");
-const deviceInfo = app.requireModule("eeui/deviceInfo");
+const communication = app.requireModule("eeui/communication");
 
 export default {
     data() {
@@ -99,6 +99,10 @@ export default {
                     } else {
                         deviceInfo.setVibrate();
                     }
+                    break;
+
+                case 'callTel':
+                    communication.call(message.tel)
                     break;
             }
         },
