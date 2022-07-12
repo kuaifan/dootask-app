@@ -55,6 +55,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -925,6 +926,13 @@ public class PageActivity extends AppCompatActivity {
                 retData.put("errMsg", errMsg);
                 retData.put("errUrl", instance.getBundleUrl() == null ? "" : instance.getBundleUrl());
                 invokeAndKeepAlive("error", retData);
+                //
+                if (!BuildConfig.DEBUG) {
+                    String[] strArray = new String[] { "-2008", "-2009", "-2012", "-2013"};
+                    if (Arrays.asList(strArray).contains(errCode)) {
+                        return;
+                    }
+                }
                 //
                 mError.setVisibility(View.VISIBLE);
                 mErrorCode.setText(errCode);
