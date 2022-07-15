@@ -17,6 +17,7 @@
 </style>
 <script>
 const eeui = app.requireModule('eeui');
+const deviceInfo = app.requireModule("eeui/deviceInfo");
 const umengPush = app.requireModule("eeui/umengPush");
 const communication = app.requireModule("eeui/communication");
 
