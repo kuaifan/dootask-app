@@ -20,6 +20,7 @@ const eeui = app.requireModule('eeui');
 const deviceInfo = app.requireModule("eeui/deviceInfo");
 const umengPush = app.requireModule("eeui/umengPush");
 const communication = app.requireModule("eeui/communication");
+const notifications = app.requireModule("eeui/notifications");
 
 export default {
     data() {
@@ -33,6 +34,7 @@ export default {
         const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
         this.$refs.web.setJavaScript(javascript);
         this.resumeNum++;
+        this.refreshNotificationPermission()
     },
 
     pagePause() {
@@ -102,6 +104,18 @@ export default {
                     }
                     break;
 
+                case 'getNotificationPermission':
+                    this.refreshNotificationPermission()
+                    break;
+
+                case 'setBdageNotify':
+                    notifications.setBadge(this.runNum(message.bdage));
+                    break;
+
+                case 'gotoSetting':
+                    notifications.gotoSet();
+                    break;
+
                 case 'callTel':
                     communication.call(message.tel)
                     break;
@@ -123,6 +137,13 @@ export default {
                     //......
                 });
             }
+        },
+
+        refreshNotificationPermission() {
+            notifications.getPermissionStatus(ret => {
+                const javascript = `if (typeof window.__onPagePause === "function"){window.__onNotificationPermissionStatus(${ret})}`;
+                this.$refs.web.setJavaScript(javascript);
+            });
         }
     }
 }

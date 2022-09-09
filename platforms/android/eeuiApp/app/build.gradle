@@ -88,4 +88,5 @@ dependencies {
     implementation project(":eeuiUmeng")
     implementation project(":eeuiDeviceInfo")
     implementation project(":eeuiCommunication")
+    implementation project(":eeuiNotifications")
 }

@@ -14,6 +14,11 @@
 			"requireName": "eeui/communication",
 			"name": "eeui/communication",
 			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/communication/76fae1a69e8c015fbc9e95a8a800771c.zip"
+		},
+		"eeui/notifications": {
+			"requireName": "eeui/notifications",
+			"name": "eeui/notifications",
+			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/notifications/0d59d2159a4e8b58c40f309fb5d55760.zip"
 		}
 	}
 }

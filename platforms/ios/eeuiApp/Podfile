@@ -9,6 +9,7 @@ def common
     pod 'eeuiUmeng', :path => '../../../plugins/eeui/umeng/ios'
     pod 'eeuiDeviceInfo', :path => '../../../plugins/eeui/deviceInfo/ios'
     pod 'eeuiCommunication', :path => '../../../plugins/eeui/communication/ios'
+    pod 'eeuiNotifications', :path => '../../../plugins/eeui/notifications/ios'
 end
 
 target 'eeuiApp' do

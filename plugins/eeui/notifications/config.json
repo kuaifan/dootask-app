@@ -1,0 +1,5 @@
+{
+	"desc": "本地通知",
+	"requireFormatName": "eeuiNotifications",
+	"requireName": "eeui/notifications"
+}
