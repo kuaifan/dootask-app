@@ -19,6 +19,11 @@
 			"requireName": "eeui/notifications",
 			"name": "eeui/notifications",
 			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/notifications/0d59d2159a4e8b58c40f309fb5d55760.zip"
+		},
+		"eeui/picture": {
+			"requireName": "eeui/picture",
+			"name": "eeui/picture",
+			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/picture/62f68eb64f016143402a71c3586b78b8.zip"
 		}
 	}
 }

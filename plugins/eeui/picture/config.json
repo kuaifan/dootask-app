@@ -1,0 +1,5 @@
+{
+	"desc": "图片选择器、视频选择、图片拍照、视频录制、压缩图片、预览图片、预览视频",
+	"requireFormatName": "eeuiPicture",
+	"requireName": "eeui/picture"
+}

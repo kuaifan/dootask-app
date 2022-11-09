@@ -21,6 +21,7 @@ const deviceInfo = app.requireModule("eeui/deviceInfo");
 const umengPush = app.requireModule("eeui/umengPush");
 const communication = app.requireModule("eeui/communication");
 const notifications = app.requireModule("eeui/notifications");
+const picture = app.requireModule("eeui/picture");
 
 export default {
     data() {
@@ -59,7 +60,7 @@ export default {
         //
         eeui.setStatusBarStyle(false)
         // this.$refs.web.setUrl("http://192.168.0.111:2222");
-        // this.$refs.web.setUrl("http://192.168.200.104:2222");
+        // this.$refs.web.setUrl("http://192.168.100.88:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
     },
 
@@ -118,6 +119,14 @@ export default {
 
                 case 'callTel':
                     communication.call(message.tel)
+                    break;
+
+                case 'picturePreview':
+                    picture.picturePreview(message.position, message.paths)
+                    break;
+
+                case 'videoPreview':
+                    picture.videoPreview(message.path)
                     break;
             }
         },

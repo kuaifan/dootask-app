@@ -17,3 +17,6 @@ project (":eeuiCommunication").projectDir = new File("../../../plugins/eeui/comm
 
 include ":eeuiNotifications"
 project (":eeuiNotifications").projectDir = new File("../../../plugins/eeui/notifications/android")
+
+include ":eeuiPicture"
+project (":eeuiPicture").projectDir = new File("../../../plugins/eeui/picture/android")
