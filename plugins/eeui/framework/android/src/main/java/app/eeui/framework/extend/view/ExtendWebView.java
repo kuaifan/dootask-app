@@ -117,6 +117,8 @@ public class ExtendWebView extends WebView {
         webSettings.setBuiltInZoomControls(true);
         //隐藏原生的缩放控件
         webSettings.setDisplayZoomControls(false);
+        //允许用户不需要手势就播放音乐
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
         //设置UA
         this.userAgent = webSettings.getUserAgentString() + ";android_kuaifan_eeui/" + eeuiCommon.getLocalVersionName(getContext());
         setUserAgent("");
