@@ -28,6 +28,9 @@ export default {
         return {
             uniqueId: '',
             resumeNum: 0,
+
+            umengMessage: {},
+            umengError: false,
         }
     },
 
@@ -36,6 +39,10 @@ export default {
         this.$refs.web.setJavaScript(javascript);
         this.resumeNum++;
         this.refreshNotificationPermission()
+        //
+        if (this.umengError) {
+            this.updateUmengAlias()
+        }
     },
 
     pagePause() {
@@ -76,24 +83,8 @@ export default {
         onReceiveMessage({message}) {
             switch (message.action) {
                 case 'setUmengAlias':
-                    const alias = `${WXEnvironment.platform}-${message.userid}-${this.uniqueId}`;
-                    umengPush.addAlias(alias, "userid", ({status}) => {
-                        if (status === 'success') {
-                            // 别名保存到服务器
-                            eeui.ajax({
-                                url: message.url,
-                                method: 'get',
-                                data: {
-                                    alias,
-                                },
-                                headers: {
-                                    token: message.token,
-                                }
-                            }, result => {
-                                console.log(result);
-                            });
-                        }
-                    });
+                    this.umengMessage = message;
+                    this.updateUmengAlias();
                     break;
 
                 case 'setVibrate':
@@ -146,6 +137,39 @@ export default {
                     //......
                 });
             }
+        },
+
+        updateUmengAlias() {
+            const alias = `${WXEnvironment.platform}-${this.umengMessage.userid}-${this.uniqueId}`;
+            //
+            console.log("[UmengAlias] delete: " + alias);
+            umengPush.deleteAlias(alias, "userid", data => {
+                console.log("[UmengAlias] delete result: " + JSON.stringify(data));
+                //
+                console.log("[UmengAlias] add: " + alias);
+                umengPush.addAlias(alias, "userid", data => {
+                    console.log("[UmengAlias] add result: " + JSON.stringify(data));
+                    if (data.status === 'success') {
+                        console.log("[UmengAlias] add success");
+                        // 别名保存到服务器
+                        eeui.ajax({
+                            url: this.umengMessage.url,
+                            method: 'get',
+                            data: {
+                                alias,
+                            },
+                            headers: {
+                                token: this.umengMessage.token,
+                            }
+                        }, result => {
+                            console.log(result);
+                        });
+                    } else {
+                        console.log("[UmengAlias] add error");
+                    }
+                    this.umengError = data.status !== 'success'
+                });
+            })
         },
 
         refreshNotificationPermission() {
