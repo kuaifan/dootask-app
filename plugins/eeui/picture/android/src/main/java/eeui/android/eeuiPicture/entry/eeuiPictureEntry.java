@@ -22,6 +22,7 @@ import com.luck.picture.lib.compress.OnCompressListener;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.tools.PictureFileUtils;
@@ -263,8 +264,8 @@ public class eeuiPictureEntry {
                     .openGallery(eeuiJson.getInt(json, "gallery", PictureMimeType.ofAll())); // 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
         }
         GlideEngine mGlideEngine = GlideEngine.createGlideEngine();
-        mGlideEngine.sizeMultiplier(eeuiJson.getFloat(json, "multiplier", 0.5f));      // glide 加载图片大小 0~1之间 如设置
-        mGlideEngine.glideOverride(eeuiJson.getInt(json, "overrideWidth", 180), eeuiJson.getInt(json, "overrideHeight", 180));      // int glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+        // mGlideEngine.sizeMultiplier(eeuiJson.getFloat(json, "multiplier", 0.5f));      // glide 加载图片大小 0~1之间 如设置
+        // mGlideEngine.glideOverride(eeuiJson.getInt(json, "overrideWidth", 180), eeuiJson.getInt(json, "overrideHeight", 180));      // int glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
         model.loadImageEngine(mGlideEngine)
                 .isWeChatStyle(true)                                        // 是否开启微信图片选择风格
                 .setPictureStyle(mPictureParameterStyle)                    // 动态自定义相册主题
@@ -301,17 +302,25 @@ public class eeuiPictureEntry {
                 .videoMaxSecond(eeuiJson.getInt(json, "videoMaxSecond", 15))           // 显示多少秒以内的视频or音频也可适用 int
                 .videoMinSecond(eeuiJson.getInt(json, "videoMinSecond", 10))           // 显示多少秒以内的视频or音频也可适用 int
                 .recordVideoSecond(eeuiJson.getInt(json, "recordVideoSecond", 60))     // 视频秒数录制 默认60s int
-                .forResult(result -> {
-                    mLocalMediaLists = result;
-                    Map<String, Object> callData1 = new HashMap<>();
-                    callData1.put("status", "success");
-                    callData1.put("lists", toJSONArray(result));
-                    callback.invokeAndKeepAlive(callData1);
-                    //
-                    callData1 = new HashMap<>();
-                    callData1.put("pageName", pageName);
-                    callData1.put("status", "destroy");
-                    callback.invoke(callData1);
+                .forResult(new OnResultCallbackListener<LocalMedia>() {
+                    @Override
+                    public void onResult(List<LocalMedia> result) {
+                        mLocalMediaLists = result;
+                        Map<String, Object> callData1 = new HashMap<>();
+                        callData1.put("status", "success");
+                        callData1.put("lists", toJSONArray(result));
+                        callback.invokeAndKeepAlive(callData1);
+                        //
+                        callData1 = new HashMap<>();
+                        callData1.put("pageName", pageName);
+                        callData1.put("status", "destroy");
+                        callback.invoke(callData1);
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
                 });
     }
 
