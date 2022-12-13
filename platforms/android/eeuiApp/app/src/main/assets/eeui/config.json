@@ -48,6 +48,7 @@
 		},
 		"android": {
 			"enabled": true,
+			"automatic": false,
 			"appKey": "627cde1317ae9915343b26b1",
 			"messageSecret": "563f50eb8d93a25a06978e17dd1f2512",
 			"channel": "dootask",

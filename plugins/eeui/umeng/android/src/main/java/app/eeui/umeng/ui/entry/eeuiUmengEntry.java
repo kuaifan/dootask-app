@@ -18,13 +18,15 @@ public class eeuiUmengEntry {
      * @param content Application
      */
     public void init(Context content) {
-        PushHelper.preInit(content);
-
         if (eeuiJson.getBoolean(PushHelper.umengConfig, "enabled")) {
-            PushHelper.initThread(content);
+            PushHelper.preInit(content);
+
+            if (eeuiJson.getBoolean(PushHelper.umengConfig, "automatic")) {
+                PushHelper.initThread(content);
+            }
         }
 
-        //注册weex模块
+        // 注册weex模块
         try {
             WXSDKEngine.registerModule("eeuiUmengPush", eeuiUmengPushModule.class);
             WXSDKEngine.registerModule("eeuiUmengAnalytics", eeuiUmengAnalyticsModule.class);
