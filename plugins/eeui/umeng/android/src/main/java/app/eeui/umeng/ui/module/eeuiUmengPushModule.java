@@ -7,21 +7,18 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
-import com.umeng.message.IUmengCallback;
 import com.umeng.message.PushAgent;
-import com.umeng.message.UTrack;
-import com.umeng.message.common.inter.ITagManager;
-import com.umeng.message.tag.TagManager;
+import com.umeng.message.api.UPushSettingCallback;
 
 import java.util.List;
 
 import app.eeui.framework.extend.base.WXModuleBase;
 import app.eeui.framework.ui.eeui;
-import app.eeui.umeng.ui.entry.eeuiUmengEntry;
+import app.eeui.umeng.helper.PushHelper;
 
 public class eeuiUmengPushModule extends WXModuleBase {
 
-    private static Handler mSDKHandler = new Handler(Looper.getMainLooper());
+    private static final Handler mSDKHandler = new Handler(Looper.getMainLooper());
     private PushAgent mPAgent;
     private PushAgent PAgent() {
         if (mPAgent == null) {
@@ -30,9 +27,14 @@ public class eeuiUmengPushModule extends WXModuleBase {
         return mPAgent;
     }
 
+    @JSMethod
+    public void initialize(){
+        PushHelper.init(eeui.getApplication());
+    }
+
     @JSMethod(uiThread = false)
     public String deviceToken(){
-        return eeuiUmengEntry.deviceToken;
+        return PushHelper.deviceToken;
     }
 
     @JSMethod
@@ -47,7 +49,7 @@ public class eeuiUmengPushModule extends WXModuleBase {
 
     @JSMethod
     public void disable(final JSCallback successCallback) {
-        PAgent().disable(new IUmengCallback() {
+        PAgent().disable(new UPushSettingCallback() {
             @Override
             public void onSuccess() {
                 JSONObject data = new JSONObject();
@@ -67,7 +69,7 @@ public class eeuiUmengPushModule extends WXModuleBase {
 
     @JSMethod
     public void enable(final JSCallback successCallback) {
-        PAgent().disable(new IUmengCallback() {
+        PAgent().disable(new UPushSettingCallback() {
             @Override
             public void onSuccess() {
                 JSONObject data = new JSONObject();
@@ -87,81 +89,58 @@ public class eeuiUmengPushModule extends WXModuleBase {
 
     @JSMethod
     public void addTag(String tag, final JSCallback successCallback) {
-        PAgent().getTagManager().addTags(new TagManager.TCallBack() {
-            @Override
-            public void onMessage(final boolean isSuccess, final ITagManager.Result result) {
-                JSONObject data = new JSONObject();
-                data.put("status", isSuccess ? "success": "error");
-                data.put("remain", isSuccess ? result.remain : 0);
-                successCallback.invoke(data);
-            }
+        PAgent().getTagManager().addTags((isSuccess, result) -> {
+            JSONObject data = new JSONObject();
+            data.put("status", isSuccess ? "success": "error");
+            data.put("remain", isSuccess ? result.remain : 0);
+            successCallback.invoke(data);
         }, tag);
     }
 
     @JSMethod
     public void deleteTag(String tag, final JSCallback successCallback) {
-        PAgent().getTagManager().deleteTags(new TagManager.TCallBack() {
-            @Override
-            public void onMessage(boolean isSuccess, final ITagManager.Result result) {
-                JSONObject data = new JSONObject();
-                data.put("status", isSuccess ? "success": "error");
-                data.put("remain", isSuccess ? result.remain : 0);
-                successCallback.invoke(data);
-            }
+        PAgent().getTagManager().deleteTags((isSuccess, result) -> {
+            JSONObject data = new JSONObject();
+            data.put("status", isSuccess ? "success": "error");
+            data.put("remain", isSuccess ? result.remain : 0);
+            successCallback.invoke(data);
         }, tag);
     }
 
     @JSMethod
     public void listTag(final JSCallback successCallback) {
-        PAgent().getTagManager().getTags(new TagManager.TagListCallBack() {
-            @Override
-            public void onMessage(final boolean isSuccess, final List<String> result) {
-                mSDKHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        JSONObject data = new JSONObject();
-                        data.put("status", isSuccess ? "success": "error");
-                        data.put("lists", resultToList(result));
-                        successCallback.invoke(data);
-                    }
-                });
-            }
-        });
+        PAgent().getTagManager().getTags((isSuccess, result) -> mSDKHandler.post(() -> {
+            JSONObject data = new JSONObject();
+            data.put("status", isSuccess ? "success": "error");
+            data.put("lists", resultToList(result));
+            successCallback.invoke(data);
+        }));
     }
 
     @JSMethod
     public void addAlias(String alias, String aliasType, final JSCallback successCallback) {
-        PAgent().addAlias(alias, aliasType, new UTrack.ICallBack() {
-            @Override
-            public void onMessage(final boolean isSuccess, final String message) {
-                JSONObject data = new JSONObject();
-                data.put("status", isSuccess ? "success": "error");
-                successCallback.invoke(data);
-            }
+        PAgent().addAlias(alias, aliasType, (isSuccess, message) -> {
+            JSONObject data = new JSONObject();
+            data.put("status", isSuccess ? "success": "error");
+            successCallback.invoke(data);
         });
     }
 
     @JSMethod
     public void addExclusiveAlias(String exclusiveAlias, String aliasType, final JSCallback successCallback) {
-        PAgent().setAlias(exclusiveAlias, aliasType, new UTrack.ICallBack() {
-            @Override
-            public void onMessage(final boolean isSuccess, final String message) {
-                JSONObject data = new JSONObject();
-                data.put("status", isSuccess ? "success": "error");
-                successCallback.invoke(data);
-            }
+        PAgent().setAlias(exclusiveAlias, aliasType, (isSuccess, message) -> {
+            JSONObject data = new JSONObject();
+            data.put("status", isSuccess ? "success": "error");
+            successCallback.invoke(data);
         });
     }
 
     @JSMethod
     public void deleteAlias(String alias, String aliasType, final JSCallback successCallback) {
-        PAgent().deleteAlias(alias, aliasType, new UTrack.ICallBack() {
-            @Override
-            public void onMessage(boolean isSuccess, String s) {
-                JSONObject data = new JSONObject();
-                data.put("status", isSuccess ? "success": "error");
-                successCallback.invoke(data);
-            }
+        PAgent().deleteAlias(alias, aliasType, (isSuccess, s) -> {
+            JSONObject data = new JSONObject();
+            data.put("status", isSuccess ? "success": "error");
+            successCallback.invoke(data);
         });
     }
 

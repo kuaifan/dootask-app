@@ -1,6 +1,5 @@
 package app.eeui.umeng.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 
@@ -17,10 +16,5 @@ public class MfrMessageActivity extends UmengNotifyClickActivity {
         String appId = eeui.getApplication().getPackageName();
         myEeui.openOtherAppTo(this, appId, appId + ".WelcomeActivity", null);
         new android.os.Handler(Looper.getMainLooper()).postDelayed(this::finish, 1000);
-    }
-
-    @Override
-    public void onMessage(Intent intent) {
-        super.onMessage(intent);
     }
 }

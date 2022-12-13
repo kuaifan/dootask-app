@@ -29,6 +29,7 @@ export default {
             uniqueId: '',
             resumeNum: 0,
 
+            umengInit: false,
             umengMessage: {},
             umengError: false,
         }
@@ -82,6 +83,13 @@ export default {
          */
         onReceiveMessage({message}) {
             switch (message.action) {
+                case 'intiUmeng':
+                    if (!this.umengInit) {
+                        this.umengInit = true;
+                        umengPush.initialize();
+                    }
+                    break;
+
                 case 'setUmengAlias':
                     this.umengMessage = message;
                     this.updateUmengAlias();

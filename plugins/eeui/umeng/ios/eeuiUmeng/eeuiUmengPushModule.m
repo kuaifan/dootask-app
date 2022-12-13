@@ -10,6 +10,7 @@
 @implementation eeuiUmengPushModule
 
 WX_PlUGIN_EXPORT_MODULE(eeuiUmengPush, eeuiUmengPushModule)
+WX_EXPORT_METHOD(@selector(initialize))  //仅android
 WX_EXPORT_METHOD_SYNC(@selector(deviceToken))
 WX_EXPORT_METHOD(@selector(setDisplayNotificationNumber:))  //仅android
 WX_EXPORT_METHOD(@selector(setNotificaitonOnForeground:))   //仅android
@@ -21,6 +22,11 @@ WX_EXPORT_METHOD(@selector(listTag:))
 WX_EXPORT_METHOD(@selector(addAlias:type:response:))
 WX_EXPORT_METHOD(@selector(addExclusiveAlias:type:response:))
 WX_EXPORT_METHOD(@selector(deleteAlias:type:response:))
+
+- (void) initialize
+{
+
+}
 
 - (NSDictionary*)deviceToken
 {
