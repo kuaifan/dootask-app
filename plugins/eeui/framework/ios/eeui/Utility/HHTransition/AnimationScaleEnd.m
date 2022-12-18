@@ -41,7 +41,7 @@
     CGPoint sourcePoint = [sourceView convertPoint:CGPointZero toView:nil];
     CGPoint destinationPoint = [destinationView convertPoint:CGPointZero toView:nil];
 
-    UIView *snapShot = [sourceView snapshotViewAfterScreenUpdates:YES];
+    UIView *snapShot = [sourceView snapshotViewAfterScreenUpdates:NO];
     snapShot.origin = sourcePoint;
     [[transitionContext containerView] addSubview:snapShot];
     
