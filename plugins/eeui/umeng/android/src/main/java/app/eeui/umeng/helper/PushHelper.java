@@ -50,10 +50,16 @@ public class PushHelper {
     public static String deviceToken = "";
 
     /**
+     * 初始化参数
+     */
+    public static void initConfig() {
+        umengConfig = eeuiJson.parseObject(eeuiBase.config.getObject("umeng").get("android"));
+    }
+
+    /**
      * 预初始化
      */
     public static void preInit(Context context) {
-        umengConfig = eeuiJson.parseObject(eeuiBase.config.getObject("umeng").get("android"));
         UMConfigure.preInit(context, eeuiJson.getString(umengConfig, "appKey"), eeuiJson.getString(umengConfig, "channel"));
     }
 
