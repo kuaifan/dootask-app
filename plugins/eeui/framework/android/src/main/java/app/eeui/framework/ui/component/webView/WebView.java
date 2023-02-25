@@ -155,6 +155,18 @@ public class WebView extends WXVContainer<ViewGroup> {
                 setProgressbarVisibility(eeuiParse.parseBool(val, true));
                 return true;
 
+            case "allowsInlineMediaPlayback":
+                if (v_webview != null) {
+                    v_webview.setAllowsInlineMediaPlayback(eeuiParse.parseBool(val, true));
+                }
+                return true;
+
+            case "allowFileAccessFromFileURLs":
+                if (v_webview != null) {
+                    v_webview.setAllowFileAccessFromFileURLs(eeuiParse.parseBool(val, true));
+                }
+                return true;
+
             case "scrollEnabled":
                 setScrollEnabled(eeuiParse.parseBool(val, true));
                 return true;
@@ -168,12 +180,6 @@ public class WebView extends WXVContainer<ViewGroup> {
             case "userAgent":
                 if (v_webview != null) {
                     v_webview.setUserAgent(eeuiParse.parseStr(val, ""));
-                }
-                return true;
-
-            case "customUserAgent":
-                if (v_webview != null) {
-                    v_webview.setCustomUserAgent(eeuiParse.parseStr(val, ""));
                 }
                 return true;
 

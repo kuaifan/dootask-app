@@ -31,6 +31,8 @@ import android.widget.Toast;
 import com.taobao.weex.bridge.JSCallback;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +63,8 @@ public class ExtendWebView extends WebView {
     private StatusCall mStatusCall;
     private InvalidateListener mInvalidateListener;
     private boolean progressbarVisibility;
+    private boolean allowsInlineMediaPlayback;
+    private boolean allowFileAccessFromFileURLs;
     private String userAgent;
 
     private boolean pageListener;
@@ -80,6 +84,8 @@ public class ExtendWebView extends WebView {
         progressbar.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 6, 0, 0));
         progressbar.setVisibility(GONE);
         progressbarVisibility = true;
+        allowsInlineMediaPlayback = true;
+        allowFileAccessFromFileURLs = false;
         //
         WebCallBean.addClassData("eeui", WebModule.class);
         WebCallBean.addClassData("webview", WebviewModule.class);
@@ -118,7 +124,19 @@ public class ExtendWebView extends WebView {
         //隐藏原生的缩放控件
         webSettings.setDisplayZoomControls(false);
         //允许用户不需要手势就播放音乐
-        webSettings.setMediaPlaybackRequiresUserGesture(false);
+        if (allowsInlineMediaPlayback) {
+            webSettings.setMediaPlaybackRequiresUserGesture(false);
+        }
+        //跨域请求
+        if (allowFileAccessFromFileURLs) {
+            try {
+                Class<?> clazz = webSettings.getClass();
+                Method method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
+                method.invoke(webSettings, true);
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
         //设置UA
         this.userAgent = webSettings.getUserAgentString() + ";android_kuaifan_eeui/" + eeuiCommon.getLocalVersionName(getContext());
         setUserAgent("");
@@ -581,16 +599,8 @@ public class ExtendWebView extends WebView {
      */
     public void setUserAgent(String userAgent) {
         if (!"".equals(userAgent)) userAgent = "/" + userAgent;
-        this.setCustomUserAgent(this.userAgent + userAgent);
-    }
-
-    /**
-     * 设置浏览器UA（全）
-     * @param customUserAgent
-     */
-    public void setCustomUserAgent(String customUserAgent) {
         WebSettings webSettings = getSettings();
-        webSettings.setUserAgentString(customUserAgent);
+        webSettings.setUserAgentString(this.userAgent + userAgent);
     }
 
     /**
@@ -637,6 +647,22 @@ public class ExtendWebView extends WebView {
      */
     public void setProgressbarVisibility(boolean var) {
         progressbarVisibility = var;
+    }
+
+    /**
+     * 允许用户不需要手势就播放音乐
+     * @param var
+     */
+    public void setAllowsInlineMediaPlayback(boolean var) {
+        allowsInlineMediaPlayback = var;
+    }
+
+    /**
+     * 允许跨域请求
+     * @param var
+     */
+    public void setAllowFileAccessFromFileURLs(boolean var) {
+        allowFileAccessFromFileURLs = var;
     }
 
     /**

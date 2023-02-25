@@ -36,6 +36,8 @@
 @property (nonatomic, strong) NSString *userAgent;
 @property (nonatomic, assign) CGFloat webContentHeight;
 @property (nonatomic, assign) BOOL isShowProgress;
+@property (nonatomic, assign) BOOL isAllowsInlineMediaPlayback;
+@property (nonatomic, assign) BOOL isAllowFileAccess;
 @property (nonatomic, assign) BOOL isScrollEnabled;
 @property (nonatomic, assign) BOOL isEnableApi;
 @property (nonatomic, assign) BOOL isHeightChanged;
@@ -69,6 +71,8 @@ WX_EXPORT_METHOD(@selector(goForward:))
         _content = @"";
         _userAgent = @"";
         _isShowProgress = YES;
+        _isAllowsInlineMediaPlayback = YES;
+        _isAllowFileAccess = NO;
         _isScrollEnabled = YES;
         _isEnableApi = YES;
         _isTransparency = NO;
@@ -96,9 +100,15 @@ WX_EXPORT_METHOD(@selector(goForward:))
         if (_userAgent.length > 0) {
             originalUserAgent = [NSString stringWithFormat:@"%@/%@", originalUserAgent, self->_userAgent];
         }
+        //初始化浏览器对象
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
         [configuration setApplicationNameForUserAgent: originalUserAgent];
-        [configuration setAllowsInlineMediaPlayback:YES];
+        if (_isAllowsInlineMediaPlayback) {
+            [configuration setAllowsInlineMediaPlayback:YES];
+        }
+        if (_isAllowFileAccess) {
+            [configuration.preferences setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
+        }
         return [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     } else {
         eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
@@ -125,7 +135,14 @@ WX_EXPORT_METHOD(@selector(goForward:))
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:originalUserAgent, @"UserAgent", nil];
         [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
         //初始化浏览器对象
-        return [[eeuiWKWebView alloc] init];
+        WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+        if (_isAllowsInlineMediaPlayback) {
+            [configuration setAllowsInlineMediaPlayback:YES];
+        }
+        if (_isAllowFileAccess) {
+            [configuration.preferences setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
+        }
+        return [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     }
 }
 
@@ -293,6 +310,10 @@ WX_EXPORT_METHOD(@selector(goForward:))
         if (isUpdate) {
             [self setProgressbarVisibility:_isShowProgress];
         }
+    } else if ([key isEqualToString:@"allowsInlineMediaPlayback"]) {
+        _isAllowsInlineMediaPlayback = [WXConvert BOOL:value];
+    } else if ([key isEqualToString:@"allowFileAccessFromFileURLs"]) {
+        _isAllowFileAccess = [WXConvert BOOL:value];
     } else if ([key isEqualToString:@"scrollEnabled"]) {
         _isScrollEnabled = [WXConvert BOOL:value];
         if (isUpdate) {
@@ -349,6 +370,12 @@ WX_EXPORT_METHOD(@selector(goForward:))
         [self fireEvent:@"stateChanged" params:@{@"status":@"createTarget", @"title":@"", @"url":url, @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
     }
     return nil;
+}
+
+// Web内存过大，进程终止
+- (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView API_AVAILABLE(macosx(10.11), ios(9.0))
+{
+    [self fireEvent:@"stateChanged" params:@{@"status":@"terminate", @"title":@"", @"url":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
 }
 
 // 在收到响应后，决定是否跳转
@@ -409,7 +436,6 @@ WX_EXPORT_METHOD(@selector(goForward:))
 {
     decisionHandler(WKPermissionDecisionGrant);
 }
-
 
 //设置浏览器内容
 - (void)setContent:(NSString*)content
