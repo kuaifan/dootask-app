@@ -63,8 +63,6 @@ public class ExtendWebView extends WebView {
     private StatusCall mStatusCall;
     private InvalidateListener mInvalidateListener;
     private boolean progressbarVisibility;
-    private boolean allowsInlineMediaPlayback;
-    private boolean allowFileAccessFromFileURLs;
     private String userAgent;
 
     private boolean pageListener;
@@ -84,8 +82,6 @@ public class ExtendWebView extends WebView {
         progressbar.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 6, 0, 0));
         progressbar.setVisibility(GONE);
         progressbarVisibility = true;
-        allowsInlineMediaPlayback = true;
-        allowFileAccessFromFileURLs = false;
         //
         WebCallBean.addClassData("eeui", WebModule.class);
         WebCallBean.addClassData("webview", WebviewModule.class);
@@ -124,19 +120,7 @@ public class ExtendWebView extends WebView {
         //隐藏原生的缩放控件
         webSettings.setDisplayZoomControls(false);
         //允许用户不需要手势就播放音乐
-        if (allowsInlineMediaPlayback) {
-            webSettings.setMediaPlaybackRequiresUserGesture(false);
-        }
-        //跨域请求
-        if (allowFileAccessFromFileURLs) {
-            try {
-                Class<?> clazz = webSettings.getClass();
-                Method method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
-                method.invoke(webSettings, true);
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
         //设置UA
         this.userAgent = webSettings.getUserAgentString() + ";android_kuaifan_eeui/" + eeuiCommon.getLocalVersionName(getContext());
         setUserAgent("");
@@ -654,7 +638,8 @@ public class ExtendWebView extends WebView {
      * @param var
      */
     public void setAllowsInlineMediaPlayback(boolean var) {
-        allowsInlineMediaPlayback = var;
+        WebSettings webSettings = getSettings();
+        webSettings.setMediaPlaybackRequiresUserGesture(!var);
     }
 
     /**
@@ -662,7 +647,14 @@ public class ExtendWebView extends WebView {
      * @param var
      */
     public void setAllowFileAccessFromFileURLs(boolean var) {
-        allowFileAccessFromFileURLs = var;
+        try {
+            WebSettings webSettings = getSettings();
+            Class<?> clazz = webSettings.getClass();
+            Method method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
+            method.invoke(webSettings, var);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -5,6 +5,7 @@
             class="flex"
             :hiddenDone="true"
             :progressbarVisibility="false"
+            :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
     </div>
@@ -32,10 +33,19 @@ export default {
             umengInit: false,
             umengMessage: {},
             umengError: false,
+
+            terminate: false,
+            pauseTime: 0
         }
     },
 
     pageResume() {
+        if (this.terminate && this.time() - this.pauseTime >= 60) {
+            // 因为Web内存过大刷新页面
+            this.terminate = false
+            eeui.reloadPage()
+            return
+        }
         const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
         this.$refs.web.setJavaScript(javascript);
         this.resumeNum++;
@@ -49,6 +59,7 @@ export default {
     pagePause() {
         const javascript = `if (typeof window.__onPagePause === "function"){window.__onPagePause()}`;
         this.$refs.web.setJavaScript(javascript);
+        this.pauseTime = this.time()
     },
 
     pageMessage({message}) {
@@ -77,6 +88,14 @@ export default {
     },
 
     methods: {
+        /**
+         * 获取时间戳
+         * @returns {number}
+         */
+        time() {
+            return Math.round(new Date().getTime() / 1000)
+        },
+
         /**
          * 来自网页的消息
          * @param message
@@ -131,19 +150,25 @@ export default {
         },
 
         onStateChanged({status, url}) {
-            if (status === 'createTarget') {
-                eeui.openPage({
-                    pageType: 'app',
-                    pageTitle: ' ',
-                    url: 'web.js',
-                    params: {
-                        url,
-                        browser: true,
-                        showProgress: true,
-                    },
-                }, function (result) {
-                    //......
-                });
+            switch (status) {
+                case 'createTarget':
+                    eeui.openPage({
+                        pageType: 'app',
+                        pageTitle: ' ',
+                        url: 'web.js',
+                        params: {
+                            url,
+                            browser: true,
+                            showProgress: true,
+                        },
+                    }, function (result) {
+                        //......
+                    });
+                    break;
+
+                case 'terminate':
+                    this.terminate = true
+                    break;
             }
         },
 
