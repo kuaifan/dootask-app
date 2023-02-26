@@ -4,6 +4,7 @@
         class="flex"
         :allowFileAccessFromFileURLs="allowAccess"
         :progressbarVisibility="showProgress"
+        @receiveMessage="onReceiveMessage"
         @stateChanged="onStateChanged"/>
 </template>
 
@@ -14,6 +15,7 @@
 </style>
 <script>
 const eeui = app.requireModule('eeui');
+const picture = app.requireModule("eeui/picture");
 const navigationBar = app.requireModule('navigationBar');
 
 export default {
@@ -45,6 +47,22 @@ export default {
     },
 
     methods: {
+        /**
+         * 来自网页的消息
+         * @param message
+         */
+        onReceiveMessage({message}) {
+            switch (message.action) {
+                case 'picturePreview':
+                    picture.picturePreview(message.position, message.paths)
+                    break;
+
+                case 'videoPreview':
+                    picture.videoPreview(message.path)
+                    break;
+            }
+        },
+
         onStateChanged(info) {
             switch (info.status) {
                 case 'title':
