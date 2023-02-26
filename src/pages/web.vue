@@ -2,6 +2,7 @@
     <web-view
         ref="web"
         class="flex"
+        :allowFileAccessFromFileURLs="allowAccess"
         :progressbarVisibility="showProgress"
         @stateChanged="onStateChanged"/>
 </template>
@@ -18,20 +19,16 @@ const navigationBar = app.requireModule('navigationBar');
 export default {
     data() {
         return {
-            url: null,
-            browser: false,
-            titleFixed: false,
-            showProgress: false,
+            url: app.config.params.url,
+            browser: !!app.config.params.browser,
+            titleFixed: !!app.config.params.titleFixed,
+            showProgress: !!app.config.params.showProgress,
+            allowAccess: !!app.config.params.allowAccess
         }
     },
 
     mounted() {
         eeui.setStatusBarStyle(false)
-        //
-        this.url = app.config.params.url;
-        this.browser = !!app.config.params.browser;
-        this.titleFixed = !!app.config.params.titleFixed;
-        this.showProgress = !!app.config.params.showProgress;
         //
         if (this.browser) {
             navigationBar.setRightItem({
