@@ -375,7 +375,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
 // Web内存过大，进程终止
 - (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView API_AVAILABLE(macosx(10.11), ios(9.0))
 {
-    [self fireEvent:@"stateChanged" params:@{@"status":@"terminate", @"title":@"", @"url":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
+    [webView reload];
 }
 
 // 在收到响应后，决定是否跳转

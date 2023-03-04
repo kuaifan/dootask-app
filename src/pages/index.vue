@@ -33,19 +33,10 @@ export default {
             umengInit: false,
             umengMessage: {},
             umengError: false,
-
-            terminate: false,
-            pauseTime: 0
         }
     },
 
     pageResume() {
-        if (this.terminate && this.time() - this.pauseTime >= 60) {
-            // 因为Web内存过大刷新页面
-            this.terminate = false
-            eeui.reloadPage()
-            return
-        }
         const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
         this.$refs.web.setJavaScript(javascript);
         this.resumeNum++;
@@ -59,7 +50,6 @@ export default {
     pagePause() {
         const javascript = `if (typeof window.__onPagePause === "function"){window.__onPagePause()}`;
         this.$refs.web.setJavaScript(javascript);
-        this.pauseTime = this.time()
     },
 
     pageMessage({message}) {
@@ -164,10 +154,6 @@ export default {
                     }, function (result) {
                         //......
                     });
-                    break;
-
-                case 'terminate':
-                    this.terminate = true
                     break;
             }
         },
