@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,8 +19,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.AndroidRuntimeException;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -244,6 +247,7 @@ public class PageActivity extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
+        if (isPad()) { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED); }
         try{ getWindow().requestFeature(Window.FEATURE_NO_TITLE); }catch (AndroidRuntimeException ignored) { }
         if (getSupportActionBar() != null){ getSupportActionBar().hide(); }
 
@@ -2104,6 +2108,21 @@ public class PageActivity extends AppCompatActivity {
                     }
                 }).show();
     };
+
+    /**
+     * 判断是否平板
+     * @return
+     */
+    private boolean isPad() {
+        WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
+        double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
+        double screenInches = Math.sqrt(x + y); // 屏幕尺寸
+        return screenInches >= 7.0;
+    }
 
     /**
      * 添加tabbar监听
