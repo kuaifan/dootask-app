@@ -5,8 +5,8 @@
 	"bundleIdentifier": "com.dootask.task",
 	"release": "2.5.1",
 	"location": "github",
-	"versionCode": "73",
-	"versionName": "0.24.85",
-	"CFBundleVersion": "73",
-	"CFBundleShortVersionString": "0.24.85"
+	"versionCode": "75",
+	"versionName": "0.25.0",
+	"CFBundleVersion": "75",
+	"CFBundleShortVersionString": "0.25.0"
 }
