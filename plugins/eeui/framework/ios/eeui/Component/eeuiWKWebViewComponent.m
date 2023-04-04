@@ -13,6 +13,8 @@
 #import "eeuiNewPageManager.h"
 #import "JSCallCommon.h"
 
+NSString * const WKProcessPoolDidCrashNotification = @"WKProcessPoolDidCrashNotification";
+
 @interface _NoInputAccessoryView : NSObject
 @end
 @implementation _NoInputAccessoryView
@@ -109,6 +111,9 @@ WX_EXPORT_METHOD(@selector(goForward:))
         if (_isAllowFileAccess) {
             [configuration.preferences setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
         }
+        WKProcessPool *processPool = [[WKProcessPool alloc] init];
+        [configuration setProcessPool:processPool];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWKProcessPoolDidCrashNotification:) name:WKProcessPoolDidCrashNotification object:processPool];
         return [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     } else {
         eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
@@ -142,8 +147,26 @@ WX_EXPORT_METHOD(@selector(goForward:))
         if (_isAllowFileAccess) {
             [configuration.preferences setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
         }
+        WKProcessPool *processPool = [[WKProcessPool alloc] init];
+        [configuration setProcessPool:processPool];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWKProcessPoolDidCrashNotification:) name:WKProcessPoolDidCrashNotification object:processPool];
         return [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     }
+}
+
+// 处理通知
+
+- (void)handleWKProcessPoolDidCrashNotification:(NSNotification *)notification {
+    // 处理 GPU 进程崩溃异常
+    UIAlertController * alertController = [UIAlertController
+                                           alertControllerWithTitle:@"WKWebView"
+                                           message: @"GPU Crash"
+                                           preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
+        [webView reload];
+    }]];
+    [[DeviceUtil getTopviewControler] presentViewController:alertController animated:YES completion:nil];
 }
 
 // 去掉 WkWebviewe Done 工具栏
@@ -250,6 +273,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
         }
         [webView removeObserver:self forKeyPath:@"URL" context:nil];
         [webView removeObserver:self forKeyPath:@"title" context:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
         [self.progressView outWkWebView:webView];
     }
 }
