@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.List;
 
 import app.eeui.framework.activity.PageActivity;
+import app.eeui.framework.extend.module.utilcode.utilcodeModule;
 import app.eeui.framework.ui.eeui;
 
 public class eeuiVersionUpdate {
@@ -78,6 +79,7 @@ public class eeuiVersionUpdate {
             if (activity instanceof PageActivity) {
                 PageActivity mActivity = (PageActivity) activity;
                 mActivity.showVersionUpdate(templateId);
+                utilcodeModule.KeyboardUtils(mActivity, "hideSoftInput");
             }
         }
     }

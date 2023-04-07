@@ -304,6 +304,7 @@ static NSMutableDictionary *checkUpdateVersion;
                     eeuiViewController *vc = (eeuiViewController*)view;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [vc showFixedVersionUpdate: checkUpdateVersion[@"templateId"] ? [WXConvert NSString:checkUpdateVersion[@"templateId"]] : @"1"];
+                        [vc.view endEditing:YES];
                     });
                 }
             }
