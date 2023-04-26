@@ -118,6 +118,7 @@
 
     id result = [bridge performSelector:sel withObjects:params];
     if (![result isKindOfClass:[NSDictionary class]]
+        && ![result isKindOfClass:[NSNumber class]]
         && (result == nil || [result isEqual:[NSNull null]] || [result isEqualToString:@"(null)"])) {
         result = @"";
     }
