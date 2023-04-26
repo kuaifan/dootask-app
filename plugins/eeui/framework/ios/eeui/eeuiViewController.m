@@ -323,6 +323,7 @@ static int easyNavigationButtonTag = 8000;
     int width = keyboardRect.size.width;
     eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
     [storage setCachesString:@"__system:keyboardHeight" value:@(height).stringValue expired:0];
+    [self keyboardHeightChange:@"show" height:height];
 }
 
 // 键盘隐藏触发该方法
@@ -338,6 +339,36 @@ static int easyNavigationButtonTag = 8000;
     int width = keyboardRect.size.width;
     eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
     [storage setCachesString:@"__system:keyboardHeight" value:@(height).stringValue expired:0];
+    [self keyboardHeightChange:@"hide" height:height];
+}
+
+// 键盘高度变化
+- (void)keyboardHeightChange:(NSString*)type height:(int)height
+{
+    UIEdgeInsets safeArea = UIEdgeInsetsZero;
+    if (@available(iOS 11.0, *)) {
+        safeArea = self.view.safeAreaInsets;
+    }else if (@available(iOS 9.0, *)) {
+        safeArea.top = 20;
+    }
+    float proportion = 750 * 1.0 / [UIScreen mainScreen].bounds.size.width;
+    NSInteger keyboardHeight = proportion * height;
+    NSInteger safeAreaTop = proportion * safeArea.top;
+    NSInteger safeAreaBottom = proportion * safeArea.bottom;
+    [_instance fireGlobalEvent:@"__appLifecycleStatus" params:@{
+            @"status": @"message",
+            @"type": @"page",
+            @"pageType": _isChildSubview ? @"tabbar" : _pageType,
+            @"pageName": _pageName,
+            @"pageUrl": _url,
+            @"message": @{
+                @"messageType": @"keyboardStatus",
+                @"keyboardType": type,
+                @"keyboardHeight": @(keyboardHeight),
+                @"safeAreaTop": @(safeAreaTop),
+                @"safeAreaBottom": @(safeAreaBottom)
+        }
+    }];
 }
 
 // 页面失活
