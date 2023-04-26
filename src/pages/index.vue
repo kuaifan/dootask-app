@@ -57,6 +57,12 @@ export default {
             case 'notificationClick':
                 // console.log('点击了通知栏消息：', message);
                 break;
+
+            case 'keyboardStatus':
+                const data = encodeURIComponent(this.jsonStringify(message));
+                const javascript = `if (typeof window.__onKeyboardStatus === "function"){window.__onKeyboardStatus("${data}")}`;
+                this.$refs.web.setJavaScript(javascript);
+                break;
         }
     },
 
@@ -69,7 +75,7 @@ export default {
         //
         eeui.setStatusBarStyle(false)
         // this.$refs.web.setUrl("http://192.168.0.111:2222");
-        // this.$refs.web.setUrl("http://192.168.100.88:2222");
+        // this.$refs.web.setUrl("http://192.168.100.36:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
     },
 
