@@ -11,8 +11,31 @@ def common
     pod 'eeuiCommunication', :path => '../../../plugins/eeui/communication/ios'
     pod 'eeuiNotifications', :path => '../../../plugins/eeui/notifications/ios'
     pod 'eeuiPicture', :path => '../../../plugins/eeui/picture/ios'
+    pod 'eeuiShareFiles', :path => '../../../plugins/eeui/shareFiles/ios'
+    
+end
+
+def share
+    pod 'MMWormhole', '~> 2.0.0'#MainApp与NE的数据传输
+    pod 'EEUIAFNetworking', :path => '../../../plugins/openSource/AFNetworking'
+    pod 'EEUISDWebImage', :path => '../../../plugins/openSource/SDWebImage'
+    
 end
 
 target 'eeuiApp' do
     common
+#    post_install do |installer|
+#            installer.pods_project.targets.each do |target|
+#                target.build_configurations.each do |config|
+#                    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] ='9.0'
+#                end
+#            end
+#        end
+    share
+end
+
+target 'ShareExtension' do
+#    pod 'eeui', :path => '../../../plugins/eeui/framework/ios'
+    pod 'Masonry'
+    share
 end

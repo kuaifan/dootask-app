@@ -27,5 +27,7 @@ Pod::Spec.new do |s|
 
   s.dependency 'WeexSDK'
   s.dependency 'WeexPluginLoader', '~> 0.0.1.9.1'
+  s.dependency 'EEUIAFNetworking'
+  s.dependency 'EEUISDWebImage'
 
 end

@@ -24,6 +24,11 @@
 			"requireName": "eeui/picture",
 			"name": "eeui/picture",
 			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/picture/62f68eb64f016143402a71c3586b78b8.zip"
+		},
+		"eeui/shareFiles": {
+			"requireName": "eeui/shareFiles",
+			"name": "eeui/shareFiles",
+			"url": "local"
 		}
 	}
 }

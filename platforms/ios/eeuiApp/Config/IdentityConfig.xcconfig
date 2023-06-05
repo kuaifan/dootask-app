@@ -1,0 +1,10 @@
+//
+//  IdentityConfig.xcconfig
+//  eeuiApp
+//
+//  Created by Hitosea-005 on 2023/5/31.
+//
+
+// Configuration settings file format documentation can be found at:
+
+BASEBUNDLEID = com.dootask.task

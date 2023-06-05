@@ -23,6 +23,7 @@ const umengPush = app.requireModule("eeui/umengPush");
 const communication = app.requireModule("eeui/communication");
 const notifications = app.requireModule("eeui/notifications");
 const picture = app.requireModule("eeui/picture");
+const shareFile = app.requireModule("eeuiShareFiles");
 
 export default {
     data() {
@@ -33,6 +34,8 @@ export default {
             umengInit: false,
             umengMessage: {},
             umengError: false,
+            appGroupID:"group.im.dootask", // iOS共享储存的应用唯一标识符
+            appSubPath:"share" //iOS 储存下一级目录
         }
     },
 
@@ -67,6 +70,10 @@ export default {
     },
 
     mounted() {
+
+        // iOS初始化共享内存
+        shareFile.shareFileWithGroupID(this.appGroupID,this.appSubPath);
+
         this.uniqueId = eeui.getCachesString("appUniqueId", "");
         if (this.count(this.uniqueId) < 5) {
             this.uniqueId = this.randomString(6);
@@ -77,6 +84,19 @@ export default {
         // this.$refs.web.setUrl("http://192.168.0.111:2222");
         // this.$refs.web.setUrl("http://192.168.100.36:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
+
+        // setTimeout(()=>{
+        //     // this.onReceiveMessage(123)
+        //     let message = {
+        //         action:"userUploadUrl",
+        //         url:"http://www.google.com",
+        //     }
+        //
+        //     this.onReceiveMessage({
+        //         message
+        //     })
+        //
+        // },2000)
     },
 
     computed: {
@@ -142,6 +162,26 @@ export default {
                 case 'videoPreview':
                     picture.videoPreview(message.path)
                     break;
+                // iOS 储存本地获取聊天消息
+                case 'userChatList':
+                    if (WXEnvironment.platform.toLowerCase() === "ios") {
+                        shareFile.setShareStorage('chatList',message.url)
+                    } else {
+                        eeui.setCaches('chatList', message.url, 0)
+                    }
+
+                    break;
+                // iOS 储存本地上传地址
+                case 'userUploadUrl':
+                    if (WXEnvironment.platform.toLowerCase() === "ios") {
+                        shareFile.setShareStorage('upLoadUrl', message.chatUrl)
+                        shareFile.setShareStorage('fileUpLoadUrl', message.dirUrl)
+                    } else {
+                        eeui.setCaches('upLoadUrl', message.chatUrl, 0)
+                        eeui.setCaches('fileUpLoadUrl', message.dirUrl, 0)
+                    }
+
+                    break
             }
         },
 
