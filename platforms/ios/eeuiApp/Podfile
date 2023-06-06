@@ -1,6 +1,8 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '9.0'
 
+
+
 def common
     pod 'WeexSDK', :path => '../../../plugins/eeui/WeexSDK'
     pod 'eeui', :path => '../../../plugins/eeui/framework/ios'
@@ -19,18 +21,12 @@ def share
     pod 'MMWormhole', '~> 2.0.0'#MainApp与NE的数据传输
     pod 'EEUIAFNetworking', :path => '../../../plugins/openSource/AFNetworking'
     pod 'EEUISDWebImage', :path => '../../../plugins/openSource/SDWebImage'
+    pod 'SVProgressHUD'
     
 end
 
 target 'eeuiApp' do
     common
-#    post_install do |installer|
-#            installer.pods_project.targets.each do |target|
-#                target.build_configurations.each do |config|
-#                    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] ='9.0'
-#                end
-#            end
-#        end
     share
 end
 

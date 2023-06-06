@@ -13,11 +13,7 @@
     [super awakeFromNib];
     // Initialization code
     self.userImageView.layer.cornerRadius = 24;
-}
-
--(void)setChatModel:(ChatModel *)chatModel{
-    _chatModel = chatModel;
-    
+    self.userNickView.layer.cornerRadius = 24;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

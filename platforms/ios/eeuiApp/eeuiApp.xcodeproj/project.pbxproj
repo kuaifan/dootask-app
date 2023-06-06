@@ -10,6 +10,7 @@
 		3AE14377282DE98E00B5E14E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE14375282DB85800B5E14E /* UserNotifications.framework */; };
 		532E406F594B06E77A17129D /* libPods-eeuiApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4738D867E50FB2D943A92A /* libPods-eeuiApp.a */; };
 		AD42310A2A29FA92002D1F86 /* ShareAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD4231092A29FA92002D1F86 /* ShareAssets.xcassets */; };
+		ADB81CE72A2F0AB50047770B /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB81CE62A2F0AB50047770B /* UserModel.m */; };
 		ADBB0ACF2A273D73007C9CC8 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBB0ACE2A273D73007C9CC8 /* ShareViewController.m */; };
 		ADBB0AD22A273D73007C9CC8 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADBB0AD02A273D73007C9CC8 /* MainInterface.storyboard */; };
 		ADBB0AD62A273D73007C9CC8 /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = ADBB0ACB2A273D73007C9CC8 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -19,6 +20,7 @@
 		ADDB131A2A2D746A00AD375E /* PathNavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADDB13192A2D746A00AD375E /* PathNavigationView.m */; };
 		ADDB131F2A2D91C700AD375E /* NavCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADDB131D2A2D91C700AD375E /* NavCell.m */; };
 		ADDB13202A2D91C700AD375E /* NavCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADDB131E2A2D91C700AD375E /* NavCell.xib */; };
+		ADE69EC52A2E30EA000C6883 /* ShareContent.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE69EC42A2E30EA000C6883 /* ShareContent.m */; };
 		ADEB124B2A286E7200FCE69B /* ShareListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEB124A2A286E7200FCE69B /* ShareListViewController.m */; };
 		ADEB12522A28757D00FCE69B /* ChatCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEB12502A28757D00FCE69B /* ChatCell.m */; };
 		ADEB12532A28757D00FCE69B /* ChatCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEB12512A28757D00FCE69B /* ChatCell.xib */; };
@@ -105,6 +107,8 @@
 		5B7109449833C8668CA8EA08 /* Pods-eeuiApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-eeuiApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-eeuiApp/Pods-eeuiApp.debug.xcconfig"; sourceTree = "<group>"; };
 		95526B5EB63E184E1D5E1E22 /* Pods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		AD4231092A29FA92002D1F86 /* ShareAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ShareAssets.xcassets; sourceTree = "<group>"; };
+		ADB81CE52A2F0AB50047770B /* UserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
+		ADB81CE62A2F0AB50047770B /* UserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		ADBB0ACB2A273D73007C9CC8 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADBB0ACD2A273D73007C9CC8 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
 		ADBB0ACE2A273D73007C9CC8 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
@@ -119,6 +123,8 @@
 		ADDB131C2A2D91C700AD375E /* NavCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavCell.h; sourceTree = "<group>"; };
 		ADDB131D2A2D91C700AD375E /* NavCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NavCell.m; sourceTree = "<group>"; };
 		ADDB131E2A2D91C700AD375E /* NavCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NavCell.xib; sourceTree = "<group>"; };
+		ADE69EC32A2E30EA000C6883 /* ShareContent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareContent.h; sourceTree = "<group>"; };
+		ADE69EC42A2E30EA000C6883 /* ShareContent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareContent.m; sourceTree = "<group>"; };
 		ADEB12492A286E7200FCE69B /* ShareListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareListViewController.h; sourceTree = "<group>"; };
 		ADEB124A2A286E7200FCE69B /* ShareListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareListViewController.m; sourceTree = "<group>"; };
 		ADEB124F2A28757D00FCE69B /* ChatCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatCell.h; sourceTree = "<group>"; };
@@ -276,9 +282,17 @@
 			path = navView;
 			sourceTree = "<group>";
 		};
+		ADE69EC22A2DD360000C6883 /* netWork */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = netWork;
+			sourceTree = "<group>";
+		};
 		ADEB12482A284ABE00FCE69B /* share */ = {
 			isa = PBXGroup;
 			children = (
+				ADE69EC22A2DD360000C6883 /* netWork */,
 				ADDB131B2A2D747100AD375E /* navView */,
 				ADEB12492A286E7200FCE69B /* ShareListViewController.h */,
 				ADEB124A2A286E7200FCE69B /* ShareListViewController.m */,
@@ -289,6 +303,10 @@
 				ADEB12552A2896F300FCE69B /* shareManager.m */,
 				ADDB13152A2D700400AD375E /* ChatModel.h */,
 				ADDB13162A2D700400AD375E /* ChatModel.m */,
+				ADB81CE52A2F0AB50047770B /* UserModel.h */,
+				ADB81CE62A2F0AB50047770B /* UserModel.m */,
+				ADE69EC32A2E30EA000C6883 /* ShareContent.h */,
+				ADE69EC42A2E30EA000C6883 /* ShareContent.m */,
 			);
 			path = share;
 			sourceTree = "<group>";
@@ -410,6 +428,7 @@
 				ADBB0AC72A273D73007C9CC8 /* Sources */,
 				ADBB0AC82A273D73007C9CC8 /* Frameworks */,
 				ADBB0AC92A273D73007C9CC8 /* Resources */,
+				0D7D746D721681032DF7207C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -572,6 +591,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0D7D746D721681032DF7207C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		1EC215561853F831FADD0F57 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -643,6 +679,8 @@
 				ADDB13172A2D700400AD375E /* ChatModel.m in Sources */,
 				ADEB12562A2896F300FCE69B /* shareManager.m in Sources */,
 				ADDB131F2A2D91C700AD375E /* NavCell.m in Sources */,
+				ADE69EC52A2E30EA000C6883 /* ShareContent.m in Sources */,
+				ADB81CE72A2F0AB50047770B /* UserModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -728,9 +766,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G365J5PZA2;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"SV_APP_EXTENSIONS=1",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = shareExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = shareExtension;
+				INFOPLIST_KEY_CFBundleDisplayName = dootask;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -738,7 +781,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.26.86;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -760,9 +803,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G365J5PZA2;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"SV_APP_EXTENSIONS=1",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = shareExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = shareExtension;
+				INFOPLIST_KEY_CFBundleDisplayName = dootask;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -770,7 +818,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.26.86;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dootask.task.shareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";

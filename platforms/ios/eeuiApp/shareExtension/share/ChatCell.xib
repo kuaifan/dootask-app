@@ -17,8 +17,27 @@
                 <rect key="frame" x="0.0" y="0.0" width="433" height="60"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pFs-cf-VFZ">
+                        <rect key="frame" x="8" y="6" width="48" height="48"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wbp-sw-GQi">
+                                <rect key="frame" x="6" y="15.666666666666668" width="36" height="17.000000000000004"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.49911666869999999" green="0.78039215689999997" blue="0.4108093692" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="48" id="Zal-yX-uCG"/>
+                            <constraint firstItem="Wbp-sw-GQi" firstAttribute="centerY" secondItem="pFs-cf-VFZ" secondAttribute="centerY" id="aMf-jb-mZI"/>
+                            <constraint firstItem="Wbp-sw-GQi" firstAttribute="centerX" secondItem="pFs-cf-VFZ" secondAttribute="centerX" id="xcG-cb-JOQ"/>
+                            <constraint firstAttribute="height" constant="48" id="zRQ-th-j7L"/>
+                        </constraints>
+                    </view>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QKy-ni-TJl">
                         <rect key="frame" x="8" y="6" width="48" height="48"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="48" id="BcE-aa-1DG"/>
                             <constraint firstAttribute="width" constant="48" id="G29-8v-nEU"/>
@@ -44,14 +63,18 @@
                     <constraint firstItem="QKy-ni-TJl" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="ER3-Gn-o3J"/>
                     <constraint firstItem="76A-Rb-V4Q" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="F2u-V5-cSm"/>
                     <constraint firstItem="whV-fr-YOQ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="GH1-2W-19M"/>
+                    <constraint firstItem="pFs-cf-VFZ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="RiY-hD-sXB"/>
                     <constraint firstItem="whV-fr-YOQ" firstAttribute="leading" secondItem="QKy-ni-TJl" secondAttribute="trailing" constant="8" symbolic="YES" id="cVp-Nj-Gam"/>
+                    <constraint firstItem="pFs-cf-VFZ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="ghI-As-LcE"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
                 <outlet property="selectImageView" destination="76A-Rb-V4Q" id="y5v-40-3p6"/>
                 <outlet property="userImageView" destination="QKy-ni-TJl" id="yWg-7x-W1H"/>
+                <outlet property="userNameLabel" destination="Wbp-sw-GQi" id="bOw-kz-bp1"/>
                 <outlet property="userNickLabel" destination="whV-fr-YOQ" id="jtH-RQ-3rQ"/>
+                <outlet property="userNickView" destination="pFs-cf-VFZ" id="Bdz-7W-PeN"/>
             </connections>
             <point key="canvasLocation" x="25.190839694656489" y="-5.6338028169014089"/>
         </tableViewCell>

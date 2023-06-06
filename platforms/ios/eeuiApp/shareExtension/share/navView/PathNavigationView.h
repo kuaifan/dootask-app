@@ -7,10 +7,18 @@
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
+@protocol NavigationViewDelegate <NSObject>
+
+- (void)selectWithArray:(NSArray *)pathArray;
+
+@end
 
 @interface PathNavigationView : UIView
+
+@property (nonatomic, weak)id<NavigationViewDelegate> delegate;
+@property (nonatomic, strong)NSMutableArray *navArray;
+
 -(instancetype)initWithArray:(NSArray *)pathArray;
 @end
 
-NS_ASSUME_NONNULL_END
+

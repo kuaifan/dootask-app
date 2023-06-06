@@ -158,6 +158,12 @@ var shareFile = app.requireModule("eeuiShareFiles");
       case 'notificationClick':
         // eeuiLog.log('点击了通知栏消息：', message);
         break;
+
+      case 'keyboardStatus':
+        var data = encodeURIComponent(this.jsonStringify(message));
+        var javascript = "if (typeof window.__onKeyboardStatus === \"function\"){window.__onKeyboardStatus(\"".concat(data, "\")}");
+        this.$refs.web.setJavaScript(javascript);
+        break;
     }
   },
   mounted: function mounted() {
@@ -172,7 +178,7 @@ var shareFile = app.requireModule("eeuiShareFiles");
 
 
     eeui.setStatusBarStyle(false); // this.$refs.web.setUrl("http://192.168.0.111:2222");
-    // this.$refs.web.setUrl("http://192.168.100.88:2222");
+    // this.$refs.web.setUrl("http://192.168.100.36:2222");
 
     this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html')); // setTimeout(()=>{
     //     // this.onReceiveMessage(123)

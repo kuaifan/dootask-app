@@ -7,13 +7,16 @@
 
 #import <UIKit/UIKit.h>
 #import "ChatModel.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ChatCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *userImageView;
 @property (weak, nonatomic) IBOutlet UILabel *userNickLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *selectImageView;
+@property (weak, nonatomic) IBOutlet UIView *userNickView;
 
+@property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
 
 @property (nonatomic, strong)ChatModel *chatModel;
 

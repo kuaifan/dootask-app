@@ -10,7 +10,7 @@
 #import "NavCell.h"
 @interface PathNavigationView()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
 @property (nonatomic, strong)UICollectionView *navItem;
-@property (nonatomic, strong)NSMutableArray *navArray;
+
 
 @end
 
@@ -21,7 +21,7 @@
     if (self) {
         self.navArray = [pathArray mutableCopy];
         [self baseInit];
-        [self monitorData];
+//        [self monitorData];
     }
     
     return self;
@@ -34,7 +34,7 @@
     self.navItem = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
     self.navItem.delegate = self;
     self.navItem.dataSource = self;
-    self.navItem.backgroundColor = UIColor.yellowColor;
+    self.navItem.backgroundColor = [UIColor.grayColor colorWithAlphaComponent:0.1];;
     [self.navItem registerNib:[UINib nibWithNibName:@"NavCell" bundle:nil] forCellWithReuseIdentifier:@"NavCell"];
     [self addSubview:self.navItem];
     
@@ -50,9 +50,23 @@
 
 - (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
     NavCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"NavCell" forIndexPath:indexPath];
-    NSString *title = self.navArray[indexPath.row];
+    NSString *title = self.navArray[indexPath.row][@"name"];
     cell.dirLabel.text = title;
     return cell;
+}
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    NSMutableArray *array = [NSMutableArray array];
+    for (int a=0; a<indexPath.row; a++) {
+        [array addObject:self.navArray[a]];
+    }
+    ///生成新的数组
+    
+    self.navArray = array;
+    [collectionView reloadData];
+    if (_delegate&&[_delegate respondsToSelector:@selector(selectWithArray:)]) {
+        [_delegate selectWithArray:array];
+    }
 }
 
 - (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -60,10 +74,17 @@
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    NSString *title = self.navArray[indexPath.row];
-    CGFloat width = [title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]} context:nil].size.width;
+    NSString *title = self.navArray[indexPath.row][@"name"];
+    CGFloat width = [title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size.width;
     
-    return CGSizeMake(width+31, 30);
+    return CGSizeMake(width+35, 30);
+}
+
+#pragma mark - setter
+-(void)setNavArray:(NSMutableArray *)navArray{
+    _navArray = navArray;
+    
+    [self.navItem reloadData];
 }
 
 @end
