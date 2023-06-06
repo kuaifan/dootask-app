@@ -62,6 +62,8 @@
 @property (nonatomic, strong)NSMutableArray *sendArray;
 @property (nonatomic, strong)NSMutableArray *progressArray;
 
+@property (nonatomic, strong)UIButton *comfirnButton;
+
 @property (nonatomic, assign)BOOL completeFlag;
 @end
 
@@ -131,6 +133,11 @@
     [rightButton setTitle:@"发送至" forState:UIControlStateNormal];
     [rightButton addTarget:self action:@selector(sendAction) forControlEvents:UIControlEventTouchUpInside];
     [rightButton setTitleColor:UIColor.systemBlueColor forState:UIControlStateNormal];
+    [rightButton setTitleColor:UIColor.lightGrayColor forState:UIControlStateDisabled];
+    
+    rightButton.enabled = NO;
+    
+    self.comfirnButton = rightButton;
     titleLabel.text = @"发送至";
     
     [headerView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -140,7 +147,7 @@
     }];
     
     [leftButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(headerView).offset(8);
+        make.left.equalTo(headerView).offset(12);
         make.centerY.equalTo(headerView);
         make.height.width.greaterThanOrEqualTo(@10);
     }];
@@ -150,7 +157,7 @@
     }];
     
     [rightButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(headerView).offset(-8);
+        make.right.equalTo(headerView).offset(-12);
         make.centerY.equalTo(headerView);
         make.height.width.greaterThanOrEqualTo(@10);
     }];
@@ -358,6 +365,30 @@
     
 }
 
+- (void)checkEnable {
+    if (self.isRoot) {
+       
+        for (NSObject *obj in self.showArray) {
+            if ([obj isKindOfClass:[ChatModel class]]) {
+                ChatModel *model = (ChatModel *)obj;
+                if (model.select){
+                    self.comfirnButton.enabled = YES;
+                    return;
+                }
+            }else if ([obj isKindOfClass:[UserModel class]]) {
+                UserModel *model = (UserModel *)obj;
+                if (model.select){
+                    self.comfirnButton.enabled = YES;
+                    return;
+                }
+            }
+        }
+        self.comfirnButton.enabled = NO;
+    } else {
+        self.comfirnButton.enabled = YES;
+    }
+}
+
 - (void)upLoads:(NSDictionary *)param isDir:(BOOL)isDir{
     
     NSString *uploadUrl;
@@ -523,8 +554,6 @@
         NSNumber *folderID = [self.IDArray.lastObject valueForKey:@"id"];
         [self upLoads:@{@"pid": folderID} isDir:YES];
     }
-    
-    
     //self.completionCallback?self.completionCallback(DootaskShareResultSuccess):nil;
 }
 
@@ -562,7 +591,7 @@
     return  cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     id param = self.showArray[indexPath.row];
     if ([param isKindOfClass:[ChatModel class]]) {
         ChatModel *model = (ChatModel *)param;
@@ -580,6 +609,8 @@
         [self showNav];
         
     }
+    
+    [self checkEnable];
     
 }
 
