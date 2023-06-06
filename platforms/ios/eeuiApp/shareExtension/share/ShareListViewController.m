@@ -268,6 +268,14 @@
 
 -(void)getList{
     NSString *chatUrl = [self.shareWormhole messageWithIdentifier:@"chatList"];
+    if (chatUrl.length < 5) {
+        [SVProgressHUD showErrorWithStatus:@"请登录后使用"];
+        [SVProgressHUD dismissWithDelay:2.5 completion:^{
+            self.completionCallback(DootaskShareResultFail);
+        }];
+        
+        return;
+    }
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     
@@ -284,7 +292,11 @@
             [SVProgressHUD dismiss];
         }else {
             [SVProgressHUD dismissWithCompletion:^{
+                
                 [SVProgressHUD showErrorWithStatus:msg];
+                [SVProgressHUD dismissWithDelay:2 completion:^{
+                    self.completionCallback(DootaskShareResultFail);
+                }];
             }];
         }
         NSLog(@"responseObject:%@",responseObject);
@@ -293,7 +305,10 @@
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismissWithCompletion:^{
-            [SVProgressHUD showErrorWithStatus:@"请求错误"];
+            [SVProgressHUD showErrorWithStatus:@"网络异常"];
+            [SVProgressHUD dismissWithDelay:2 completion:^{
+                self.completionCallback(DootaskShareResultFail);
+            }];
         }];
     }];
 }
