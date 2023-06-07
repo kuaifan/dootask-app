@@ -15,9 +15,9 @@ Pod::Spec.new do |spec|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  spec.name         = "EEUISDWebImage"
+  spec.name         = "eeuiSDWebImage"
   spec.version      = "0.0.1"
-  spec.summary      = "A short description of EEUISDWebImage."
+  spec.summary      = "A short description of eeuiSDWebImage."
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -25,10 +25,10 @@ Pod::Spec.new do |spec|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   spec.description  = <<-DESC
-  EEUISDWebImage
+  eeuiSDWebImage
                    DESC
 
-  spec.homepage     = "http://eeui.app/EEUISDWebImage"
+  spec.homepage     = "http://eeui.app/eeuiSDWebImage"
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
@@ -80,7 +80,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "http://eeui.app/EEUISDWebImage.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "http://eeui.app/eeuiSDWebImage.git", :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

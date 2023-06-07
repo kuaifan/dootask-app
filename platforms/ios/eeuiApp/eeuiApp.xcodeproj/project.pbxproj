@@ -806,7 +806,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"COCOAPODS=1",
-					"SV_APP_EXTENSIONS=1",
+					SV_APP_EXTENSIONS,
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = shareExtension/Info.plist;
