@@ -650,6 +650,7 @@
         [self showNav];
         [self.tableView reloadData];
     }
+    [self checkEnable];
 }
 
 #pragma mark - getter

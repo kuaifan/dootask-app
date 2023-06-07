@@ -30,6 +30,7 @@
 - (void)baseInit{
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    layout.minimumLineSpacing = 0;
     
     self.navItem = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
     self.navItem.delegate = self;
@@ -77,7 +78,7 @@
     NSString *title = self.navArray[indexPath.row][@"name"];
     CGFloat width = [title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size.width;
     
-    return CGSizeMake(width+35, 30);
+    return CGSizeMake(width+25, 30);
 }
 
 #pragma mark - setter
