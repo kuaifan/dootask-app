@@ -44,7 +44,7 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NickName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="whV-fr-YOQ">
-                        <rect key="frame" x="64" y="21" width="70.666666666666686" height="18"/>
+                        <rect key="frame" x="64" y="21" width="323" height="18"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -64,6 +64,7 @@
                     <constraint firstItem="76A-Rb-V4Q" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="F2u-V5-cSm"/>
                     <constraint firstItem="whV-fr-YOQ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="GH1-2W-19M"/>
                     <constraint firstItem="pFs-cf-VFZ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="RiY-hD-sXB"/>
+                    <constraint firstItem="76A-Rb-V4Q" firstAttribute="leading" secondItem="whV-fr-YOQ" secondAttribute="trailing" constant="8" id="b9E-B2-pZd"/>
                     <constraint firstItem="whV-fr-YOQ" firstAttribute="leading" secondItem="QKy-ni-TJl" secondAttribute="trailing" constant="8" symbolic="YES" id="cVp-Nj-Gam"/>
                     <constraint firstItem="pFs-cf-VFZ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="ghI-As-LcE"/>
                 </constraints>
