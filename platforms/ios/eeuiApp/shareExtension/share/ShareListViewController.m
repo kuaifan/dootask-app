@@ -279,7 +279,7 @@
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     
-    [SVProgressHUD show];
+    [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeNone];
     [manager GET_EEUI:chatUrl parameters:nil headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
@@ -547,7 +547,7 @@
             } else if ([model isKindOfClass:[UserModel class]]) {
                 UserModel *user = (UserModel *)model;
                 if (user.select)
-                    userStr = [userStr stringByAppendingFormat:@"%ld,",(long)user.user_id];
+                    userStr = [userStr stringByAppendingFormat:@"%ld,",(long)user.userid];
             }
         }
         
