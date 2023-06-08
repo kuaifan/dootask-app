@@ -23,9 +23,9 @@ Pod::Spec.new do |s|
   s.dependency 'WeexSDK'
   s.dependency 'eeui'
   s.dependency 'WeexPluginLoader', '~> 0.0.1.9.1'
-  s.dependency 'UMCCommon'
-  s.dependency 'UMCSecurityPlugins'
-  s.dependency 'UMCPush'
-  s.dependency 'UMCCommonLog'
+  s.dependency 'UMCommon'
+  s.dependency 'UMPush'
+  s.dependency 'UMDevice'
+  s.dependency 'UMCommonLog'
 
 end
