@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 
 @interface NavCell : UICollectionViewCell
+@property (weak, nonatomic) IBOutlet UIImageView *accessoryImageView;
 @property (weak, nonatomic) IBOutlet UILabel *dirLabel;
 @end
 

@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  eeuiApp
+
+  Created by Hitosea-005 on 2023/6/9.
+  
+*/
+"cancelTitle" = "cancel";
+"sendingTitle" = "Sending to";
+"sendingTitle" = "Sending";
+"sendingSuccessTitle" = "Sent successfully";
+"unLoginTitle" = "Please log in and use";
+"emptyShareTitle" = "Unable to get share data";
+"netWorkErrorTitle" = "Network exception";
+"folderUnsupportTitle" = "Upload folder is not supported at this time";
+"allTitle" = "All";

@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  eeuiApp
+
+  Created by Hitosea-005 on 2023/6/9.
+  
+*/
+"cancelTitle" = "キャンセルとする";
+"sendingTitle" = "送信先";
+"sendingTitle" = "送信";
+"sendingSuccessTitle" = "送信に成功しました と表示されます";
+"unLoginTitle" = "ログインして使用してください";
+"emptyShareTitle" = "シェアデータの取得ができません";
+"netWorkErrorTitle" = "ネットワーク例外";
+"folderUnsupportTitle" = "アップロードフォルダは現時点ではサポートされていません";
+"allTitle" = "All とする";

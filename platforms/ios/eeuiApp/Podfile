@@ -30,6 +30,7 @@ target 'ShareExtension' do
 #    pod 'eeui', :path => '../../../plugins/eeui/framework/ios'
     pod 'Masonry'
     pod 'SVProgressHUD'
+    pod 'MJExtension'
     share
 end
 

@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  eeuiApp
+
+  Created by Hitosea-005 on 2023/6/9.
+  
+*/
+"cancelTitle" = "Batalkan";
+"sendTitle" = "Kirim Ke";
+"sendingTitle" = "Mengirim";
+"sendSuccessTitle" = "Kirim Berhasil";
+"unLoginTitle" = "Silakan masuk untuk menggunakan";
+"emptyShareTitle" = "Tidak bisa mendapatkan data berbagi";
+"netWorkErrorTitle" = "Kesalahan Jaringan";
+"folderUnsupportTitle" = "Pengunggahan folder saat ini tidak didukung";
+"allTitle" = "Semua";

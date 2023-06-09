@@ -35,12 +35,18 @@
     self.navItem = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
     self.navItem.delegate = self;
     self.navItem.dataSource = self;
-    self.navItem.backgroundColor = [UIColor.grayColor colorWithAlphaComponent:0.1];;
+    if (@available(iOS 13.0, *)) {
+        self.navItem.backgroundColor = UIColor.systemBackgroundColor;
+    } else {
+        // Fallback on earlier versions
+    }
     [self.navItem registerNib:[UINib nibWithNibName:@"NavCell" bundle:nil] forCellWithReuseIdentifier:@"NavCell"];
     [self addSubview:self.navItem];
     
     [self.navItem mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.bottom.equalTo(self);
+        make.top.bottom.equalTo(self);
+        make.left.equalTo(self).offset(12);
+        make.right.equalTo(self).offset(-12);
     }];
     
 }
@@ -51,14 +57,19 @@
 
 - (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
     NavCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"NavCell" forIndexPath:indexPath];
-    NSString *title = self.navArray[indexPath.row][@"name"];
+    NSString *title = [self.navArray[indexPath.row] name];
     cell.dirLabel.text = title;
+    cell.accessoryImageView.hidden = indexPath.row == (self.navArray.count -1);
     return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (indexPath.row == self.navArray.count-1) {
+        return;
+    }
     NSMutableArray *array = [NSMutableArray array];
-    for (int a=0; a<indexPath.row; a++) {
+    for (int a=0; a<indexPath.row+1; a++) {
         [array addObject:self.navArray[a]];
     }
     ///生成新的数组
@@ -75,10 +86,10 @@
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    NSString *title = self.navArray[indexPath.row][@"name"];
+    NSString *title = [self.navArray[indexPath.row] name];
     CGFloat width = [title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size.width;
     
-    return CGSizeMake(width+25, 30);
+    return CGSizeMake(width+22, 60);
 }
 
 #pragma mark - setter

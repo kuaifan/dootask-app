@@ -1,18 +1,22 @@
 //
 //  ChatModel.m
-//  ShareExtension
 //
-//  Created by Hitosea-005 on 2023/6/5.
+//
+//  Created by JSONConverter on 2023/06/09.
+//  Copyright © 2023年 JSONConverter. All rights reserved.
 //
 
 #import "ChatModel.h"
 
-@implementation ChatModel
-
--(void)setValue:(id)value forUndefinedKey:(NSString *)key{
-    if ([key isEqualToString:@"id"]) {
-        [self setValue:value forKey:@"dialog_id"];
-    }
+@implementation ChatModel 
++ (NSDictionary *)mj_objectClassInArray {
+    return @{@"data": [ChatModelData class]};
 }
 
+@end
+
+@implementation ChatModelData 
+@end
+
+@implementation ChatModelDataExtend 
 @end

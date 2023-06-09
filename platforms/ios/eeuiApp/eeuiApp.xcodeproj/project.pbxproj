@@ -10,21 +10,22 @@
 		3AE14377282DE98E00B5E14E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE14375282DB85800B5E14E /* UserNotifications.framework */; };
 		532E406F594B06E77A17129D /* libPods-eeuiApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4738D867E50FB2D943A92A /* libPods-eeuiApp.a */; };
 		AD42310A2A29FA92002D1F86 /* ShareAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD4231092A29FA92002D1F86 /* ShareAssets.xcassets */; };
-		ADB81CE72A2F0AB50047770B /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB81CE62A2F0AB50047770B /* UserModel.m */; };
 		ADBB0ACF2A273D73007C9CC8 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBB0ACE2A273D73007C9CC8 /* ShareViewController.m */; };
 		ADBB0AD22A273D73007C9CC8 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADBB0AD02A273D73007C9CC8 /* MainInterface.storyboard */; };
 		ADBB0AD62A273D73007C9CC8 /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = ADBB0ACB2A273D73007C9CC8 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		ADBB0AE02A27414F007C9CC8 /* IdentityConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = ADBB0ADF2A27414F007C9CC8 /* IdentityConfig.xcconfig */; };
 		ADBB0AE12A27414F007C9CC8 /* IdentityConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = ADBB0ADF2A27414F007C9CC8 /* IdentityConfig.xcconfig */; };
-		ADDB13172A2D700400AD375E /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ADDB13162A2D700400AD375E /* ChatModel.m */; };
+		ADC4464B2A32C09B0082503B /* ChatCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC4464D2A32C09B0082503B /* ChatCell.xib */; };
+		ADC446552A32C85E0082503B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC446582A32C85E0082503B /* Localizable.strings */; };
+		ADC446562A32C85E0082503B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC446582A32C85E0082503B /* Localizable.strings */; };
+		ADC446772A33252D0082503B /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC446752A33252D0082503B /* ChatModel.m */; };
 		ADDB131A2A2D746A00AD375E /* PathNavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADDB13192A2D746A00AD375E /* PathNavigationView.m */; };
 		ADDB131F2A2D91C700AD375E /* NavCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADDB131D2A2D91C700AD375E /* NavCell.m */; };
 		ADDB13202A2D91C700AD375E /* NavCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADDB131E2A2D91C700AD375E /* NavCell.xib */; };
 		ADE69EC52A2E30EA000C6883 /* ShareContent.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE69EC42A2E30EA000C6883 /* ShareContent.m */; };
 		ADEB124B2A286E7200FCE69B /* ShareListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEB124A2A286E7200FCE69B /* ShareListViewController.m */; };
 		ADEB12522A28757D00FCE69B /* ChatCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEB12502A28757D00FCE69B /* ChatCell.m */; };
-		ADEB12532A28757D00FCE69B /* ChatCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEB12512A28757D00FCE69B /* ChatCell.xib */; };
-		ADEB12562A2896F300FCE69B /* shareManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEB12552A2896F300FCE69B /* shareManager.m */; };
+		ADEB12562A2896F300FCE69B /* ShareManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEB12552A2896F300FCE69B /* ShareManager.m */; };
 		B210031C2191D6C5001F2CBA /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B210031B2191D6C5001F2CBA /* CoreText.framework */; };
 		B210031E2191D703001F2CBA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B210031D2191D703001F2CBA /* Foundation.framework */; };
 		B21003202191D727001F2CBA /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B210031F2191D727001F2CBA /* CoreMotion.framework */; };
@@ -107,8 +108,6 @@
 		5B7109449833C8668CA8EA08 /* Pods-eeuiApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-eeuiApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-eeuiApp/Pods-eeuiApp.debug.xcconfig"; sourceTree = "<group>"; };
 		95526B5EB63E184E1D5E1E22 /* Pods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		AD4231092A29FA92002D1F86 /* ShareAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ShareAssets.xcassets; sourceTree = "<group>"; };
-		ADB81CE52A2F0AB50047770B /* UserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
-		ADB81CE62A2F0AB50047770B /* UserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		ADBB0ACB2A273D73007C9CC8 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADBB0ACD2A273D73007C9CC8 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
 		ADBB0ACE2A273D73007C9CC8 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
@@ -116,8 +115,45 @@
 		ADBB0AD32A273D73007C9CC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADBB0ADF2A27414F007C9CC8 /* IdentityConfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = IdentityConfig.xcconfig; sourceTree = "<group>"; };
 		ADBB0AE22A2767A3007C9CC8 /* shareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = shareExtension.entitlements; sourceTree = "<group>"; };
-		ADDB13152A2D700400AD375E /* ChatModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
-		ADDB13162A2D700400AD375E /* ChatModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatModel.m; sourceTree = "<group>"; };
+		ADC446452A32C0670082503B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		ADC446462A32C0670082503B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		ADC446472A32C0680082503B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/MainInterface.strings"; sourceTree = "<group>"; };
+		ADC446482A32C0710082503B /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		ADC446492A32C0710082503B /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
+		ADC4464A2A32C0720082503B /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/MainInterface.strings"; sourceTree = "<group>"; };
+		ADC4464C2A32C09B0082503B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ChatCell.xib; sourceTree = "<group>"; };
+		ADC4464F2A32C0A70082503B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/ChatCell.strings"; sourceTree = "<group>"; };
+		ADC446512A32C0A70082503B /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/ChatCell.strings"; sourceTree = "<group>"; };
+		ADC446572A32C85E0082503B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ADC446592A32C8630082503B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		ADC4465A2A32C8660082503B /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		ADC4465B2A32C8A40082503B /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		ADC4465C2A32C8A40082503B /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
+		ADC4465D2A32C8A40082503B /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/ChatCell.strings; sourceTree = "<group>"; };
+		ADC4465E2A32C8A50082503B /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/MainInterface.strings; sourceTree = "<group>"; };
+		ADC4465F2A32C8A50082503B /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ADC446602A32C8B30082503B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		ADC446612A32C8B30082503B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		ADC446622A32C8B30082503B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/ChatCell.strings; sourceTree = "<group>"; };
+		ADC446632A32C8B30082503B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainInterface.strings; sourceTree = "<group>"; };
+		ADC446642A32C8B40082503B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ADC446652A32C9010082503B /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		ADC446662A32C9010082503B /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Main.strings; sourceTree = "<group>"; };
+		ADC446672A32C9010082503B /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/ChatCell.strings; sourceTree = "<group>"; };
+		ADC446682A32C9020082503B /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/MainInterface.strings; sourceTree = "<group>"; };
+		ADC446692A32C9020082503B /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ADC4466A2A32CBE90082503B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		ADC4466B2A32CBE90082503B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
+		ADC4466C2A32CBE90082503B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ChatCell.strings; sourceTree = "<group>"; };
+		ADC4466D2A32CBEA0082503B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainInterface.strings; sourceTree = "<group>"; };
+		ADC4466E2A32CBEA0082503B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ADC446752A33252D0082503B /* ChatModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatModel.m; sourceTree = "<group>"; };
+		ADC446762A33252D0082503B /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
+		ADC446782A3354F60082503B /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		ADC446792A3354F70082503B /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/Main.strings"; sourceTree = "<group>"; };
+		ADC4467A2A3354F70082503B /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/ChatCell.strings"; sourceTree = "<group>"; };
+		ADC4467B2A3354F70082503B /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/MainInterface.strings"; sourceTree = "<group>"; };
+		ADC4467C2A3354F80082503B /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		ADDB13182A2D746A00AD375E /* PathNavigationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PathNavigationView.h; sourceTree = "<group>"; };
 		ADDB13192A2D746A00AD375E /* PathNavigationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PathNavigationView.m; sourceTree = "<group>"; };
 		ADDB131C2A2D91C700AD375E /* NavCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavCell.h; sourceTree = "<group>"; };
@@ -129,9 +165,8 @@
 		ADEB124A2A286E7200FCE69B /* ShareListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareListViewController.m; sourceTree = "<group>"; };
 		ADEB124F2A28757D00FCE69B /* ChatCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatCell.h; sourceTree = "<group>"; };
 		ADEB12502A28757D00FCE69B /* ChatCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatCell.m; sourceTree = "<group>"; };
-		ADEB12512A28757D00FCE69B /* ChatCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatCell.xib; sourceTree = "<group>"; };
-		ADEB12542A2896F300FCE69B /* shareManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shareManager.h; sourceTree = "<group>"; };
-		ADEB12552A2896F300FCE69B /* shareManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = shareManager.m; sourceTree = "<group>"; };
+		ADEB12542A2896F300FCE69B /* ShareManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareManager.h; sourceTree = "<group>"; };
+		ADEB12552A2896F300FCE69B /* ShareManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareManager.m; sourceTree = "<group>"; };
 		B21003132191CB27001F2CBA /* AlipaySDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = AlipaySDK.bundle; path = ../../../../../Downloads/AlipaySDK_No_UTDID/IOS/AlipaySDK.bundle; sourceTree = "<group>"; };
 		B21003142191CB27001F2CBA /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlipaySDK.framework; path = ../../../../../Downloads/AlipaySDK_No_UTDID/IOS/AlipaySDK.framework; sourceTree = "<group>"; };
 		B21003172191CBB3001F2CBA /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlipaySDK.framework; path = ../../../plugins/ios/AlipaySDK.framework; sourceTree = "<group>"; };
@@ -258,6 +293,7 @@
 				ADBB0AD02A273D73007C9CC8 /* MainInterface.storyboard */,
 				ADBB0AD32A273D73007C9CC8 /* Info.plist */,
 				AD4231092A29FA92002D1F86 /* ShareAssets.xcassets */,
+				ADC446582A32C85E0082503B /* Localizable.strings */,
 			);
 			path = shareExtension;
 			sourceTree = "<group>";
@@ -298,15 +334,13 @@
 				ADEB124A2A286E7200FCE69B /* ShareListViewController.m */,
 				ADEB124F2A28757D00FCE69B /* ChatCell.h */,
 				ADEB12502A28757D00FCE69B /* ChatCell.m */,
-				ADEB12512A28757D00FCE69B /* ChatCell.xib */,
-				ADEB12542A2896F300FCE69B /* shareManager.h */,
-				ADEB12552A2896F300FCE69B /* shareManager.m */,
-				ADDB13152A2D700400AD375E /* ChatModel.h */,
-				ADDB13162A2D700400AD375E /* ChatModel.m */,
-				ADB81CE52A2F0AB50047770B /* UserModel.h */,
-				ADB81CE62A2F0AB50047770B /* UserModel.m */,
+				ADC4464D2A32C09B0082503B /* ChatCell.xib */,
+				ADEB12542A2896F300FCE69B /* ShareManager.h */,
+				ADEB12552A2896F300FCE69B /* ShareManager.m */,
 				ADE69EC32A2E30EA000C6883 /* ShareContent.h */,
 				ADE69EC42A2E30EA000C6883 /* ShareContent.m */,
+				ADC446762A33252D0082503B /* ChatModel.h */,
+				ADC446752A33252D0082503B /* ChatModel.m */,
 			);
 			path = share;
 			sourceTree = "<group>";
@@ -535,6 +569,13 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
+				"zh-Hant",
+				ko,
+				ja,
+				id,
+				de,
+				"zh-HK",
 			);
 			mainGroup = B21356272124045E00EDD991;
 			productRefGroup = B21356312124045E00EDD991 /* Products */;
@@ -555,8 +596,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADBB0AE12A27414F007C9CC8 /* IdentityConfig.xcconfig in Resources */,
+				ADC446562A32C85E0082503B /* Localizable.strings in Resources */,
 				ADDB13202A2D91C700AD375E /* NavCell.xib in Resources */,
-				ADEB12532A28757D00FCE69B /* ChatCell.xib in Resources */,
+				ADC4464B2A32C09B0082503B /* ChatCell.xib in Resources */,
 				AD42310A2A29FA92002D1F86 /* ShareAssets.xcassets in Resources */,
 				ADBB0AD22A273D73007C9CC8 /* MainInterface.storyboard in Resources */,
 			);
@@ -567,6 +609,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B25A71EA21257A0500AA0AB9 /* bundlejs in Resources */,
+				ADC446552A32C85E0082503B /* Localizable.strings in Resources */,
 				B21356402124046000EDD991 /* LaunchScreen.storyboard in Resources */,
 				B213563D2124046000EDD991 /* Assets.xcassets in Resources */,
 				ADBB0AE02A27414F007C9CC8 /* IdentityConfig.xcconfig in Resources */,
@@ -676,11 +719,10 @@
 				ADEB124B2A286E7200FCE69B /* ShareListViewController.m in Sources */,
 				ADBB0ACF2A273D73007C9CC8 /* ShareViewController.m in Sources */,
 				ADDB131A2A2D746A00AD375E /* PathNavigationView.m in Sources */,
-				ADDB13172A2D700400AD375E /* ChatModel.m in Sources */,
-				ADEB12562A2896F300FCE69B /* shareManager.m in Sources */,
+				ADEB12562A2896F300FCE69B /* ShareManager.m in Sources */,
 				ADDB131F2A2D91C700AD375E /* NavCell.m in Sources */,
 				ADE69EC52A2E30EA000C6883 /* ShareContent.m in Sources */,
-				ADB81CE72A2F0AB50047770B /* UserModel.m in Sources */,
+				ADC446772A33252D0082503B /* ChatModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -733,14 +775,58 @@
 			isa = PBXVariantGroup;
 			children = (
 				ADBB0AD12A273D73007C9CC8 /* Base */,
+				ADC446472A32C0680082503B /* zh-Hans */,
+				ADC4464A2A32C0720082503B /* zh-Hant */,
+				ADC4465E2A32C8A50082503B /* ko */,
+				ADC446632A32C8B30082503B /* ja */,
+				ADC446682A32C9020082503B /* id */,
+				ADC4466D2A32CBEA0082503B /* de */,
+				ADC4467B2A3354F70082503B /* zh-HK */,
 			);
 			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+		ADC4464D2A32C09B0082503B /* ChatCell.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ADC4464C2A32C09B0082503B /* Base */,
+				ADC4464F2A32C0A70082503B /* zh-Hans */,
+				ADC446512A32C0A70082503B /* zh-Hant */,
+				ADC4465D2A32C8A40082503B /* ko */,
+				ADC446622A32C8B30082503B /* ja */,
+				ADC446672A32C9010082503B /* id */,
+				ADC4466C2A32CBE90082503B /* de */,
+				ADC4467A2A3354F70082503B /* zh-HK */,
+			);
+			name = ChatCell.xib;
+			sourceTree = "<group>";
+		};
+		ADC446582A32C85E0082503B /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ADC446572A32C85E0082503B /* en */,
+				ADC446592A32C8630082503B /* zh-Hans */,
+				ADC4465A2A32C8660082503B /* zh-Hant */,
+				ADC4465F2A32C8A50082503B /* ko */,
+				ADC446642A32C8B40082503B /* ja */,
+				ADC446692A32C9020082503B /* id */,
+				ADC4466E2A32CBEA0082503B /* de */,
+				ADC4467C2A3354F80082503B /* zh-HK */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		B21356392124045E00EDD991 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				B213563A2124045E00EDD991 /* Base */,
+				ADC446462A32C0670082503B /* zh-Hans */,
+				ADC446492A32C0710082503B /* zh-Hant */,
+				ADC4465C2A32C8A40082503B /* ko */,
+				ADC446612A32C8B30082503B /* ja */,
+				ADC446662A32C9010082503B /* id */,
+				ADC4466B2A32CBE90082503B /* de */,
+				ADC446792A3354F70082503B /* zh-HK */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -749,6 +835,13 @@
 			isa = PBXVariantGroup;
 			children = (
 				B213563F2124046000EDD991 /* Base */,
+				ADC446452A32C0670082503B /* zh-Hans */,
+				ADC446482A32C0710082503B /* zh-Hant */,
+				ADC4465B2A32C8A40082503B /* ko */,
+				ADC446602A32C8B30082503B /* ja */,
+				ADC446652A32C9010082503B /* id */,
+				ADC4466A2A32CBE90082503B /* de */,
+				ADC446782A3354F60082503B /* zh-HK */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -833,6 +926,7 @@
 			baseConfigurationReference = ADBB0ADF2A27414F007C9CC8 /* IdentityConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -891,6 +985,7 @@
 			baseConfigurationReference = ADBB0ADF2A27414F007C9CC8 /* IdentityConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

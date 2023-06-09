@@ -1,19 +1,34 @@
 //
 //  ChatModel.h
-//  ShareExtension
 //
-//  Created by Hitosea-005 on 2023/6/5.
+//
+//  Created by JSONConverter on 2023/06/09.
+//  Copyright © 2023年 JSONConverter. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import <MJExtension/MJExtension.h>
 
-@interface ChatModel : NSObject
+@class ChatModelData;
+@class ChatModelDataExtend;
 
-@property (nonatomic, strong)NSString *type;
-@property (nonatomic, strong)NSString *name;
-@property (nonatomic, strong)NSString *avatar;
-@property (nonatomic, assign)NSInteger dialog_id;
+@interface ChatModel: NSObject
+@property (nonatomic, strong) NSArray<ChatModelData *> *data;
+@property (nonatomic, copy) NSString *msg;
+@property (nonatomic, assign) NSInteger ret;
+@end
 
-@property (nonatomic, assign)BOOL select;
+@interface ChatModelData: NSObject
+@property (nonatomic, strong) ChatModelDataExtend *extend;
+@property (nonatomic, copy) NSString *icon;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *type;
+@property (nonatomic, copy) NSString *url;
 
+@property (nonatomic, assign) BOOL select;
+@end
+
+@interface ChatModelDataExtend: NSObject
+@property (nonatomic, assign) int upload_file_id;
+@property (nonatomic, assign) int dialog_ids;
 @end

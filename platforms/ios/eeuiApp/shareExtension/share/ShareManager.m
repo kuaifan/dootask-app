@@ -5,8 +5,8 @@
 //  Created by Hitosea-005 on 2023/6/1.
 //
 
-#import "shareManager.h"
+#import "ShareManager.h"
 
-@implementation shareManager
+@implementation ShareManager
 
 @end

@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  eeuiApp
+
+  Created by Hitosea-005 on 2023/6/9.
+  
+*/
+"cancelTitle" = "Abbrechen";
+"sendingTitle" = "Senden an";
+"sendingTitle" = "Gesendet";
+"sendingSuccessTitle" = "Erfolgreich gesendet";
+"unLoginTitle" = "Bitte anmelden und verwenden";
+"emptyShareTitle" = "Es konnten keine Freigabedaten abgerufen werden";
+"netWorkErrorTitle" = "Netzwerk-Ausnahme";
+"folderUnsupportTitle" = "Ordner hochladen wird zur Zeit nicht unterstützt";
+"allTitle" = "Alle";

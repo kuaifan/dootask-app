@@ -12,8 +12,8 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
-    self.userImageView.layer.cornerRadius = 24;
-    self.userNickView.layer.cornerRadius = 24;
+    self.userImageView.layer.cornerRadius = 21;
+    self.userNickView.layer.cornerRadius = 21;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  eeuiApp
+
+  Created by Hitosea-005 on 2023/6/9.
+  
+*/
+"cancelTitle" = "取消";
+"sendTitle" = "發送至";
+"sendingTitle" = "發送中";
+"sendSuccessTitle" = "發送成功";
+"unLoginTitle" = "請登錄後使用";
+"emptyShareTitle" = "無法獲取分享數據";
+"netWorkErrorTitle" = "網絡異常";
+"folderUnsupportTitle" = "暫不支持上傳文件夾";
+"allTitle" = "全部";

@@ -7,9 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-
-
-@interface shareManager : NSObject
+@interface ShareManager : NSObject
 
 @end
 

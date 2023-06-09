@@ -13,9 +13,9 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "PathNavigationView.h"
 #import "ShareContent.h"
-#import "UserModel.h"
 #import <SVProgressHUD.h>
 #import <UIImageView+WebCache.h>
+#import "ChatModel.h"
 
 @interface NSArray (Monad)
 - (NSArray*)myMap:(id(^)(id))transform;
@@ -49,13 +49,13 @@
 
 @interface ShareListViewController ()<UITableViewDelegate, UITableViewDataSource, NavigationViewDelegate>
 @property (nonatomic, strong)UITableView *tableView;
-@property (nonatomic, strong)NSArray *showArray;
+@property (nonatomic, strong)NSArray<ChatModelData *> *showArray;
 @property (nonatomic, strong)MMWormhole *shareWormhole;
-@property (nonatomic, strong)NSDictionary *rootDic;
+@property (nonatomic, strong)ChatModel *rootModel;
 
 @property (nonatomic, strong)NSDictionary *showObjc;
 @property (nonatomic, strong)PathNavigationView *tableHeaderView;
-@property (nonatomic, strong)NSMutableArray *IDArray;
+@property (nonatomic, strong)NSMutableArray<ChatModelData *> *IDArray;
 @property (nonatomic, assign)BOOL isRoot;
 
 @property (nonatomic, strong)NSMutableArray *shareArray;
@@ -63,8 +63,11 @@
 @property (nonatomic, strong)NSMutableArray *progressArray;
 
 @property (nonatomic, strong)UIButton *comfirnButton;
+@property (nonatomic, strong)UIButton *reloadButton;
 
 @property (nonatomic, assign)BOOL completeFlag;
+@property (nonatomic, copy  )NSString *currentToken;
+@property (nonatomic, strong)dispatch_group_t currenGruop;
 @end
 
 @implementation ShareListViewController
@@ -78,18 +81,21 @@
     NSLog(@"shareMessage:%@",[self.shareWormhole messageWithIdentifier:@"chatList"]);
     
     self.view.backgroundColor = UIColor.whiteColor;
-    [SVProgressHUD setContainerView:self.view];
-    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
-    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
+    
     self.isRoot = YES;
     self.completeFlag = NO;
     [self setupHeaderView];
     [self setupTableView];
     
+    [SVProgressHUD setContainerView:self.tableView];
+    [SVProgressHUD setDefaultStyle:[self inDarkAppearance]?SVProgressHUDStyleLight:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
+    [SVProgressHUD setOffsetFromCenter:UIOffsetMake(0, -100)];
+    
     [self presentContent];
     //    [self showNav];
     [self getShareData];
-    [self getList];
+    [self getMainList];
     
 }
 
@@ -121,16 +127,21 @@
     UILabel *titleLabel = [[UILabel alloc] init];
     
     [self.view addSubview:headerView];
+    if (@available(iOS 13.0, *)) {
+        headerView.backgroundColor = UIColor.systemBackgroundColor;
+    } else {
+        
+    }
     
     [headerView addSubview:leftButton];
     [headerView addSubview:titleLabel];
     [headerView addSubview:rightButton];
     
-    [leftButton setTitle:@"取消" forState:UIControlStateNormal];
+    [leftButton setTitle:NSLocalizedString(@"cancelTitle", @"") forState:UIControlStateNormal];
     [leftButton addTarget:self action:@selector(cancelAction) forControlEvents:UIControlEventTouchUpInside];
     [leftButton setTitleColor:UIColor.systemBlueColor forState:UIControlStateNormal];
     
-    [rightButton setTitle:@"发送至" forState:UIControlStateNormal];
+    [rightButton setTitle:NSLocalizedString(@"sendTitle", @"") forState:UIControlStateNormal];
     [rightButton addTarget:self action:@selector(sendAction) forControlEvents:UIControlEventTouchUpInside];
     [rightButton setTitleColor:UIColor.systemBlueColor forState:UIControlStateNormal];
     [rightButton setTitleColor:UIColor.lightGrayColor forState:UIControlStateDisabled];
@@ -138,7 +149,7 @@
     rightButton.enabled = NO;
     
     self.comfirnButton = rightButton;
-    titleLabel.text = @"发送至";
+    titleLabel.text = NSLocalizedString(@"sendTitle", @"");
     
     [headerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.top.left.equalTo(self.view);
@@ -189,97 +200,159 @@
         make.left.right.bottom.equalTo(self.view);
         //        make.height.equalTo(@(self.view.frame.size.height - 70));
     }];
+    [self.tableView layoutIfNeeded];
+}
+
+- (void)showReload{
+    if (self.reloadButton) {
+        self.reloadButton.hidden = NO;
+        return;
+    }
+    self.reloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.reloadButton setBackgroundImage:[UIImage imageNamed:@"refresh"] forState:UIControlStateNormal];
+    [self.reloadButton addTarget:self action:@selector(getSubList) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:self.reloadButton];
+    
+    [self.reloadButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.centerX.equalTo(self.view);
+        make.width.height.equalTo(@70);
+    }];
+}
+
+- (void)hideReload{
+    if (self.reloadButton) {
+        self.reloadButton.hidden = YES;
+    }
 }
 
 -(void)getShareData{
     self.shareArray = [NSMutableArray array];
+    // 创建队列组，可以使多个网络请求异步执行，执行完之后再进行操作
+    dispatch_group_t group = dispatch_group_create();
     
-    [self.extensionContext.inputItems enumerateObjectsUsingBlock:^(NSExtensionItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [obj.attachments enumerateObjectsUsingBlock:^(NSItemProvider *  _Nonnull itemProvider, NSUInteger idx, BOOL * _Nonnull stop) {
-//            UTTypeImage;
-//            NSString *urlUtiStr = (NSString *)kUTTypeURL;
-//            NSString *imageUtiStr = (NSString *)kUTTypeImage;
-//            NSString *videoUtiStr = (NSString *)kUTTypeMovie;
-//            if ([itemProvider hasItemConformingToTypeIdentifier:urlUtiStr])
-//            {
-//                [itemProvider loadItemForTypeIdentifier:urlUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-//                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-//                        NSURL *content = (NSURL *)item;
-//                        ShareContent *model = [ShareContent new];
-//                        model.shareType = shareContentTypeText;
-//                        model.fileUrl = content;
-//                        [self.shareArray addObject:model];
-//                        return;
-//                    }
-//
-//                }];
-//            }
-            
-//            if ([itemProvider hasItemConformingToTypeIdentifier:imageUtiStr])
-//            {
-//                [itemProvider loadItemForTypeIdentifier:imageUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-//                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-//                        NSURL *content = (NSURL *)item;
-//                        ShareContent *model = [ShareContent new];
-//                        model.shareType = shareContentTypeImage;
-//                        model.fileUrl = content;
-//                        [self.shareArray addObject:model];
-//                        return;
-//                    }
-//
-//                }];
-//            }
-//
-//            if ([itemProvider hasItemConformingToTypeIdentifier:videoUtiStr])
-//            {
-//                [itemProvider loadItemForTypeIdentifier:videoUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-//                    NSLog(@"%@",item);
-//
-//                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-//                        NSURL *content = (NSURL *)item;
-//                        ShareContent *model = [ShareContent new];
-//                        model.shareType = shareContentTypeVideo;
-//                        model.fileUrl = content;
-//                        [self.shareArray addObject:model];
-//                        return;
-//                    }
-//
-//                }];
-//            }
-            
-            NSString *registered = itemProvider.registeredTypeIdentifiers.firstObject;
+    //创建全局队列
+    dispatch_queue_t queue = dispatch_get_global_queue(0,0);
 
-            if ([itemProvider hasItemConformingToTypeIdentifier:registered])
-            {
-                [itemProvider loadItemForTypeIdentifier:registered options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-                        NSURL *content = (NSURL *)item;
-                        ShareContent *model = [ShareContent new];
-                        model.shareType = shareContentTypeOther;
-                        model.fileUrl = content;
-                        [self.shareArray addObject:model];
-                    }
-                    
-                }];
-            }
+    dispatch_group_async(group, queue, ^{
+        [self.extensionContext.inputItems enumerateObjectsUsingBlock:^(NSExtensionItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [obj.attachments enumerateObjectsUsingBlock:^(NSItemProvider *  _Nonnull itemProvider, NSUInteger idx, BOOL * _Nonnull stop) {
+    //            UTTypeImage;
+    //            NSString *urlUtiStr = (NSString *)kUTTypeURL;
+    //            NSString *imageUtiStr = (NSString *)kUTTypeImage;
+    //            NSString *videoUtiStr = (NSString *)kUTTypeMovie;
+    //            if ([itemProvider hasItemConformingToTypeIdentifier:urlUtiStr])
+    //            {
+    //                [itemProvider loadItemForTypeIdentifier:urlUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
+    //                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
+    //                        NSURL *content = (NSURL *)item;
+    //                        ShareContent *model = [ShareContent new];
+    //                        model.shareType = shareContentTypeText;
+    //                        model.fileUrl = content;
+    //                        [self.shareArray addObject:model];
+    //                        return;
+    //                    }
+    //
+    //                }];
+    //            }
+                
+    //            if ([itemProvider hasItemConformingToTypeIdentifier:imageUtiStr])
+    //            {
+    //                [itemProvider loadItemForTypeIdentifier:imageUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
+    //                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
+    //                        NSURL *content = (NSURL *)item;
+    //                        ShareContent *model = [ShareContent new];
+    //                        model.shareType = shareContentTypeImage;
+    //                        model.fileUrl = content;
+    //                        [self.shareArray addObject:model];
+    //                        return;
+    //                    }
+    //
+    //                }];
+    //            }
+    //
+    //            if ([itemProvider hasItemConformingToTypeIdentifier:videoUtiStr])
+    //            {
+    //                [itemProvider loadItemForTypeIdentifier:videoUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
+    //                    NSLog(@"%@",item);
+    //
+    //                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
+    //                        NSURL *content = (NSURL *)item;
+    //                        ShareContent *model = [ShareContent new];
+    //                        model.shareType = shareContentTypeVideo;
+    //                        model.fileUrl = content;
+    //                        [self.shareArray addObject:model];
+    //                        return;
+    //                    }
+    //
+    //                }];
+    //            }
+                
+                
+                NSString *registered = itemProvider.registeredTypeIdentifiers.firstObject;
+
+                if ([itemProvider hasItemConformingToTypeIdentifier:registered])
+                {
+                    dispatch_group_enter(group);
+                    [itemProvider loadItemForTypeIdentifier:registered options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
+                        
+                        if([(NSObject *)item isKindOfClass:[NSURL class]]){
+                            NSURL *content = (NSURL *)item;
+                            ShareContent *model = [ShareContent new];
+                            model.shareType = shareContentTypeOther;
+                            model.fileUrl = content;
+                            [self.shareArray addObject:model];
+                        }
+                        else if ([(NSObject *)item isKindOfClass:[UIImage class]]){
+                            UIImage *content = (UIImage *)item;
+                            ShareContent *model = [ShareContent new];
+                            model.shareType = shareContentTypeImage;
+                            model.image = content;
+                            [self.shareArray addObject:model];
+                        }
+                        dispatch_group_leave(group);
+                    }];
+                }
+            }];
         }];
-    }];
+    });
+    
+    
+    
+    // 当所有队列执行完成之后
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        if (self.shareArray.count == 0) {
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"emptyShareTitle", @"")];
+            [SVProgressHUD dismissWithDelay:1.5 completion:^{
+                self.completionCallback(DootaskShareResultCancel);
+            }];
+        }
+        
+    });
+
+
 }
 
--(void)getList{
+-(void)getMainList{
     NSString *chatUrl = [self.shareWormhole messageWithIdentifier:@"chatList"];
     if (chatUrl.length < 5) {
-        [SVProgressHUD showErrorWithStatus:@"请登录后使用"];
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"unLoginTitle", @"")];
         [SVProgressHUD dismissWithDelay:2.5 completion:^{
             self.completionCallback(DootaskShareResultFail);
         }];
         
         return;
     }
+    NSArray *tokenArray = [chatUrl componentsSeparatedByString:@"?token="];
+    if (tokenArray.count == 2) {
+        self.currentToken = tokenArray[1];
+    }
+    
+    NSLog(@"chaturl:%@",chatUrl);
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     
-    [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeNone];
+    [SVProgressHUD show];
     [manager GET_EEUI:chatUrl parameters:nil headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
@@ -287,7 +360,9 @@
         int ret = [responseObject[@"ret"] intValue];
         NSString *msg = responseObject[@"msg"];
         if (ret == 1) {
-            self.rootDic = responseObject[@"data"];
+            ChatModel *model = [ChatModel new];
+            [model mj_setKeyValues:responseObject];
+            self.rootModel = model;
             [self analyseData];
             [SVProgressHUD dismiss];
         }else {
@@ -305,7 +380,7 @@
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismissWithCompletion:^{
-            [SVProgressHUD showErrorWithStatus:@"网络异常"];
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"netWorkErrorTitle", @"")];
             [SVProgressHUD dismissWithDelay:2 completion:^{
                 self.completionCallback(DootaskShareResultFail);
             }];
@@ -313,34 +388,64 @@
     }];
 }
 
+- (void)getSubList{
+    [self hideReload];
+    
+    ChatModelData *subModel = self.IDArray.lastObject;
+    if (subModel == nil) {
+        return;
+    }
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    self.showArray = @[];
+    [SVProgressHUD show];
+    [manager GET_EEUI:subModel.url parameters:@{@"token":self.currentToken} headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
+        
+        int ret = [responseObject[@"ret"] intValue];
+        NSString *msg = responseObject[@"msg"];
+        
+        if (ret == 1) {
+            NSMutableArray *tempArray = [NSMutableArray array];
+            for (NSDictionary *dic in responseObject[@"data"]) {
+                ChatModelData *model = [ChatModelData new];
+                [model mj_setKeyValues:dic];
+                [tempArray addObject:model];
+            }
+            
+            self.showArray = tempArray;
+            
+            [SVProgressHUD dismiss];
+        }else {
+            [SVProgressHUD dismissWithCompletion:^{
+                
+                [SVProgressHUD showErrorWithStatus:msg];
+                [SVProgressHUD dismissWithDelay:2 completion:^{
+//                    self.completionCallback(DootaskShareResultFail);
+                }];
+                [self showReload];
+            }];
+        }
+        [self.tableView reloadData];
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        self.showArray = @[];
+        [SVProgressHUD dismissWithCompletion:^{
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"netWorkErrorTitle", @"")];
+            [SVProgressHUD dismissWithDelay:2 completion:^{
+//                self.completionCallback(DootaskShareResultFail);
+            }];
+        }];
+        [self.tableView reloadData];
+        [self showReload];
+    }];
+    
+}
+
 - (void)analyseData {
-    NSArray *dirArray = [self.rootDic valueForKey:@"dir"];
-    NSArray *chatArray = [self.rootDic valueForKey:@"chatList"];
-    NSArray *userArray = [self.rootDic valueForKey:@"userList"];
-    
-    NSDictionary *rootDir = @{
-        @"type":@"dir",
-        @"id":@0,
-        @"name":@"全部文件",
-        @"children":dirArray
-    };
-    chatArray = [chatArray myMap:^ChatModel *(NSDictionary * dic) {
-        ChatModel *model = [[ChatModel alloc] init];
-        [model setValuesForKeysWithDictionary:dic];
-        
-        return model;
-    }];
-    
-    userArray = [userArray myMap:^UserModel *(NSDictionary * dic) {
-        UserModel *model = [[UserModel alloc] init];
-        [model setValuesForKeysWithDictionary:dic];
-        
-        return model;
-    }];
-    
-    self.showArray = @[rootDir];
-    self.showArray = [self.showArray arrayByAddingObjectsFromArray:chatArray];
-    self.showArray = [self.showArray arrayByAddingObjectsFromArray:userArray];
+
+    self.showArray = self.rootModel.data;
     
     [self.tableView reloadData];
 }
@@ -383,19 +488,10 @@
 - (void)checkEnable {
     if (self.isRoot) {
        
-        for (NSObject *obj in self.showArray) {
-            if ([obj isKindOfClass:[ChatModel class]]) {
-                ChatModel *model = (ChatModel *)obj;
-                if (model.select){
-                    self.comfirnButton.enabled = YES;
-                    return;
-                }
-            }else if ([obj isKindOfClass:[UserModel class]]) {
-                UserModel *model = (UserModel *)obj;
-                if (model.select){
-                    self.comfirnButton.enabled = YES;
-                    return;
-                }
+        for (ChatModelData *obj in self.showArray) {
+            if (obj.select){
+                self.comfirnButton.enabled = YES;
+                return;
             }
         }
         self.comfirnButton.enabled = NO;
@@ -407,11 +503,9 @@
 - (void)upLoads:(NSDictionary *)param isDir:(BOOL)isDir{
     
     NSString *uploadUrl;
-    uploadUrl = [self.shareWormhole messageWithIdentifier:@"upLoadUrl"];
+    uploadUrl = param[@"upLoadUrl"];
+//    uploadUrl = [uploadUrl stringByAppendingFormat:@"&token=%@",self.currentToken];
     
-    if (isDir) {
-        uploadUrl = [self.shareWormhole messageWithIdentifier:@"fileUpLoadUrl"];
-    }
     if (uploadUrl.length < 5) {
         
         return;
@@ -421,53 +515,92 @@
     self.progressArray = [NSMutableArray array];
     
     [SVProgressHUD showProgress:0];
-    for (ShareContent *model in self.shareArray) {
-        if (model.isDir) {
-            [SVProgressHUD showInfoWithStatus:@"暂不支持上传文件夹"];
-            [SVProgressHUD dismissWithDelay:1 completion:^{
-                self.completionCallback(DootaskShareResultSuccess);
-            }];
-            return;
+    
+    dispatch_group_t group = dispatch_group_create();
+    
+    //创建全局队列
+    dispatch_queue_t queue = dispatch_get_global_queue(0,0);
+
+    self.currenGruop = group;
+    dispatch_group_async(group, queue, ^{
+        for (ShareContent *model in self.shareArray) {
+            if (model.isDir) {
+                [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"folderUnsupportTitle", @"")];
+                [SVProgressHUD dismissWithDelay:1 completion:^{
+                    self.completionCallback(DootaskShareResultSuccess);
+                }];
+                return;
+            }
+            
+            
+            NSProgress *progress = [[NSProgress alloc] init];
+            [self.progressArray addObject:@{@"progress":progress,@"result":@0,@"muti":@0}];
+            
+            [self uploadfilesWithParams:param upLoadURL:uploadUrl shareModel:model withCount:number];
+            number ++;
         }
-        NSProgress *progress = [[NSProgress alloc] init];
-        [self.progressArray addObject:progress];
-        
-        [self uploadfilesWithParams:param upLoadURL:uploadUrl URL:model.fileUrl type:model.shareType withCount:number];
-        number ++;
-    }
+    });
+    
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        [self taskComplete];
+    });
     
 }
 
-- (void)uploadfilesWithParams:(NSDictionary *)params upLoadURL:(NSString *)upLoadURL URL:(NSURL *)url type:(ShareContentType)type withCount:(int)number{
+- (void)uploadfilesWithParams:(NSDictionary *)params upLoadURL:(NSString *)upLoadURL shareModel:(ShareContent *)model withCount:(int)number{
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    dispatch_group_enter(self.currenGruop);
     
     [manager POST_EEUI:upLoadURL parameters:params headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
-        NSError * error;
-        [formData appendPartWithFileURL:url name:@"files" error:&error];
+        if (model.shareType == shareContentTypeImage) {
+            NSData *imageData = UIImagePNGRepresentation(model.image);
+//            [formData appendPartWithFormData:imageData name:@"files"];
+            NSString *imageName = [NSString stringWithFormat:@"screenShot_%@%@.png",[self getRandomString],[self getNowTimeTimestamp]];
+            
+            [formData appendPartWithFileData:imageData name:@"files" fileName:imageName mimeType:@"image/png"];
+        }else{
+            NSError * error = nil;
+            [formData appendPartWithFileURL:model.fileUrl name:@"files" error:&error];
+            if (error != nil) {
+                
+            }
+        }
+        
             
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
-        [self.progressArray replaceObjectAtIndex:number withObject:uploadProgress];
+        [self.progressArray replaceObjectAtIndex:number withObject:@{@"progress":uploadProgress,@"result":@0,@"muti":@1}];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self taskComplete];
+            CGFloat lastProgress = [self getTotalPercent];
+            NSLog(@"总体进度:%f",lastProgress);
+            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f",NSLocalizedString(@"sendingTitle", @""),lastProgress*100] stringByAppendingString:@"%"]];
             
-            NSLog(@"第%d进度:%f",number,uploadProgress.fractionCompleted);
         });
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
-//        int ret = [responseObject[@"ret"] intValue];
-        [self taskComplete];
+        int ret = [responseObject[@"ret"] intValue];
+        
+        NSMutableDictionary *mutiDic = [self.progressArray[number] mutableCopy];
+        mutiDic[@"result"] = @(ret);
+        [self.progressArray replaceObjectAtIndex:number withObject:mutiDic];
+        dispatch_group_leave(self.currenGruop);
+//        [self taskComplete];
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [self taskComplete];
+        NSMutableDictionary *mutiDic = [self.progressArray[number] mutableCopy];
+        mutiDic[@"result"] = @(0);
+        [self.progressArray replaceObjectAtIndex:number withObject:mutiDic];
+        dispatch_group_leave(self.currenGruop);
+//        [self taskComplete];
     }];
 }
 
 - (CGFloat)getTotalPercent{
     CGFloat percent = 0;
     
-    for (NSProgress *progress in self.progressArray) {
+    for (NSDictionary *param in self.progressArray) {
+        NSProgress *progress = param[@"progress"];
         CGFloat currentPercent = progress.fractionCompleted;
         if (progress.isCancelled) {
             currentPercent = 1;
@@ -481,43 +614,32 @@
 
 - (void)taskComplete{
     
-    if (self.completeFlag == YES) {
-        return;
-    }
-    CGFloat lastProgress = [self getTotalPercent];
-    NSLog(@"总体进度:%f",lastProgress);
-    [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"发送中%.0f",lastProgress*100] stringByAppendingString:@"%"]];
-    NSString *strProgress = [NSString stringWithFormat:@"%f",lastProgress];
-
-    
-    if([strProgress isEqualToString:@"1.000000"]) {
-        
-        self.completeFlag = YES;
-        
-        int success = 0;
-        int fail = 0;
-        
-        NSString *msg;
-        if (fail == 0) {
-            msg = @"上传成功";
-        }else {
-            for (NSProgress *progress in self.progressArray ) {
-                if (progress.fractionCompleted == 1) {
-                    success ++;
-                } else {
-                    fail ++;
-                }
-            }
-            msg = [NSString stringWithFormat:@"%d文件上传成功,%d文件上传失败",success,fail];
+    int success = 0;
+    int fail = 0;
+    for (NSDictionary *params in self.progressArray ) {
+        NSInteger result = [params[@"result"] integerValue];
+        if (result == 1) {
+            success ++;
+        } else {
+            fail ++;
         }
-        
-        [SVProgressHUD dismissWithCompletion:^{
-            [SVProgressHUD showSuccessWithStatus:msg];
-            [SVProgressHUD dismissWithDelay:1 completion:^{
-                self.completionCallback(DootaskShareResultSuccess);
-            }];
-        }];
     }
+    
+    NSString *msg;
+    if (fail == 0) {
+        msg = NSLocalizedString(@"sendSuccessTitle", @"");
+    }else {
+        
+        msg = [NSString stringWithFormat:@"%d文件上传成功,%d文件上传失败",success,fail];
+    }
+    
+    [SVProgressHUD dismissWithCompletion:^{
+        [SVProgressHUD showSuccessWithStatus:msg];
+        [SVProgressHUD dismissWithDelay:2 completion:^{
+            self.completionCallback(DootaskShareResultSuccess);
+        }];
+    }];
+    
 }
 
 - (void)getURLComponents:(NSURL *)index {
@@ -536,38 +658,33 @@
     if (self.isRoot) {
         //发送聊天
         NSString *dialogStr = @"";
-        NSString *userStr = @"";
+        NSString *uploadUrl = nil;
         for (int a = 0; a<self.showArray.count; a++) {
-            NSObject * model = self.showArray[a];
-            if ([model isKindOfClass:[ChatModel class]]) {
-                ChatModel *chat = (ChatModel *)model;
-                if (chat.select)
-                    dialogStr = [dialogStr stringByAppendingFormat:@"%ld,",(long)chat.dialog_id];
-                
-            } else if ([model isKindOfClass:[UserModel class]]) {
-                UserModel *user = (UserModel *)model;
-                if (user.select)
-                    userStr = [userStr stringByAppendingFormat:@"%ld,",(long)user.userid];
+            ChatModelData * model = self.showArray[a];
+            
+            if (model.select){
+                dialogStr = [dialogStr stringByAppendingFormat:@"%ld,",(long)model.extend.dialog_ids];
+                uploadUrl = model.url;
             }
+        }
+        
+        if ([dialogStr containsString:@","]) {
+            dialogStr = [dialogStr substringToIndex:dialogStr.length-1];
         }
         
         NSMutableDictionary *param = [NSMutableDictionary new];
         
-        if (dialogStr.length > 0) {
-            dialogStr = [dialogStr substringToIndex:dialogStr.length -1];
-            param[@"dialog_ids"] = dialogStr;
-        }
-        if (userStr.length > 0) {
-            userStr = [userStr substringToIndex:userStr.length -1];
-            param[@"user_ids"] = userStr;
-        }
-        
-        
+        param[@"dialog_ids"] = dialogStr;
+        param[@"upLoadUrl"] = uploadUrl;
+        param[@"token"] = self.currentToken;
+       
         [self upLoads:param isDir:NO];
     } else {
         //发送文件
-        NSNumber *folderID = [self.IDArray.lastObject valueForKey:@"id"];
-        [self upLoads:@{@"pid": folderID} isDir:YES];
+        ChatModelData * model = self.IDArray.lastObject;
+        int folderID = self.IDArray.lastObject.extend.upload_file_id;
+        NSString *uploadUrl = model.url;
+        [self upLoads:@{@"upload_file_id": @(folderID),@"upLoadUrl":uploadUrl,@"token":self.currentToken} isDir:YES];
     }
     //self.completionCallback?self.completionCallback(DootaskShareResultSuccess):nil;
 }
@@ -576,51 +693,44 @@
     
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ChatCell"];
     
-    id param = self.showArray[indexPath.row];
-    if ([param isKindOfClass:[ChatModel class]]) {
-        ChatModel *model = (ChatModel *)param;
+    ChatModelData *model = self.showArray[indexPath.row];
+    if (![model.type isEqualToString:@"children"]){
         if (!model.select) {
             cell.selectImageView.image = [UIImage imageNamed:@"radio-button-default"];
         } else {
             cell.selectImageView.image = [UIImage imageNamed:@"radio-button-selected"];
         }
-        cell.userNickLabel.text = model.name;
-        cell.userNameLabel.text = [self getLastTwoStr:model.name];
-        [cell.userImageView sd_setImageWithURL:[NSURL URLWithString:model.avatar]];
-    } else if ([param isKindOfClass:[UserModel class]]) {
-        UserModel *model = (UserModel *)param;
-        if (!model.select) {
-            cell.selectImageView.image = [UIImage imageNamed:@"radio-button-default"];
-        } else {
-            cell.selectImageView.image = [UIImage imageNamed:@"radio-button-selected"];
-        }
-        cell.userNickLabel.text = model.name;
-        cell.userNameLabel.text = [self getLastTwoStr:model.name];
-        [cell.userImageView sd_setImageWithURL:[NSURL URLWithString:model.avatar]];
     }else {
         cell.selectImageView.image = [UIImage imageNamed:@"arrow_black_right"];
-        cell.userImageView.image = [UIImage imageNamed:@"dir"];
-        cell.userNickLabel.text = [param objectForKey:@"name"];
     }
+    
+    cell.userNickLabel.text = model.name;
+    cell.userNameLabel.text = [self getLastTwoStr:model.name];
+    [cell.userImageView sd_setImageWithURL:[NSURL URLWithString:model.icon]];
     
     return  cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 //    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    id param = self.showArray[indexPath.row];
-    if ([param isKindOfClass:[ChatModel class]]) {
-        ChatModel *model = (ChatModel *)param;
-        model.select = !model.select;
-        [tableView reloadData];
-    } else if ([param isKindOfClass:[UserModel class]]) {
-        UserModel *model = (UserModel *)param;
-        model.select = !model.select;
+    ChatModelData * param = self.showArray[indexPath.row];
+    if (![param.type isEqualToString:@"children"]) {
+    
+        param.select = !param.select;
         [tableView reloadData];
     } else {
-        self.isRoot = false;
-        self.showArray = param[@"children"];
+        if (self.isRoot) {
+            ChatModelData *rootData = [ChatModelData new];
+            rootData.name = NSLocalizedString(@"allTitle", @"");
+            rootData.type = @"root";
+            
+            [self.IDArray addObject:rootData];
+        }
+        
+        self.isRoot = NO;
+
         [self.IDArray addObject:param];
-        [tableView reloadData];
+        [self getSubList];
+//        [tableView reloadData];
         [self showNav];
         
     }
@@ -637,7 +747,9 @@
 
 - (void)selectWithArray:(NSArray *)pathArray {
     self.IDArray = [pathArray mutableCopy];
-    if (pathArray.count == 0) {
+    if (pathArray.count <= 1) {
+        pathArray = @[];
+        [self hideReload];
         self.isRoot = YES;
         [self hideNav];
         
@@ -646,12 +758,15 @@
     } else {
         
         self.isRoot = NO;
-        self.showArray = pathArray.lastObject[@"children"];
+//        self.showArray = pathArray.lastObject[@"children"];
+        [self getSubList];
         [self showNav];
         [self.tableView reloadData];
     }
     [self checkEnable];
 }
+
+
 
 #pragma mark - getter
 
@@ -680,6 +795,48 @@
     }
     
     return source;
+}
+
+#pragma mark  -
+
+- (BOOL)inDarkAppearance{
+  BOOL res = NO;
+  if (@available(iOS 13.0, *)) {
+    switch (UITraitCollection.currentTraitCollection.userInterfaceStyle) {
+      case UIUserInterfaceStyleDark:
+        NSLog(@"深色模式");
+        res = YES;
+        break;
+      case UIUserInterfaceStyleLight:
+        NSLog(@"浅色模式");
+        break;
+      case UIUserInterfaceStyleUnspecified:
+        NSLog(@"未指定");
+        break;
+    }
+  }
+  return res;
+}
+
+-(NSString *)getNowTimeTimestamp{
+
+    NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
+
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
+
+    return timeSp;
+
+}
+
+-(NSString *)getRandomString{
+    NSString *alphabet = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity:4];
+
+    for (NSUInteger i = 0U; i < 4; ++i) {
+        [randomString appendFormat:@"%C", [alphabet characterAtIndex: arc4random_uniform((u_int32_t)[alphabet length])]];
+    }
+    
+    return randomString;
 }
 
 @end
