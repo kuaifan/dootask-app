@@ -9,8 +9,11 @@
 "sendingTitle" = "Senden an";
 "sendingTitle" = "Gesendet";
 "sendingSuccessTitle" = "Erfolgreich gesendet";
+"sendFailTitle" = "Сбой отправки";
 "unLoginTitle" = "Bitte anmelden und verwenden";
 "emptyShareTitle" = "Es konnten keine Freigabedaten abgerufen werden";
 "netWorkErrorTitle" = "Netzwerk-Ausnahme";
 "folderUnsupportTitle" = "Ordner hochladen wird zur Zeit nicht unterstützt";
 "allTitle" = "Alle";
+"successTotal" = "Datei-Upload war erfolgreich";
+"failTotal" = "Datei-Upload fehlgeschlagen";

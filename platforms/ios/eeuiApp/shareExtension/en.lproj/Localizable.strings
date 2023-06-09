@@ -8,9 +8,12 @@
 "cancelTitle" = "cancel";
 "sendingTitle" = "Sending to";
 "sendingTitle" = "Sending";
-"sendingSuccessTitle" = "Sent successfully";
+"sendingSuccessTitle" = "Sending successfully";
+"sendingFailTitle" = "Sending failure";
 "unLoginTitle" = "Please log in and use";
 "emptyShareTitle" = "Unable to get share data";
 "netWorkErrorTitle" = "Network exception";
 "folderUnsupportTitle" = "Upload folder is not supported at this time";
 "allTitle" = "All";
+"successTotal" = "File upload was successful";
+"failTotal" = "File upload failed";

@@ -9,8 +9,11 @@
 "sendTitle" = "發送至";
 "sendingTitle" = "發送中";
 "sendSuccessTitle" = "發送成功";
+"sendFailTitle" = "發送失敗";
 "unLoginTitle" = "請登錄後使用";
 "emptyShareTitle" = "無法獲取分享數據";
 "netWorkErrorTitle" = "網絡異常";
 "folderUnsupportTitle" = "暫不支持上傳文件夾";
 "allTitle" = "全部";
+"successTotal" = "個文件上傳成功";
+"failTotal" = "個文件上傳失敗";

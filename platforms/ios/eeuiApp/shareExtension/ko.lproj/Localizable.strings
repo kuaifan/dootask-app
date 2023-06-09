@@ -9,8 +9,11 @@
 "sendingTitle" = "보내는 사람";
 "sendingTitle" = "보내는 중";
 "sendingSuccessTitle" = "성공적으로 보냈습니다";
+"sendFailTitle" = "전송 실패";
 "unLoginTitle" = "로그인하여 사용하세요";
 "emptyShareTitle" = "공유 데이터를 가져올 수 없습니다";
 "netWorkErrorTitle" = "네트워크 예외";
 "folderUnsupportTitle" = "현재 폴더 업로드가 지원되지 않습니다";
 "allTitle" = "모두";
+"successTotal" = "파일 업로드에 성공했습니다";
+"failTotal" = "파일 업로드 실패";

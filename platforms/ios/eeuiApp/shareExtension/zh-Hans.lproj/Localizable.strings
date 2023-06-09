@@ -9,8 +9,11 @@
 "sendTitle" = "发送至";
 "sendingTitle" = "发送中";
 "sendSuccessTitle" = "发送成功";
+"sendFailTitle" = "发送失败";
 "unLoginTitle" = "请登录后使用";
 "emptyShareTitle" = "无法获取分享数据";
 "netWorkErrorTitle" = "网络异常";
 "folderUnsupportTitle" = "暂不支持上传文件夹";
 "allTitle" = "全部";
+"successTotal" = "个文件上传成功";
+"failTotal" = "个文件上传失败";

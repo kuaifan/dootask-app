@@ -9,8 +9,11 @@
 "sendTitle" = "Kirim Ke";
 "sendingTitle" = "Mengirim";
 "sendSuccessTitle" = "Kirim Berhasil";
+"sendFailTitle" = "gagal mengirim";
 "unLoginTitle" = "Silakan masuk untuk menggunakan";
 "emptyShareTitle" = "Tidak bisa mendapatkan data berbagi";
 "netWorkErrorTitle" = "Kesalahan Jaringan";
 "folderUnsupportTitle" = "Pengunggahan folder saat ini tidak didukung";
 "allTitle" = "Semua";
+"successTotal" = "File berhasil diunggah";
+"failTotal" = "Gagal mengunggah file";

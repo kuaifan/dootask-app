@@ -9,8 +9,11 @@
 "sendingTitle" = "送信先";
 "sendingTitle" = "送信";
 "sendingSuccessTitle" = "送信に成功しました と表示されます";
+"sendFailTitle" = "送信失敗";
 "unLoginTitle" = "ログインして使用してください";
 "emptyShareTitle" = "シェアデータの取得ができません";
 "netWorkErrorTitle" = "ネットワーク例外";
 "folderUnsupportTitle" = "アップロードフォルダは現時点ではサポートされていません";
 "allTitle" = "All とする";
+"successTotal" = "ファイルのアップロードに成功しました";
+"failTotal" = "ファイルのアップロードに失敗しました";

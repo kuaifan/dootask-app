@@ -626,19 +626,26 @@
     }
     
     NSString *msg;
+    DootaskShareResult result;
     if (fail == 0) {
         msg = NSLocalizedString(@"sendSuccessTitle", @"");
-    }else {
+        [SVProgressHUD showSuccessWithStatus:msg];
+        result = DootaskShareResultSuccess;
+    } else if (success == 0) {
+        msg = NSLocalizedString(@"sendFailTitle", @"");
+        [SVProgressHUD showErrorWithStatus:msg];
+        result = DootaskShareResultFail;
+    }else  {
         
-        msg = [NSString stringWithFormat:@"%d文件上传成功,%d文件上传失败",success,fail];
+        msg = [NSString stringWithFormat:@"%d%@,%d%@",success,NSLocalizedString(@"successTotal", @""),fail,NSLocalizedString(@"failTotal", @"")];
+        [SVProgressHUD showInfoWithStatus:msg];
+        result = DootaskShareResultSuccess;
     }
     
-    [SVProgressHUD dismissWithCompletion:^{
-        [SVProgressHUD showSuccessWithStatus:msg];
-        [SVProgressHUD dismissWithDelay:2 completion:^{
-            self.completionCallback(DootaskShareResultSuccess);
-        }];
+    [SVProgressHUD dismissWithDelay:2 completion:^{
+        self.completionCallback(result);
     }];
+ 
     
 }
 
