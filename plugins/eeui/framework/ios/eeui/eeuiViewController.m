@@ -57,6 +57,8 @@ static int easyNavigationButtonTag = 8000;
 @property (nonatomic, strong) UIView *versionUpdateView;
 @property (nonatomic, strong) UIView *versionUpdateWeexView;
 
+@property (nonatomic, assign) CGFloat lastKeyboardHeight;
+
 @end
 
 @implementation eeuiViewController
@@ -88,8 +90,8 @@ static int easyNavigationButtonTag = 8000;
     _pauseTimeSecond = 0;
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    [center addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardWillHideNotification object:nil];
+    [center addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
+    [center addObserver:self selector:@selector(keyboardWillHideNotification:) name:UIKeyboardWillHideNotification object:nil];
     [center addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [center addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [center addObserver:self selector:@selector(postMessage:) name:@"VCPostMessage" object:nil];
@@ -309,42 +311,48 @@ static int easyNavigationButtonTag = 8000;
     }
 }
 
-
 //键盘弹出触发该方法
-- (void)keyboardDidShow:(NSNotification *)notification
+- (void)keyboardWillShowNotification:(NSNotification *)notification
 {
-    _keyBoardlsVisible = YES;
-    [CustomWeexSDKManager setKeyBoardlsVisible:_keyBoardlsVisible];
-    // 键盘事件
+    // 获取键盘基本信息（动画时长与键盘高度）
     NSDictionary *userInfo = [notification userInfo];
-    NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-    CGRect keyboardRect = [aValue CGRectValue];
-    int height = keyboardRect.size.height;
-    int width = keyboardRect.size.width;
-    eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
-    [storage setCachesString:@"__system:keyboardHeight" value:@(height).stringValue expired:0];
-    [self keyboardHeightChange:@"show" height:height];
+    CGRect rect = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardHeight = CGRectGetHeight(rect);
+    CGFloat keyboardDuration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    
+    // 更新约束
+    [UIView animateWithDuration:keyboardDuration animations:^{
+        eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
+        [storage setCachesString:@"__system:keyboardHeight" value:@(keyboardHeight).stringValue expired:0];
+        [self keyboardHeightChange:@"show" height:keyboardHeight];
+    }];
 }
 
 // 键盘隐藏触发该方法
-- (void)keyboardDidHide:(NSNotification *)notification
+- (void)keyboardWillHideNotification:(NSNotification *)notification
 {
-    _keyBoardlsVisible = NO;
-    [CustomWeexSDKManager setKeyBoardlsVisible:_keyBoardlsVisible];
-    // 键盘事件
+    // 获取键盘基本信息（动画时长与键盘高度）
     NSDictionary *userInfo = [notification userInfo];
-    NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-    CGRect keyboardRect = [aValue CGRectValue];
-    int height = keyboardRect.size.height;
-    int width = keyboardRect.size.width;
-    eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
-    [storage setCachesString:@"__system:keyboardHeight" value:@(height).stringValue expired:0];
-    [self keyboardHeightChange:@"hide" height:height];
+    CGRect rect = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardHeight = CGRectGetHeight(rect);
+    CGFloat keyboardDuration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    
+    // 更新约束
+    [UIView animateWithDuration:keyboardDuration animations:^{
+        eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
+        [storage setCachesString:@"__system:keyboardHeight" value:@(keyboardHeight).stringValue expired:0];
+        [self keyboardHeightChange:@"hide" height:keyboardHeight];
+    }];
 }
 
 // 键盘高度变化
 - (void)keyboardHeightChange:(NSString*)type height:(int)height
 {
+    if([type isEqualToString:@"hide"] && height > _lastKeyboardHeight) {
+        type = @"show";
+    }
+    _lastKeyboardHeight = height;
+    //
     UIEdgeInsets safeArea = UIEdgeInsetsZero;
     if (@available(iOS 11.0, *)) {
         safeArea = self.view.safeAreaInsets;
