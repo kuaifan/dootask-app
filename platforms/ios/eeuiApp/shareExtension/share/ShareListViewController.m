@@ -87,10 +87,10 @@
     [self setupHeaderView];
     [self setupTableView];
     
-    [SVProgressHUD setContainerView:self.tableView];
+    [SVProgressHUD setContainerView:self.view];
     [SVProgressHUD setDefaultStyle:[self inDarkAppearance]?SVProgressHUDStyleLight:SVProgressHUDStyleDark];
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
-    [SVProgressHUD setOffsetFromCenter:UIOffsetMake(0, -100)];
+    // [SVProgressHUD setOffsetFromCenter:UIOffsetMake(0, -100)];
     
     [self presentContent];
     //    [self showNav];
