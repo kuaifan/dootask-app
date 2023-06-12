@@ -159,6 +159,11 @@
 		ADDB131C2A2D91C700AD375E /* NavCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavCell.h; sourceTree = "<group>"; };
 		ADDB131D2A2D91C700AD375E /* NavCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NavCell.m; sourceTree = "<group>"; };
 		ADDB131E2A2D91C700AD375E /* NavCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NavCell.xib; sourceTree = "<group>"; };
+		ADE036A62A36BC3900A76B4F /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		ADE036A72A36BC3900A76B4F /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Main.strings"; sourceTree = "<group>"; };
+		ADE036A82A36BC3900A76B4F /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/ChatCell.strings"; sourceTree = "<group>"; };
+		ADE036A92A36BC3A00A76B4F /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/MainInterface.strings"; sourceTree = "<group>"; };
+		ADE036AA2A36BC3A00A76B4F /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		ADE69EC32A2E30EA000C6883 /* ShareContent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareContent.h; sourceTree = "<group>"; };
 		ADE69EC42A2E30EA000C6883 /* ShareContent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareContent.m; sourceTree = "<group>"; };
 		ADEB12492A286E7200FCE69B /* ShareListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareListViewController.h; sourceTree = "<group>"; };
@@ -576,6 +581,7 @@
 				id,
 				de,
 				"zh-HK",
+				"en-GB",
 			);
 			mainGroup = B21356272124045E00EDD991;
 			productRefGroup = B21356312124045E00EDD991 /* Products */;
@@ -782,6 +788,7 @@
 				ADC446682A32C9020082503B /* id */,
 				ADC4466D2A32CBEA0082503B /* de */,
 				ADC4467B2A3354F70082503B /* zh-HK */,
+				ADE036A92A36BC3A00A76B4F /* en-GB */,
 			);
 			name = MainInterface.storyboard;
 			sourceTree = "<group>";
@@ -797,6 +804,7 @@
 				ADC446672A32C9010082503B /* id */,
 				ADC4466C2A32CBE90082503B /* de */,
 				ADC4467A2A3354F70082503B /* zh-HK */,
+				ADE036A82A36BC3900A76B4F /* en-GB */,
 			);
 			name = ChatCell.xib;
 			sourceTree = "<group>";
@@ -812,6 +820,7 @@
 				ADC446692A32C9020082503B /* id */,
 				ADC4466E2A32CBEA0082503B /* de */,
 				ADC4467C2A3354F80082503B /* zh-HK */,
+				ADE036AA2A36BC3A00A76B4F /* en-GB */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -827,6 +836,7 @@
 				ADC446662A32C9010082503B /* id */,
 				ADC4466B2A32CBE90082503B /* de */,
 				ADC446792A3354F70082503B /* zh-HK */,
+				ADE036A72A36BC3900A76B4F /* en-GB */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -842,6 +852,7 @@
 				ADC446652A32C9010082503B /* id */,
 				ADC4466A2A32CBE90082503B /* de */,
 				ADC446782A3354F60082503B /* zh-HK */,
+				ADE036A62A36BC3900A76B4F /* en-GB */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

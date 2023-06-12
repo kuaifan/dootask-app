@@ -80,7 +80,12 @@
     //chatUrl dirUrl
     NSLog(@"shareMessage:%@",[self.shareWormhole messageWithIdentifier:@"chatList"]);
     
-    self.view.backgroundColor = UIColor.whiteColor;
+    if (@available(iOS 13.0, *)) {
+        self.view.backgroundColor = UIColor.systemBackgroundColor;
+    } else {
+        // Fallback on earlier versions
+        self.view.backgroundColor = UIColor.whiteColor;
+    }
     
     self.isRoot = YES;
     self.completeFlag = NO;
@@ -88,15 +93,19 @@
     [self setupTableView];
     
     [SVProgressHUD setContainerView:self.view];
-    [SVProgressHUD setDefaultStyle:[self inDarkAppearance]?SVProgressHUDStyleLight:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultStyle:[self inDarkAppearance]? SVProgressHUDStyleLight: SVProgressHUDStyleDark];
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
     // [SVProgressHUD setOffsetFromCenter:UIOffsetMake(0, -100)];
     
     [self presentContent];
     //    [self showNav];
     [self getShareData];
-    [self getMainList];
     
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self getMainList];
 }
 
 - (void)creatMonitorData{
@@ -444,7 +453,7 @@
 }
 
 - (void)analyseData {
-
+    
     self.showArray = self.rootModel.data;
     
     [self.tableView reloadData];

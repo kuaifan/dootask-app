@@ -11,7 +11,6 @@
 @interface PathNavigationView()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
 @property (nonatomic, strong)UICollectionView *navItem;
 
-
 @end
 
 @implementation PathNavigationView
@@ -31,10 +30,12 @@
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     layout.minimumLineSpacing = 0;
+    layout.minimumInteritemSpacing = 0;
     
     self.navItem = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
     self.navItem.delegate = self;
     self.navItem.dataSource = self;
+    self.navItem.showsHorizontalScrollIndicator = false;
     if (@available(iOS 13.0, *)) {
         self.navItem.backgroundColor = UIColor.systemBackgroundColor;
     } else {
@@ -45,8 +46,8 @@
     
     [self.navItem mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.bottom.equalTo(self);
-        make.left.equalTo(self).offset(12);
-        make.right.equalTo(self).offset(-12);
+        make.left.equalTo(self).offset(5);
+        make.right.equalTo(self).offset(-5);
     }];
     
 }
@@ -89,7 +90,7 @@
     NSString *title = [self.navArray[indexPath.row] name];
     CGFloat width = [title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size.width;
     
-    return CGSizeMake(width+22, 60);
+    return CGSizeMake(width+29, 60);
 }
 
 #pragma mark - setter

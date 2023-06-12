@@ -17,7 +17,7 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="目录" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NF6-9X-1jp">
-                        <rect key="frame" x="0.0" y="16.666666666666668" width="30.666666666666664" height="18.000000000000004"/>
+                        <rect key="frame" x="7.0000000000000018" y="16.666666666666668" width="30.666666666666671" height="18.000000000000004"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -33,7 +33,7 @@
             </view>
             <constraints>
                 <constraint firstItem="7dc-qv-mFN" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="12U-44-wME"/>
-                <constraint firstItem="NF6-9X-1jp" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="SZU-Tc-zgI"/>
+                <constraint firstItem="NF6-9X-1jp" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="7" id="SZU-Tc-zgI"/>
                 <constraint firstItem="NF6-9X-1jp" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="Y6f-66-lrc"/>
                 <constraint firstAttribute="trailing" secondItem="7dc-qv-mFN" secondAttribute="trailing" id="qD0-xv-ECB"/>
             </constraints>
