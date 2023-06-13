@@ -102,7 +102,7 @@ public class ShareActivity extends AppCompatActivity  {
             }
         });
         tvSend = findViewById(R.id.tv_send);
-        tvSend.setClickable(true);
+
         tvSend.setTextColor(Color.parseColor("#33000000"));
         tvSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +110,7 @@ public class ShareActivity extends AppCompatActivity  {
                 upload();
             }
         });
+        tvSend.setClickable(false);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerSelect = findViewById(R.id.recyclerSelect);
 

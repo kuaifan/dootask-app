@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:text="全部文件"
             android:textColor="#000000"
-            android:textSize="12dp"></TextView>
+            android:textSize="14dp"></TextView>
         <ImageView
             android:id="@+id/right"
             android:layout_width="16dp"

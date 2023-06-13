@@ -41,7 +41,8 @@
         android:background="#000000"
         android:alpha="0.2"></LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
-        android:paddingLeft="5dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
         android:id="@+id/recyclerSelect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
