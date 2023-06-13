@@ -6,7 +6,7 @@
   
 */
 "cancelTitle" = "キャンセルとする";
-"sendingTitle" = "送信先";
+"sendTitle" = "送信先";
 "sendingTitle" = "送信";
 "sendingSuccessTitle" = "送信に成功しました と表示されます";
 "sendFailTitle" = "送信失敗";

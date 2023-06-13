@@ -6,7 +6,7 @@
   
 */
 "cancelTitle" = "취소";
-"sendingTitle" = "보내는 사람";
+"sendTitle" = "보내는 사람";
 "sendingTitle" = "보내는 중";
 "sendingSuccessTitle" = "성공적으로 보냈습니다";
 "sendFailTitle" = "전송 실패";

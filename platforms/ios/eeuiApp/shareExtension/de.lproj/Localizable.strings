@@ -6,7 +6,7 @@
   
 */
 "cancelTitle" = "Abbrechen";
-"sendingTitle" = "Senden an";
+"sendTitle" = "Senden an";
 "sendingTitle" = "Gesendet";
 "sendingSuccessTitle" = "Erfolgreich gesendet";
 "sendFailTitle" = "Сбой отправки";
