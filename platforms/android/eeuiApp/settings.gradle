@@ -23,3 +23,6 @@ project (":eeuiPicture").projectDir = new File("../../../plugins/eeui/picture/an
 
 include ":eeuiShareFiles"
 project (":eeuiShareFiles").projectDir = new File("../../../plugins/eeui/shareFiles/android")
+
+include ":eeuiShare"
+project (":eeuiShare").projectDir = new File("../../../plugins/eeui/share/android")

@@ -1,0 +1,26 @@
+<resources>
+<!--    "cancelTitle" = "取消";-->
+    <string name="cancelTitle">Batalkan</string>
+<!--    "sendTitle" = "發送至";-->
+    <string name="sendTitle">Kirim Ke</string>
+<!--    "sendingTitle" = "發送中";-->
+    <string name="sendingTitle">Mengirim</string>
+<!--    "sendSuccessTitle" = "發送成功";-->
+    <string name="sendSuccessTitle">Kirim Berhasil</string>
+<!--    "sendFailTitle" = "發送失敗";-->
+    <string name="sendFailTitle">gagal mengirim</string>
+<!--    "unLoginTitle" = "請登錄後使用";-->
+    <string name="unLoginTitle">Silakan masuk untuk menggunakan</string>
+<!--    "emptyShareTitle" = "無法獲取分享數據";-->
+    <string name="emptyShareTitle">Tidak bisa mendapatkan data berbagi</string>
+<!--    "netWorkErrorTitle" = "網絡異常";-->
+    <string name="netWorkErrorTitle">Kesalahan Jaringan</string>
+<!--    "folderUnsupportTitle" = "暫不支持上傳文件夾";-->
+    <string name="folderUnsupportTitle">Pengunggahan folder saat ini tidak didukung</string>
+<!--    "allTitle" = "全部";-->
+    <string name="allTitle">Semua</string>
+<!--    "successTotal" = "個文件上傳成功";-->
+    <string name="successTotal">File berhasil diunggah</string>
+<!--    "failTotal" = "個文件上傳失敗";-->
+    <string name="failTotal">Gagal mengunggah file</string>
+</resources>

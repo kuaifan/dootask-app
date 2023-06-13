@@ -1,0 +1,26 @@
+<resources>
+<!--    "cancelTitle" = "取消";-->
+    <string name="cancelTitle">キャンセルとする</string>
+<!--    "sendTitle" = "發送至";-->
+    <string name="sendTitle">送信先</string>
+<!--    "sendingTitle" = "發送中";-->
+    <string name="sendingTitle">送信</string>
+<!--    "sendSuccessTitle" = "發送成功";-->
+    <string name="sendSuccessTitle">送信に成功しました と表示されます</string>
+<!--    "sendFailTitle" = "發送失敗";-->
+    <string name="sendFailTitle">送信失敗</string>
+<!--    "unLoginTitle" = "請登錄後使用";-->
+    <string name="unLoginTitle">ログインして使用してください</string>
+<!--    "emptyShareTitle" = "無法獲取分享數據";-->
+    <string name="emptyShareTitle">シェアデータの取得ができません</string>
+<!--    "netWorkErrorTitle" = "網絡異常";-->
+    <string name="netWorkErrorTitle">ネットワーク例外</string>
+<!--    "folderUnsupportTitle" = "暫不支持上傳文件夾";-->
+    <string name="folderUnsupportTitle">アップロードフォルダは現時点ではサポートされていません</string>
+<!--    "allTitle" = "全部";-->
+    <string name="allTitle">All とする</string>
+<!--    "successTotal" = "個文件上傳成功";-->
+    <string name="successTotal">ファイルのアップロードに成功しました</string>
+<!--    "failTotal" = "個文件上傳失敗";-->
+    <string name="failTotal">ファイルのアップロードに失敗しました</string>
+</resources>

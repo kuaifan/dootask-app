@@ -1,0 +1,26 @@
+<resources>
+<!--    "cancelTitle" = "取消";-->
+    <string name="cancelTitle">취소</string>
+<!--    "sendTitle" = "發送至";-->
+    <string name="sendTitle">보내는 사람</string>
+<!--    "sendingTitle" = "發送中";-->
+    <string name="sendingTitle">보내는 중</string>
+<!--    "sendSuccessTitle" = "發送成功";-->
+    <string name="sendSuccessTitle">성공적으로 보냈습니다</string>
+<!--    "sendFailTitle" = "發送失敗";-->
+    <string name="sendFailTitle">전송 실패</string>
+<!--    "unLoginTitle" = "請登錄後使用";-->
+    <string name="unLoginTitle">로그인하여 사용하세요</string>
+<!--    "emptyShareTitle" = "無法獲取分享數據";-->
+    <string name="emptyShareTitle">공유 데이터를 가져올 수 없습니다</string>
+<!--    "netWorkErrorTitle" = "網絡異常";-->
+    <string name="netWorkErrorTitle">네트워크 예외</string>
+<!--    "folderUnsupportTitle" = "暫不支持上傳文件夾";-->
+    <string name="folderUnsupportTitle">현재 폴더 업로드가 지원되지 않습니다</string>
+<!--    "allTitle" = "全部";-->
+    <string name="allTitle">모두</string>
+<!--    "successTotal" = "個文件上傳成功";-->
+    <string name="successTotal">파일 업로드에 성공했습니다</string>
+<!--    "failTotal" = "個文件上傳失敗";-->
+    <string name="failTotal">파일 업로드 실패</string>
+</resources>

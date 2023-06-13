@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">eeuiShare</string>
+    <!--    "cancelTitle" = "取消";-->
+    <string name="cancelTitle">Cancel</string>
+    <!--    "sendTitle" = "發送至";-->
+    <string name="sendTitle">Sending to</string>
+    <!--    "sendingTitle" = "發送中";-->
+    <string name="sendingTitle">Sending</string>
+    <!--    "sendSuccessTitle" = "發送成功";-->
+    <string name="sendSuccessTitle">Sending successfully</string>
+    <!--    "sendFailTitle" = "發送失敗";-->
+    <string name="sendFailTitle">Sending failure</string>
+    <!--    "unLoginTitle" = "請登錄後使用";-->
+    <string name="unLoginTitle">Please log in and use</string>
+    <!--    "emptyShareTitle" = "無法獲取分享數據";-->
+    <string name="emptyShareTitle">Unable to get share data</string>
+    <!--    "netWorkErrorTitle" = "網絡異常";-->
+    <string name="netWorkErrorTitle">Network exception</string>
+    <!--    "folderUnsupportTitle" = "暫不支持上傳文件夾";-->
+    <string name="folderUnsupportTitle">Upload folder is not supported at this time</string>
+    <!--    "allTitle" = "全部";-->
+    <string name="allTitle">All</string>
+    <!--    "successTotal" = "個文件上傳成功";-->
+    <string name="successTotal">File upload was successful</string>
+    <!--    "failTotal" = "個文件上傳失敗";-->
+    <string name="failTotal">File upload failed</string>
+</resources>

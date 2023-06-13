@@ -12,6 +12,7 @@ def common
     pod 'eeuiPicture', :path => '../../../plugins/eeui/picture/ios'
     pod 'eeuiShareFiles', :path => '../../../plugins/eeui/shareFiles/ios'
     
+    pod 'eeuiShare', :path => '../../../plugins/eeui/share/ios'
 end
 
 def share
@@ -42,4 +43,3 @@ post_install do |installer_representation|
     end
   end
 end
-

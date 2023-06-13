@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <paths>
+        <files-path
+            name="external_files"
+            path="." />
+        <external-path
+            name="camera_photos"
+            path="." />
+        <external-files-path name="pictures" path="Pictures" />
+    </paths>
+
+<!--        <cache-path-->
+<!--            name="app_cache"-->
+<!--            path="/" />-->
+<!--        &lt;!&ndash;3、对应外部内存卡根目录：Environment.getExternalStorageDirectory()&ndash;&gt;-->
+<!--        <external-path-->
+<!--            name="ext_root"-->
+<!--            path="Documents/" />-->
+<!--        &lt;!&ndash;4、对应外部内存卡根目录下的APP公共目录：Context.getExternalFileDir(Environment.DIRECTORY_PICTURES)&ndash;&gt;-->
+<!--        <external-files-path-->
+<!--            name="ext_pub"-->
+<!--            path="/" />-->
+<!--        &lt;!&ndash;5、对应外部内存卡根目录下的APP缓存目录：Context.getExternalCacheDir()&ndash;&gt;-->
+<!--        <external-cache-path-->
+<!--            name="ext_cache"-->
+<!--            path="/" />-->
+
+
+</resources>

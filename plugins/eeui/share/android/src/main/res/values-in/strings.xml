@@ -1,0 +1,26 @@
+<resources>
+    <!--    "cancelTitle" = "取消";-->
+    <string name="cancelTitle">Abbrechen</string>
+    <!--    "sendTitle" = "發送至";-->
+    <string name="sendTitle">Senden an</string>
+    <!--    "sendingTitle" = "發送中";-->
+    <string name="sendingTitle">Gesendet</string>
+    <!--    "sendSuccessTitle" = "發送成功";-->
+    <string name="sendSuccessTitle">Erfolgreich gesendet</string>
+    <!--    "sendFailTitle" = "發送失敗";-->
+    <string name="sendFailTitle">Сбой отправки</string>
+    <!--    "unLoginTitle" = "請登錄後使用";-->
+    <string name="unLoginTitle">Bitte anmelden und verwenden</string>
+    <!--    "emptyShareTitle" = "無法獲取分享數據";-->
+    <string name="emptyShareTitle">Es konnten keine Freigabedaten abgerufen werden</string>
+    <!--    "netWorkErrorTitle" = "網絡異常";-->
+    <string name="netWorkErrorTitle">Netzwerk-Ausnahme</string>
+    <!--    "folderUnsupportTitle" = "暫不支持上傳文件夾";-->
+    <string name="folderUnsupportTitle">Ordner hochladen wird zur Zeit nicht unterstützt</string>
+    <!--    "allTitle" = "全部";-->
+    <string name="allTitle">Alle</string>
+    <!--    "successTotal" = "個文件上傳成功";-->
+    <string name="successTotal">Datei-Upload war erfolgreich</string>
+    <!--    "failTotal" = "個文件上傳失敗";-->
+    <string name="failTotal">Datei-Upload fehlgeschlagen</string>
+</resources>

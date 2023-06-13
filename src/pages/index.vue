@@ -72,7 +72,9 @@ export default {
     mounted() {
 
         // iOS初始化共享内存
-        shareFile.shareFileWithGroupID(this.appGroupID,this.appSubPath);
+        if (WXEnvironment.platform.toLowerCase() === "ios") {
+            shareFile.shareFileWithGroupID(this.appGroupID,this.appSubPath);
+        }
 
         this.uniqueId = eeui.getCachesString("appUniqueId", "");
         if (this.count(this.uniqueId) < 5) {

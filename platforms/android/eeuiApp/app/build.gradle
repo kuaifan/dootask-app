@@ -91,4 +91,5 @@ dependencies {
     implementation project(":eeuiNotifications")
     implementation project(":eeuiPicture")
     implementation project(":eeuiShareFiles")
+    implementation project(":eeuiShare")
 }

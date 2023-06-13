@@ -1,0 +1,58 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion project.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion project.appMinSdkVersion
+        targetSdkVersion project.targetSdkVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        //使用toObservableXxx方法时必须，传入你依赖的RxJava版本
+                        rxhttp_rxjava: '3.1.6',
+                ]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //
+    if (project.implementFromWeex) {
+        compileOnly project(':weex_sdk')
+    } else {
+        compileOnly "org.apache.weex:sdk_legacy:${project.weex_sdkLibVersion}"
+    }
+    compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
+    //
+    compileOnly project(":eeui")
+    compileOnly "androidx.legacy:legacy-support-v4:${project.supportv4Version}"
+    compileOnly "androidx.recyclerview:recyclerview:${project.recyclerviewVersion}"
+    compileOnly "androidx.appcompat:appcompat:${project.appcompatVersion}"
+    compileOnly "com.google.android.material:material:${project.materialVersion}"
+
+    compileOnly "de.hdodenhof:circleimageview:3.1.0"
+
+    def rxhttp_version = '3.0.5'
+    implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation "com.github.liujingxing.rxhttp:rxhttp:$rxhttp_version"
+    annotationProcessor "com.github.liujingxing.rxhttp:rxhttp-compiler:$rxhttp_version" //生成RxHttp类，纯Java项目，请使用annotationProcessor代替kapt
+
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
+    implementation 'com.github.liujingxing.rxlife:rxlife-rxjava3:2.2.2' //管理RxJava3生命周期，页面销毁，关闭请求
+
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
+}

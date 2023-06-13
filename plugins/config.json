@@ -29,6 +29,11 @@
 			"requireName": "eeui/shareFiles",
 			"name": "eeui/shareFiles",
 			"url": "local"
+		},
+		"eeui/share": {
+			"requireName": "eeui/share",
+			"name": "eeui/share",
+			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/share/60f030ab0faa265e97f4205c07e5eed8.zip"
 		}
 	}
 }

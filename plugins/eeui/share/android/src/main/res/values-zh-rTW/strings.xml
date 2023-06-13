@@ -1,0 +1,26 @@
+<resources>
+<!--    "cancelTitle" = "取消";-->
+    <string name="cancelTitle">取消</string>
+<!--    "sendTitle" = "發送至";-->
+    <string name="sendTitle">發送至</string>
+<!--    "sendingTitle" = "發送中";-->
+    <string name="sendingTitle">發送中</string>
+<!--    "sendSuccessTitle" = "發送成功";-->
+    <string name="sendSuccessTitle">發送成功</string>
+<!--    "sendFailTitle" = "發送失敗";-->
+    <string name="sendFailTitle">發送失敗</string>
+<!--    "unLoginTitle" = "請登錄後使用";-->
+    <string name="unLoginTitle">請登錄後使用</string>
+<!--    "emptyShareTitle" = "無法獲取分享數據";-->
+    <string name="emptyShareTitle">無法獲取分享數據</string>
+<!--    "netWorkErrorTitle" = "網絡異常";-->
+    <string name="netWorkErrorTitle">網絡異常</string>
+<!--    "folderUnsupportTitle" = "暫不支持上傳文件夾";-->
+    <string name="folderUnsupportTitle">暫不支持上傳文件夾</string>
+<!--    "allTitle" = "全部";-->
+    <string name="allTitle">全部</string>
+<!--    "successTotal" = "個文件上傳成功";-->
+    <string name="successTotal">個文件上傳成功</string>
+<!--    "failTotal" = "個文件上傳失敗";-->
+    <string name="failTotal">個文件上傳失敗</string>
+</resources>
