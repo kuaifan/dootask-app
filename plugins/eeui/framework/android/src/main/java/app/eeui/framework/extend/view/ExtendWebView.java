@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.os.Message;
 import android.provider.MediaStore;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import android.util.AttributeSet;
@@ -28,6 +29,9 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
 import com.taobao.weex.bridge.JSCallback;
 
 import java.io.File;
@@ -50,6 +54,7 @@ import app.eeui.framework.ui.module.WebNavigatorModule;
 import app.eeui.framework.ui.module.WebviewModule;
 
 import static android.app.Activity.RESULT_OK;
+import static android.os.Environment.DIRECTORY_DCIM;
 
 
 /**
@@ -421,7 +426,7 @@ public class ExtendWebView extends WebView {
         new AlertDialog.Builder(getContext()).setOnCancelListener(new ReOnCancelListener()).setItems(selectPicTypeStr, (dialog, which) -> {
             switch (which) {
                 case 0:
-                    openCarcme();
+                    checkPermission();
                     break;
                 case 1:
                     chosePicture();
@@ -431,26 +436,66 @@ public class ExtendWebView extends WebView {
     }
 
     /**
+     * 检查拍照权限
+     */
+    private void checkPermission() {
+        XXPermissions.with(getContext())
+            // 申请单个权限
+            .permission(Permission.CAMERA)
+            .request(new OnPermissionCallback() {
+                @Override
+                public void onGranted(@NonNull List<String> permissions, boolean allGranted) {
+                    if (!allGranted) {
+//                            toast("获取部分权限成功，但部分权限未正常授予");
+                        return;
+                    }
+                    openCarcme();
+                }
+
+                @Override
+                public void onDenied(@NonNull List<String> permissions, boolean doNotAskAgain) {
+                    if (mUploadMessage != null) {
+                        mUploadMessage.onReceiveValue(null);
+                        mUploadMessage = null;
+                    }
+                    if (mUploadMessagesAboveL != null) {
+                        mUploadMessagesAboveL.onReceiveValue(null);
+                        mUploadMessagesAboveL = null;
+                    }
+
+                    if (doNotAskAgain) {
+                        // 如果是被永久拒绝就跳转到应用权限系统设置页面
+                        Toast.makeText(getContext(), "相机权限已被永久拒绝", Toast.LENGTH_SHORT).show();
+                        XXPermissions.startPermissionActivity(getContext(), permissions);
+                    } else {
+//                            toast("获取录音和日历权限失败");
+                        Toast.makeText(getContext(), "相机权限已被拒绝", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+    }
+    /**
      * 【图片上传部分】打开照相机
      */
     private void openCarcme() {
-        String imagePaths = Environment.getExternalStorageDirectory().getPath() + "/BigMoney/Images/" + (System.currentTimeMillis() + ".jpg");
-        // 必须确保文件夹路径存在，否则拍照后无法完成回调
-        File vFile = new File(imagePaths);
-        if (!vFile.exists()) {
-            File vDirPath = vFile.getParentFile();
-            boolean res = vDirPath.mkdirs();
-            if (!res) {
-                return;
-            }
-        } else {
-            if (vFile.exists()) {
-                boolean res = vFile.delete();
-                if (!res) {
-                    return;
-                }
-            }
-        }
+        File vFile = new File(getContext().getExternalFilesDir(DIRECTORY_DCIM),System.currentTimeMillis() + ".png");
+//        String imagePaths = Environment.getExternalStorageDirectory().getPath() + "/BigMoney/Images/" + (System.currentTimeMillis() + ".jpg");
+//        // 必须确保文件夹路径存在，否则拍照后无法完成回调
+//        File vFile = new File(imagePaths);
+//        if (!vFile.exists()) {
+//            File vDirPath = vFile.getParentFile();
+//            boolean res = vDirPath.mkdirs();
+//            if (!res) {
+//                return;
+//            }
+//        } else {
+//            if (vFile.exists()) {
+//                boolean res = vFile.delete();
+//                if (!res) {
+//                    return;
+//                }
+//            }
+//        }
         //
         cameraUri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".provider", vFile);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

@@ -1,5 +1,5 @@
 {
-	"desc": "",
+	"desc": "iOS 扩展程序与主程序的共享储存空间(原生用户)",
 	"requireFormatName": "eeuiShareFiles",
 	"requireName": "eeui/shareFiles"
 }
