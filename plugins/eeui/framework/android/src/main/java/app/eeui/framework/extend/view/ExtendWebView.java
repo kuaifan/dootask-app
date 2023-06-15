@@ -465,8 +465,32 @@ public class ExtendWebView extends WebView {
 
                     if (doNotAskAgain) {
                         // 如果是被永久拒绝就跳转到应用权限系统设置页面
-                        Toast.makeText(getContext(), "相机权限已被永久拒绝", Toast.LENGTH_SHORT).show();
-                        XXPermissions.startPermissionActivity(getContext(), permissions);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                        builder.setTitle("权限申请");
+                        builder.setMessage("在设置-本应用-权限中开启相机权限，以正常使用拍照功能");
+                        builder.setCancelable(true);
+
+                        builder.setPositiveButton("去设置",new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                XXPermissions.startPermissionActivity(getContext(), permissions);
+                            }
+
+                        });
+
+                        builder.setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+
+                        });
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                        alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.parseColor("#000000"));
+                        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#4169E1"));
                     } else {
 //                            toast("获取录音和日历权限失败");
                         Toast.makeText(getContext(), "相机权限已被拒绝", Toast.LENGTH_SHORT).show();
