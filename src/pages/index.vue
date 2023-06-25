@@ -34,8 +34,9 @@ export default {
             umengInit: false,
             umengMessage: {},
             umengError: false,
+            screenHeight:0,
             appGroupID:"group.im.dootask", // iOS共享储存的应用唯一标识符
-            appSubPath:"share" //iOS 储存下一级目录
+            appSubPath:"share", //iOS 储存下一级目录
         }
     },
 
@@ -70,6 +71,7 @@ export default {
     },
 
     mounted() {
+        this.screenHeight = WXEnvironment.deviceHeight
 
         // iOS初始化共享内存
         if (WXEnvironment.platform.toLowerCase() === "ios") {
@@ -87,18 +89,9 @@ export default {
         // this.$refs.web.setUrl("http://192.168.100.36:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
 
-        // setTimeout(()=>{
-        //     // this.onReceiveMessage(123)
-        //     let message = {
-        //         action:"userUploadUrl",
-        //         url:"http://www.google.com",
-        //     }
-        //
-        //     this.onReceiveMessage({
-        //         message
-        //     })
-        //
-        // },2000)
+        setTimeout(()=>{
+
+        },2000)
     },
 
     computed: {
