@@ -114,7 +114,9 @@ public class ShareActivity extends AppCompatActivity  {
         recyclerView = findViewById(R.id.recycler_view);
         recyclerSelect = findViewById(R.id.recyclerSelect);
 
-        init();
+        if (!init()) {
+            return;
+        }
         initShowList();
         initShowSelectList();
         getMainList();
@@ -184,7 +186,7 @@ public class ShareActivity extends AppCompatActivity  {
             }
         }
     }
-    public void init(){
+    public boolean init(){
         eeuiUtils = new eeui();
 
         //获取url连接
@@ -193,7 +195,7 @@ public class ShareActivity extends AppCompatActivity  {
         urlUser = JSON.toJSONString(objectUrlUser).replace("\"", "");//去除双眼号
         if (urlUser.length()<5){
             customToast(getResources().getString(R.string.unLoginTitle),true);
-            return;
+            return false;
         }
         Log.i(TAG,"urlUser="+urlUser);
         //截取_之后字符串
@@ -210,6 +212,8 @@ public class ShareActivity extends AppCompatActivity  {
         if (filePathList.size()==0){
             customToast(getResources().getString(R.string.emptyShareTitle),true);
         }
+
+        return true;
     }
 
     /**
