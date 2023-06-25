@@ -11,24 +11,27 @@
 
             <div style="flex: 1;"></div>
 
-            <div class="button" @click="jointClicked">
-                <text class="content">加入房间</text>
+            <div style="flex-wrap: wrap;flex-direction: row;">
+                <div class="button" @click="jointClicked">
+                    <text class="content">加入房间</text>
+                </div>
+                <div class="button" @click="switchClicked">
+                    <text class="content">切换摄像头</text>
+                </div>
+                <div class="button" @click="silenceClicked">
+                    <text class="content">静音</text>
+                </div>
+                <div class="button" @click="loudlyClicked">
+                    <text class="content">扬声器</text>
+                </div>
+                <div class="button" @click="shutClicked">
+                    <text class="content">闭麦</text>
+                </div>
+                <div class="button" @click="hideClicked">
+                    <text class="content">隐藏</text>
+                </div>
             </div>
-            <div class="button switch" @click="switchClicked">
-                <text class="content">切换摄像头</text>
-            </div>
-            <div class="button silence" @click="silenceClicked">
-                <text class="content">静音</text>
-            </div>
-            <div class="button loudly" @click="loudlyClicked">
-                <text class="content">扬声器</text>
-            </div>
-            <div class="button shut" @click="shutClicked">
-                <text class="content">闭麦</text>
-            </div>
-            <div class="button hide" @click="hideClicked">
-                <text class="content">隐藏</text>
-            </div>
+
         </div>
 
     </div>
