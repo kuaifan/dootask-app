@@ -8,6 +8,7 @@
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
+        <meetings ref="meeting" @endMeeting="endMeeting"></meetings>
     </div>
 </template>
 
@@ -17,6 +18,8 @@
 }
 </style>
 <script>
+import Meetings from "./compoment/meetings.vue";
+
 const eeui = app.requireModule('eeui');
 const deviceInfo = app.requireModule("eeui/deviceInfo");
 const umengPush = app.requireModule("eeui/umengPush");
@@ -26,6 +29,7 @@ const picture = app.requireModule("eeui/picture");
 const shareFile = app.requireModule("eeuiShareFiles");
 
 export default {
+    components: {Meetings},
     data() {
         return {
             uniqueId: '',
@@ -90,8 +94,16 @@ export default {
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
 
         setTimeout(()=>{
-
-        },2000)
+            let param = {
+                token: "007eJxSYHB1ZDm6ZefX4G+7EyYri6bse6e01/mQaavpi3k/X90vZTunwGBsYpRsZmBiamJkYmGSZJBiaWZqaWpknmZumZialpySZPFodkqDERMD3+P5jIwMjAwsDIwMID4TmGQGkyxgkpWhJLW4xJCBARAAAP//KYwjNg==",
+                channel:"test1",
+                uuid: "0",
+                appid:"342c604542484b0d9659527f79aefcdb",
+                video:true,
+                audio:true,
+            }
+            this.$refs.meeting && this.$refs.meeting.joint(param)
+        },12000)
     },
 
     computed: {
@@ -175,8 +187,9 @@ export default {
                         eeui.setCaches('upLoadUrl', message.chatUrl, 0)
                         eeui.setCaches('fileUpLoadUrl', message.dirUrl, 0)
                     }
-
                     break
+                case 'startMeeting':
+                    this.$refs.meeting && this.$refs.meeting.joint(message.meetingParams)
             }
         },
 
@@ -237,6 +250,13 @@ export default {
                 const javascript = `if (typeof window.__onPagePause === "function"){window.__onNotificationPermissionStatus(${ret})}`;
                 this.$refs.web.setJavaScript(javascript);
             });
+        },
+        /**
+         *  结束会议
+         */
+        endMeeting(){
+            // const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
+            // this.$refs.web.setJavaScript(javascript);
         }
     }
 }

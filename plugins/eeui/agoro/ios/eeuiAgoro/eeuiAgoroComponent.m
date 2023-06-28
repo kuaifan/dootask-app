@@ -88,7 +88,7 @@ WX_EXPORT_METHOD(@selector(animate))//导出方法
     self.localCaves = videoCanvas;
     [constKit setupLocalVideo:videoCanvas];
     
-    [constKit startPreview];
+//    [constKit startPreview];
 }
 
 - (void)joinstream:(NSNotification *)notification {

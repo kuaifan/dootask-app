@@ -46,7 +46,17 @@ WX_EXPORT_METHOD_SYNC(@selector(muteAllRemoteAudioStreams:))
 WX_EXPORT_METHOD_SYNC(@selector(muteRemoteAudioStream:volume:))
 WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 
+
+/// 初始化
+/// - Parameters:
+///   - params: 初始化参数
+///   - callback: 回调函数
 - (void)initialWithParam:(NSDictionary *)params callback:(WXModuleKeepAliveCallback)callback {
+    
+    if (self.engkit) {
+        return;
+    }
+    
     NSString *paramid = params[@"id"];
     
     self.retBlock = callback;
@@ -117,8 +127,9 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 }
 
 - (void)leaveChannel{
+    __weak typeof(self) weakself = self;
     [self.engkit leaveChannel:^(AgoraChannelStats * _Nonnull state) {
-        __weak typeof(self) weakself = self;
+        
         weakself.localStatusBlock ? weakself.localStatusBlock(@-1, YES): nil;
         
     }];
@@ -149,6 +160,8 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 - (void)destroy{
     [AgoraRtcEngineKit destroy];
     self.engkit = nil;
+    self.localStatusBlock = nil;
+    self.statusBlock = nil;
 }
 
 - (int)switchCamera {
@@ -156,7 +169,16 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 }
 
 - (void)enableVideo:(BOOL)enable {
-    enable ? [self.engkit enableVideo] : [self.engkit disableVideo];
+    if (enable) {
+        [self.engkit startPreview];
+        [self.engkit enableVideo];
+        
+    } else {
+        [self.engkit stopPreview];
+        [self.engkit disableVideo];
+        
+    }
+
 }
 
 - (void)enableAudio:(BOOL)enable {
@@ -219,6 +241,14 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
     
 }
 
+
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine localVideoStateChangedOfState:(AgoraVideoLocalState)state error:(AgoraLocalVideoStreamError)error sourceType:(AgoraVideoSourceType)sourceType{
+    self.statusBlock?self.statusBlock(@{@"uuid": @"me", @"status": @(state), @"type":@"video"}, YES): nil;
+}
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine localAudioStateChanged:(AgoraAudioLocalState)state error:(AgoraAudioLocalError)error {
+    self.statusBlock?self.statusBlock(@{@"uuid": @"me", @"status": @(state), @"type":@"audio"}, YES): nil;
+}
+
 - (void)rtcEngine:(AgoraRtcEngineKit *)engine remoteVideoStateChangedOfUid:(NSUInteger)uid state:(AgoraVideoRemoteState)state reason:(AgoraVideoRemoteReason)reason elapsed:(NSInteger)elapsed
 {
     NSLog(@"remoteVideoStateChangedOfUid %@ %@ %@", @(uid), @(state), @(reason));
@@ -258,6 +288,7 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 
 -(void)rtcEngine:(AgoraRtcEngineKit *)engine didLeaveChannelWithStats:(AgoraChannelStats *)stats{
     NSLog(@"didLeaveChannel");
+    self.localStatusBlock ? self.localStatusBlock(@-1, YES): nil;
 }
 
 -(void)rtcEngine:(AgoraRtcEngineKit *)engine didJoinChannel:(NSString *)channel withUid:(NSUInteger)uid elapsed:(NSInteger)elapsed{
