@@ -326,9 +326,15 @@ public class ShareActivity extends AppCompatActivity  {
         if (sendUserChatList.size()>0 || folderSelectList.size()>1){
             tvSend.setTextColor(Color.parseColor("#4169E1"));
             tvSend.setClickable(true);
+            if (!isUploadDir && sendUserChatList.size()>0){
+                tvSend.setText(getResources().getString(R.string.sendTitle)+"("+sendUserChatList.size()+")");
+            }else if (isUploadDir && folderSelectList.size()>1){
+                tvSend.setText(getResources().getString(R.string.sendTitle)+"("+1+")");
+            }
         }else {
             tvSend.setTextColor(Color.parseColor("#33000000"));
             tvSend.setClickable(false);
+            tvSend.setText(getResources().getString(R.string.sendTitle));
         }
     }
     //请求用户列表

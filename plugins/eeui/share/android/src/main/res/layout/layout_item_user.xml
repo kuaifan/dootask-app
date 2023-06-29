@@ -9,8 +9,8 @@
         android:layout_height="70dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp">
         <ImageView
             android:id="@+id/avatar"
             android:layout_width="40dp"
@@ -33,8 +33,8 @@
         </LinearLayout>
         <ImageView
             android:id="@+id/imgSelect"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/radio_button_default"></ImageView>
     </LinearLayout>
     <LinearLayout
