@@ -11,6 +11,7 @@ import com.yanzhenjie.permission.runtime.Permission;
 
 import org.greenrobot.eventbus.EventBus;
 
+import io.agora.rtc.Constants;
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 
@@ -28,6 +29,10 @@ public class AgoraRtcPresenter {
     private boolean isLeaveChannel = false;
 
     private AgoraRtcPresenter(){}
+
+    public RtcEngine getmRtcEngine() {
+        return mRtcEngine;
+    }
 
     public static synchronized AgoraRtcPresenter getInstance(){
         if (sAgoraRtcPresenter == null){
@@ -49,6 +54,8 @@ public class AgoraRtcPresenter {
         try {
             mRtcEngine = RtcEngine.create(context, appId, iRtcEngineEventHandler);
             if (mRtcEngine != null){
+
+                // Enable video module
                 mRtcEngine.enableVideo();
                 Log.d(TAG,"RtcEngine 初始化成功");
             }
@@ -138,6 +145,7 @@ public class AgoraRtcPresenter {
      * 释放资源
      */
     public void destroy(){
+        Log.d(TAG, "destroy: ssss");
         if (mRtcEngine != null){
             mRtcEngine.stopPreview();
             mRtcEngine.destroy();
@@ -162,16 +170,18 @@ public class AgoraRtcPresenter {
      * 启用视频模块
      */
     public int enableVideo(){
+        int r = mRtcEngine.enableLocalVideo(true);
         mRtcEngine.startPreview();
 
-        return mRtcEngine.enableLocalVideo(true);
+        return r;
     }
     /**
      * 启用视频模块
      */
     public int disableVideo(){
+        int r = mRtcEngine.enableLocalVideo(false);
         mRtcEngine.stopPreview();
-        return mRtcEngine.enableLocalVideo(false);
+        return r;
     }
 
     /**

@@ -21,6 +21,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
+
+import eeui.android.eeuiAgoro.client.AgoraRtcPresenter;
 import eeui.android.eeuiAgoro.client.Event;
 import io.agora.rtc.Constants;
 import io.agora.rtc.IRtcEngineEventHandler;
@@ -32,16 +34,22 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
     private int uuid = -1;
     private FrameLayout mFrameLayout;
 
+    private SurfaceView mSurfaceView;
     public eeuiAgoroComponent(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
         super(instance, parent, basicComponentData);
-        EventBus.getDefault().register(this);
+        Log.d(TAG, "eeuiAgoroComponent: ");
+
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
     }
 
     @Override
     protected FrameLayout initComponentHostView(@NonNull Context context) {
-            if (mFrameLayout == null){
-                mFrameLayout = new FrameLayout(context);
-            }
+        if (mFrameLayout == null){
+            mFrameLayout = new FrameLayout(context);
+        }
         return mFrameLayout;
     }
 
@@ -64,7 +72,7 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
             mFrameLayout = new FrameLayout(getContext());
         }
         Log.d(TAG,"event=>"+event.getMassage());
-        if (event.getMassage() == "local"){
+        if (event.getMassage().equals("local")){
             setupLocalVideo(event);
         }else {
             setupRemoteVideo(event);
@@ -73,9 +81,6 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
     }
 
     public void setupLocalVideo(Event event){
-        if (mFrameLayout.getChildCount()>0){
-            mFrameLayout.removeAllViews();
-        }
         int uid = event.getUid();
         Log.d(TAG,"setupLocalVideo()->"+uid);
         RtcEngine mRtcEngine = event.getRtcEngine();
@@ -86,21 +91,27 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
          CHANNEL_PROFILE_LIVE_BROADCASTING(1): The Live-Broadcast profile. Users in a live-broadcast
          channel have a role as either broadcaster or audience. A broadcaster can both send and receive streams;
          an audience can only receive streams.*/
-        mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
-        /**In the demo, the default is to enter as the anchor.*/
-        mRtcEngine.setClientRole(IRtcEngineEventHandler.ClientRole.CLIENT_ROLE_BROADCASTER);
-        // Enable video module
-        mRtcEngine.enableVideo();
 
-        SurfaceView surfaceView = RtcEngine.CreateRendererView(getContext());
-        // Add to the local container
-        mFrameLayout.addView(surfaceView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        //Setup local video to render your local camera preview
-        mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, RENDER_MODE_HIDDEN, uid));
-        // Set audio route to microPhone
-        mRtcEngine.setDefaultAudioRoutetoSpeakerphone(true);
-        //开启视频预览
-        mRtcEngine.startPreview();
+        if (mSurfaceView == null) {
+            mSurfaceView = RtcEngine.CreateRendererView(getContext());
+            if (mSurfaceView == null) {
+                Log.d(TAG, "mSurfaceView: fail ");
+                return;
+            }
+            // Add to the local container
+            mFrameLayout.addView(mSurfaceView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            //Setup local video to render your local camera preview
+            mRtcEngine.setupLocalVideo(new VideoCanvas(mSurfaceView, RENDER_MODE_HIDDEN, uid));
+
+            mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
+            /**In the demo, the default is to enter as the anchor.*/
+            mRtcEngine.setClientRole(IRtcEngineEventHandler.ClientRole.CLIENT_ROLE_BROADCASTER);
+            // Set audio route to microPhone
+            mRtcEngine.setDefaultAudioRoutetoSpeakerphone(true);
+            //开启视频预览
+            mRtcEngine.startPreview();
+        }
+
     }
 
     public void setupRemoteVideo(Event event){
@@ -110,17 +121,24 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
             return;
         }
         RtcEngine mRtcEngine = event.getRtcEngine();
-        SurfaceView surfaceView = RtcEngine.CreateRendererView(getContext());
+        if (mSurfaceView == null) {
+            mSurfaceView = RtcEngine.CreateRendererView(getContext());
+            // Add to the local container
+            mFrameLayout.addView(mSurfaceView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mSurfaceView.setZOrderMediaOverlay(true);
+        }
         //远端绑定
-        surfaceView.setZOrderMediaOverlay(true);
-        mFrameLayout.addView(surfaceView,new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mRtcEngine.setupRemoteVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_HIDDEN, uid));
+
+        mRtcEngine.setupRemoteVideo(new VideoCanvas(mSurfaceView, VideoCanvas.RENDER_MODE_HIDDEN, uid));
     }
     @Override
     public void onActivityDestroy() {
         super.onActivityDestroy();
         Log.d(TAG,"onActivityDestroy");
-        EventBus.getDefault().unregister(this);
+//        if (!EventBus.getDefault().isRegistered(this)) {
+//
+//        }
+//        EventBus.getDefault().unregister(this);
     }
 
 }

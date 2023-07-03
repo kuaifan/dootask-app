@@ -161,23 +161,12 @@ export default {
             return style;
         }
     },
-    watch:{
-        uuids(){
-            if(this.uuids.length == 1){
-                this.$nextTick(()=>{
-
-                })
-            }
-        }
-    },
     methods:{
         /**
          *
          * @param appid
          */
         initAgoro(appid) {
-            // 342c604542484b0d9659527f79aefcdb
-
             agoro.initialWithParam({
                 id: appid
             },(jointData)=>{
@@ -204,16 +193,11 @@ export default {
                         return item.uuid != uuid;
                     })
                     console.info(this.uuids);
-                    // for (let index = 0; index < this.uuids.length; index++) {
-                    //     const element = this.uuids[index];
-                    //     if (element.uuid == uuid) {
-                    //         this.uuids = this.uuids.splice(index, 1);
-                    //     }
-                    // }
                 }
             });
             agoro.statusCallback((statsParam)=>{
                 console.info("statsParam:",statsParam);
+                return;
                 // console.info(statsParam);
                 if (statsParam.uuid === "me") {
                     // 本地状态回调
@@ -267,7 +251,7 @@ export default {
         joint(param){
 
             param = {
-                token: "007eJxSYPiVvL1ljvUpjviNb5pzWZuKxMXevfipHPT3QIqw9r9JUX8UGIxNjJLNDExMTYxMLEySDFIszUwtTY3M08wtE1PTklOSAjfPS2kwYmLQfebFwMjAyMDCwMgA4jOBSWYwyQImWRlKUotLDBkYAAEAAP//+Xwidw==",
+                token: "007eJxSYBDWMQtcavZkw8++a6sKXpQ6nrhdsm/O+y1nDzlzm18ImXRegcHYxCjZzMDE1MTIxMIkySDF0szU0tTIPM3cMjE1LTklKVlnUUqDERPD1w9XWBgZGBlYGBgZQHwmMMkMJlnAJCtDSWpxiSEDAyAAAP//gmokgQ==",
                 channel:"test1",
                 uid: "0",
                 appid:"342c604542484b0d9659527f79aefcdb",
@@ -283,21 +267,24 @@ export default {
             this.video = param.video;
             this.audio = param.audio;
 
-            agoro.jointChanel(param, (info)=>{
-                this.showShow = true;
-                this.mini = false;
-                this.uuid = info.uuid;
-                this.uuids.push({
-                    uuid: this.uuid,
-                    audio: param.audio,
-                    video: param.video
+            setTimeout(()=>{
+                agoro.jointChanel(param, (info)=>{
+                    this.showShow = true;
+                    this.mini = false;
+                    this.uuid = info.uuid;
+                    this.uuids.push({
+                        uuid: this.uuid,
+                        audio: param.audio,
+                        video: param.video
+                    })
+                    this.$nextTick(()=>{
+                        agoro.enableVideo(param.video)
+                        agoro.enableAudio(param.audio)
+                    })
+                    console.info(info)
                 })
-                this.$nextTick(()=>{
-                    agoro.enableVideo(param.video)
-                    agoro.enableAudio(param.audio)
-                })
-                console.info(info)
-            })
+            },500)
+
         },
         zoomClick() {
             this.mini = false;
@@ -349,10 +336,14 @@ export default {
         },
 
         load(param){
+            console.info(param)
             let uuid = param.target.attr.uuid;
 
-            if (uuid == this.uuid) {
-                agoro.blindLocal(this.uuids[0].uuid);
+            if (uuid === this.uuid) {
+                console.info("blindLocal");
+                this.$nextTick(()=>{
+                    agoro.blindLocal(this.uuid);
+                })
                 return;
             }
 
