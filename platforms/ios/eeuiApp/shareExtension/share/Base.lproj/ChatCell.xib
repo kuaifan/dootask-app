@@ -44,16 +44,16 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NickName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="whV-fr-YOQ">
-                        <rect key="frame" x="58" y="21" width="329" height="18"/>
+                        <rect key="frame" x="58" y="21" width="325" height="18"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="76A-Rb-V4Q">
-                        <rect key="frame" x="395" y="21" width="18" height="18"/>
+                        <rect key="frame" x="391" y="19" width="22" height="22"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="18" id="4Cm-Kn-AU0"/>
-                            <constraint firstAttribute="height" constant="18" id="w0V-R4-pbs"/>
+                            <constraint firstAttribute="width" constant="22" id="4Cm-Kn-AU0"/>
+                            <constraint firstAttribute="height" constant="22" id="w0V-R4-pbs"/>
                         </constraints>
                     </imageView>
                 </subviews>
