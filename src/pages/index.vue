@@ -93,17 +93,17 @@ export default {
         // this.$refs.web.setUrl("http://192.168.100.36:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
 
-        setTimeout(()=>{
-            let param = {
-                token: "007eJxSYHB1ZDm6ZefX4G+7EyYri6bse6e01/mQaavpi3k/X90vZTunwGBsYpRsZmBiamJkYmGSZJBiaWZqaWpknmZumZialpySZPFodkqDERMD3+P5jIwMjAwsDIwMID4TmGQGkyxgkpWhJLW4xJCBARAAAP//KYwjNg==",
-                channel:"test1",
-                uuid: "0",
-                appid:"342c604542484b0d9659527f79aefcdb",
-                video:true,
-                audio:true,
-            }
-            this.$refs.meeting && this.$refs.meeting.joint(param)
-        },12000)
+        // setTimeout(()=>{
+        //     let param = {
+        //         token: "007eJxSYHB1ZDm6ZefX4G+7EyYri6bse6e01/mQaavpi3k/X90vZTunwGBsYpRsZmBiamJkYmGSZJBiaWZqaWpknmZumZialpySZPFodkqDERMD3+P5jIwMjAwsDIwMID4TmGQGkyxgkpWhJLW4xJCBARAAAP//KYwjNg==",
+        //         channel:"test1",
+        //         uuid: "0",
+        //         appid:"342c604542484b0d9659527f79aefcdb",
+        //         video:true,
+        //         audio:true,
+        //     }
+        //     this.$refs.meeting && this.$refs.meeting.joint(param)
+        // },12000)
     },
 
     computed: {

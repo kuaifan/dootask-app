@@ -95,6 +95,7 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 }
 
 - (void)jointChanel:(NSDictionary *)params callback:(WXModuleKeepAliveCallback)callback {
+    
     NSString *token = params[@"token"];
     NSString *channelID = params[@"channel"];
     NSInteger uuid = [params[@"uuid"] integerValue];
@@ -171,18 +172,18 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 - (void)enableVideo:(BOOL)enable {
     if (enable) {
         [self.engkit startPreview];
-        [self.engkit enableVideo];
+        [self.engkit enableLocalVideo:enable];
         
     } else {
         [self.engkit stopPreview];
-        [self.engkit disableVideo];
+        [self.engkit enableLocalVideo:enable];
         
     }
 
 }
 
 - (void)enableAudio:(BOOL)enable {
-    enable ? [self.engkit enableAudio] : [self.engkit disableAudio];
+    [self.engkit enableLocalAudio:enable];
 }
 
 - (int)adjustRecording:(int)volume{
@@ -191,6 +192,13 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 }
 
 - (int)localVideo:(BOOL)mute{
+    if (mute) {
+        [self.engkit startPreview];
+        
+    } else {
+        [self.engkit stopPreview];
+    }
+    
     return [self.engkit muteLocalVideoStream:mute];
 }
 
@@ -240,7 +248,6 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
     self.retBlock ? self.retBlock(params, YES): nil;
     
 }
-
 
 -(void)rtcEngine:(AgoraRtcEngineKit *)engine localVideoStateChangedOfState:(AgoraVideoLocalState)state error:(AgoraLocalVideoStreamError)error sourceType:(AgoraVideoSourceType)sourceType{
     self.statusBlock?self.statusBlock(@{@"uuid": @"me", @"status": @(state), @"type":@"video"}, YES): nil;
@@ -302,14 +309,19 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 -(void)rtcEngine:(AgoraRtcEngineKit *)engine connectionChangedToState:(AgoraConnectionState)state reason:(AgoraConnectionChangedReason)reason{
     self.statusBlock?self.statusBlock(@{@"uuid": @(0), @"status": @(state)}, YES): nil;
     if (state == AgoraConnectionStateFailed) {
+        __weak typeof(self) weakself = self;
         [engine leaveChannel:^(AgoraChannelStats * _Nonnull stat) {
-                    
+            weakself.localStatusBlock ? weakself.localStatusBlock(@-1, YES): nil;
         }];
     }
     
     NSLog(@"connectionChangedToState %ld reason%ld", (long)state, (long)reason);
 }
 
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine didUserInfoUpdatedWithUserId:(NSUInteger)uid userInfo:(AgoraUserInfo *)userInfo{
+    
+    NSLog(@"didUserInfoUpdatedWithUserId %ld userInfo%@", (long)uid, userInfo.userAccount);
+}
 #pragma mark - getter
 -(NSMutableArray<NSNumber *> *)waitArray{
     if (!_waitArray) {

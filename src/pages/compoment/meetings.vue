@@ -4,6 +4,10 @@
             <div class="render-views">
                 <div class="grid-item" v-for="item in uuids">
                     <eeuiAgoro-com class="local" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
+                    <div style="position: absolute; top: 5px;right: 10px; flex-direction: row;" >
+                        <image v-if="!item.video"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
+                        <image v-if="!item.audio"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
+                    </div>
 <!--                    <image class="mute" :src="item.mute?'root://assets/mute_on@2x.png':'root://assets/mute_off@2x.png'" @click="remoteSlicent(item)"></image>-->
 <!--                    <image class="mute" :src="item.video?'root://assets/mute_on@2x.png':'root://assets/mute_off@2x.png'" @click="remoteVideo(item)"></image>-->
                 </div>
@@ -12,9 +16,9 @@
             <div style="flex: 1;"></div>
 
             <div style="flex-wrap: wrap;flex-direction: row; background-color: #0a3069;">
-<!--                <div class="button" @click="joint">-->
-<!--                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_video_off.png"></image>-->
-<!--                </div>-->
+                <div class="button" @click="joint">
+                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_video_off.png"></image>
+                </div>
                 <div class="button" @click="videoEnable">
                     <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
                 </div>
@@ -134,7 +138,7 @@ export default {
             uuids:[],
             uuid:0,
             mini:false,
-            showShow: false,
+            showShow: true,
             video:false,
             audio:false
         };
@@ -180,6 +184,7 @@ export default {
                 let uuid = jointData.uuid;
                 if (jointData.action == "joint") {
                     console.info("joint:"+ uuid);
+                    console.info("jointData:"+ uuid);
                     var shouldAdd = true;
                     for (let index = 0; index < this.uuids.length; index++) {
                         const element = this.uuids[index];
@@ -188,18 +193,23 @@ export default {
                         }
                     }
                     if (shouldAdd == true) {
-                        this.uuids.push({uuid:uuid, mute:false, video:true});
+                        this.uuids.push({uuid:uuid, audio:true, video:true});
                     }
                     //
 
                 } else if (jointData.action == "leave") {
                     console.info("leave:"+ uuid);
-                    for (let index = 0; index < this.uuids.length; index++) {
-                        const element = this.uuids[index];
-                        if (element.uuid == uuid) {
-                            this.uuids.splice(index, 1);
-                        }
-                    }
+                    console.info(this.uuids);
+                    this.uuids = this.uuids.filter(item=>{
+                        return item.uuid != uuid;
+                    })
+                    console.info(this.uuids);
+                    // for (let index = 0; index < this.uuids.length; index++) {
+                    //     const element = this.uuids[index];
+                    //     if (element.uuid == uuid) {
+                    //         this.uuids = this.uuids.splice(index, 1);
+                    //     }
+                    // }
                 }
             });
             agoro.statusCallback((statsParam)=>{
@@ -208,25 +218,29 @@ export default {
                 if (statsParam.uuid === "me") {
                     // 本地状态回调
                     if (statsParam.type === "video"){
-                        if (this.uuids[0]) this.uuids[0].video = statsParam.status == 1;
+                        if (this.uuids[0]) this.uuids[0].video = (statsParam.status == 1 || statsParam.status == 2);
                     } else  {
-                        if (this.uuids[0]) this.uuids[0].audio = statsParam.status == 1;
+                        if (this.uuids[0]) this.uuids[0].audio = (statsParam.status == 1 || statsParam.status == 2);
                     }
                 } else {
                     // 其他状态回调
                     let uuid = statsParam.uuid
+                    console.info("beforeStatus:",this.uuids)
                     this.uuids = this.uuids.map(item =>{
                         if(item.uuid == uuid) {
                             if (statsParam.type === "video"){
-                                return item.video = statsParam.status == 1;
+                                item.video = (statsParam.status == 1 || statsParam.status == 2)
+                                return item;
                             } else  {
-                                return item.audio = statsParam.status == 1;
+                                item.audio = (statsParam.status == 1 || statsParam.status == 2)
+                                return item;
                             }
 
                         }else  {
                             return item
                         }
                     })
+                    console.info("afterStatus:",this.uuids)
                 }
 
             });
@@ -253,16 +267,16 @@ export default {
         joint(param){
 
             param = {
-                token: "007eJxSYHB1ZDm6ZefX4G+7EyYri6bse6e01/mQaavpi3k/X90vZTunwGBsYpRsZmBiamJkYmGSZJBiaWZqaWpknmZumZialpySZPFodkqDERMD3+P5jIwMjAwsDIwMID4TmGQGkyxgkpWhJLW4xJCBARAAAP//KYwjNg==",
+                token: "007eJxSYPiVvL1ljvUpjviNb5pzWZuKxMXevfipHPT3QIqw9r9JUX8UGIxNjJLNDExMTYxMLEySDFIszUwtTY3M08wtE1PTklOSAjfPS2kwYmLQfebFwMjAyMDCwMgA4jOBSWYwyQImWRlKUotLDBkYAAEAAP//+Xwidw==",
                 channel:"test1",
-                uuid: "0",
+                uid: "0",
                 appid:"342c604542484b0d9659527f79aefcdb",
                 video:true,
                 audio:true,
             }
 
             let appid = param.appid;
-            console.info("param",param);
+
             this.initAgoro(appid)
             param.uuid = param.uid
 
@@ -300,7 +314,7 @@ export default {
 
         audioEnable() {
             this.audio = !this.audio
-            agoro.enableAudio(this.video)
+            agoro.enableAudio(this.audio)
         },
 
         invent() {

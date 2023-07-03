@@ -77,8 +77,8 @@ public class eeuiAgoroAppModule extends WXModuleBase {
     }
 
     @JSMethod
-    public void jointChanel(final String object){
-        AgoraRtcPresenter.getInstance().jointChanel(object);
+    public void jointChanel(final String object,final JSCallback callback){
+        AgoraRtcPresenter.getInstance().jointChanel(object,callback);
     }
 
     /**
@@ -90,8 +90,23 @@ public class eeuiAgoroAppModule extends WXModuleBase {
     }
 
     @JSMethod
-    public int enableAudio(){
-        return AgoraRtcPresenter.getInstance().enableAudio();
+    public int enableAudio(boolean enable){
+
+        if (enable) {
+            return AgoraRtcPresenter.getInstance().enableAudio();
+        } else {
+            return AgoraRtcPresenter.getInstance().disableAudio();
+        }
+    }
+
+    @JSMethod
+    public int enableVideo(boolean enable){
+        if (enable) {
+            return AgoraRtcPresenter.getInstance().enableVideo();
+        }else {
+            return AgoraRtcPresenter.getInstance().disableVideo();
+        }
+
     }
     @JSMethod
     public int adjustRecording(int volume){
@@ -150,7 +165,7 @@ public class eeuiAgoroAppModule extends WXModuleBase {
 
     @JSMethod
     public void statusCallback(final JSCallback callback){
-
+        AgoraRtcPresenter.getInstance().statusCallback(callback);
     }
 
     @JSMethod

@@ -21,6 +21,9 @@ public class AgoraRtcPresenter {
     private RtcEngine mRtcEngine;
     private JSCallback mJSCallback;
     private JSCallback mLocalJSCallback;
+    private JSCallback mStatusCallback;
+
+    private JSCallback mJointCallback;
     private Context mContext;
     private boolean isLeaveChannel = false;
 
@@ -40,9 +43,13 @@ public class AgoraRtcPresenter {
         mJSCallback = callback;
         JSONObject jsonObject = JSONObject.parseObject(object);
         String appId = jsonObject.getString("id");
+        if (mRtcEngine != null) {
+            return;
+        }
         try {
             mRtcEngine = RtcEngine.create(context, appId, iRtcEngineEventHandler);
             if (mRtcEngine != null){
+                mRtcEngine.enableVideo();
                 Log.d(TAG,"RtcEngine 初始化成功");
             }
         } catch (Exception e) {
@@ -90,8 +97,9 @@ public class AgoraRtcPresenter {
      * 加入频道
      * @param object
      */
-    public void jointChanel(String object){
+    public void jointChanel(String object,final JSCallback callback){
 
+        this.mJointCallback = callback;
         String accessToken = "";
         String channelName = "";
         int uid = 0;
@@ -122,6 +130,10 @@ public class AgoraRtcPresenter {
         mLocalJSCallback = callback;
     }
 
+    public void statusCallback(final JSCallback callback){
+        mStatusCallback = callback;
+    }
+
     /**
      * 释放资源
      */
@@ -130,6 +142,8 @@ public class AgoraRtcPresenter {
             mRtcEngine.stopPreview();
             mRtcEngine.destroy();
             mRtcEngine = null;
+            mJSCallback = null;
+            mLocalJSCallback = null;
         }
         if (sAgoraRtcPresenter != null){
             sAgoraRtcPresenter = null;
@@ -148,14 +162,28 @@ public class AgoraRtcPresenter {
      * 启用视频模块
      */
     public int enableVideo(){
-        return mRtcEngine.enableVideo();
+        mRtcEngine.startPreview();
+
+        return mRtcEngine.enableLocalVideo(true);
+    }
+    /**
+     * 启用视频模块
+     */
+    public int disableVideo(){
+        mRtcEngine.stopPreview();
+        return mRtcEngine.enableLocalVideo(false);
     }
 
     /**
      * 启用音频模块
      */
     public int enableAudio(){
-        return mRtcEngine.enableAudio();
+        return mRtcEngine.enableLocalAudio(true);
+    }
+
+    public int disableAudio(){
+//        mRtcEngine.stopPreview();
+        return mRtcEngine.enableLocalAudio(false);
     }
 
     public int adjustRecording(int volume){
@@ -230,17 +258,52 @@ public class AgoraRtcPresenter {
         @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
             Log.i(TAG, String.format("onJoinChannelSuccess channel %s uid %d", channel, uid));
+            JSONObject json = new JSONObject();
+            json.put("channel",channel);
+            json.put("uuid",uid);
+            json.put("elapsed",elapsed);
+            mJointCallback.invoke(json);
         }
 
         @Override
         public void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed) {
             super.onRemoteVideoStateChanged(uid, state, reason, elapsed);
             Log.i(TAG, "onRemoteVideoStateChanged->" + uid + ", state->" + state + ", reason->" + reason);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type","video");
+            jsonObject.put("uuid",uid);
+            jsonObject.put("status",state);
+            mStatusCallback.invokeAndKeepAlive(jsonObject);
         }
 
         @Override
         public void onRemoteAudioStateChanged(int uid, int state, int reason, int elapsed) {
             super.onRemoteAudioStateChanged(uid, state, reason, elapsed);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type","audio");
+            jsonObject.put("uuid",uid);
+            jsonObject.put("status",state);
+            mStatusCallback.invokeAndKeepAlive(jsonObject);
+        }
+
+        @Override
+        public void onLocalAudioStateChanged(int state, int error) {
+            super.onLocalAudioStateChanged(state, error);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type","audio");
+            jsonObject.put("uuid","me");
+            jsonObject.put("status",state);
+            mStatusCallback.invokeAndKeepAlive(jsonObject);
+        }
+
+        @Override
+        public void onLocalVideoStateChanged(int localVideoState, int error) {
+            super.onLocalVideoStateChanged(localVideoState, error);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type","video");
+            jsonObject.put("uuid","me");
+            jsonObject.put("status",localVideoState);
+            mStatusCallback.invokeAndKeepAlive(jsonObject);
         }
 
         /**
@@ -254,7 +317,10 @@ public class AgoraRtcPresenter {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("action","joint");
             jsonObject.put("uuid",uid);
-            mJSCallback.invokeAndKeepAlive(jsonObject);
+            if (mJSCallback != null){
+                mJSCallback.invokeAndKeepAlive(jsonObject);
+            }
+
         }
 
         /**
@@ -270,7 +336,9 @@ public class AgoraRtcPresenter {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("action","leave");
             jsonObject.put("uuid",uid);
-            mJSCallback.invokeAndKeepAlive(jsonObject);
+            if (mJSCallback != null){
+                mJSCallback.invokeAndKeepAlive(jsonObject);
+            }
         }
     };
 }
