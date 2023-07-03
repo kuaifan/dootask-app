@@ -11,9 +11,11 @@ import com.yanzhenjie.permission.runtime.Permission;
 
 import org.greenrobot.eventbus.EventBus;
 
-import io.agora.rtc.Constants;
-import io.agora.rtc.IRtcEngineEventHandler;
-import io.agora.rtc.RtcEngine;
+import io.agora.rtc2.ChannelMediaOptions;
+import io.agora.rtc2.Constants;
+import io.agora.rtc2.IRtcEngineEventHandler;
+import io.agora.rtc2.RtcEngine;
+
 
 public class AgoraRtcPresenter {
     private static final String TAG = AgoraRtcPresenter.class.getCanonicalName();
@@ -27,6 +29,8 @@ public class AgoraRtcPresenter {
     private JSCallback mJointCallback;
     private Context mContext;
     private boolean isLeaveChannel = false;
+
+    public boolean currentVideo = true;
 
     private AgoraRtcPresenter(){}
 
@@ -54,9 +58,8 @@ public class AgoraRtcPresenter {
         try {
             mRtcEngine = RtcEngine.create(context, appId, iRtcEngineEventHandler);
             if (mRtcEngine != null){
-
                 // Enable video module
-                mRtcEngine.enableVideo();
+
                 Log.d(TAG,"RtcEngine 初始化成功");
             }
         } catch (Exception e) {
@@ -90,14 +93,14 @@ public class AgoraRtcPresenter {
     }
     public void setupLocalVideo(final int uid){
         //发送事件
-        EventBus.getDefault().post(new Event(uid, mRtcEngine, "local"));
+        EventBus.getDefault().postSticky(new Event(uid, mRtcEngine, "local"));
     }
     /**
      * 设置远端视频
      */
     public void setupRemoteVideo(int uid){
         //发送事件
-        EventBus.getDefault().post(new Event(uid, mRtcEngine, "remote"));
+        EventBus.getDefault().postSticky(new Event(uid, mRtcEngine, "remote"));
     }
 
     /**
@@ -115,8 +118,13 @@ public class AgoraRtcPresenter {
         channelName = jsonObject.getString("channel");
         uid = jsonObject.getIntValue("uid");
         Log.d(TAG,"jointChanel->uid->"+uid);
+        ChannelMediaOptions options = new ChannelMediaOptions();
+        // 视频通话场景下，设置频道场景为 BROADCASTING。
+        options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION;
+        // 将用户角色设置为 BROADCASTER。
+        options.clientRoleType = Constants.CLIENT_ROLE_BROADCASTER;
         // 使用 Token 加入频道。
-        mRtcEngine.joinChannel(accessToken, channelName, "Extra Optional Data", uid);
+        mRtcEngine.joinChannel(accessToken, channelName, uid, options);
     }
 
     /**
@@ -181,6 +189,7 @@ public class AgoraRtcPresenter {
     public int disableVideo(){
         int r = mRtcEngine.enableLocalVideo(false);
         mRtcEngine.stopPreview();
+        currentVideo = false;
         return r;
     }
 
@@ -230,12 +239,6 @@ public class AgoraRtcPresenter {
 
     private final IRtcEngineEventHandler iRtcEngineEventHandler = new IRtcEngineEventHandler() {
 
-        /**Reports a warning during SDK runtime.
-         * Warning code: https://docs.agora.io/en/Voice/API%20Reference/java/classio_1_1agora_1_1rtc_1_1_i_rtc_engine_event_handler_1_1_warn_code.html*/
-        @Override
-        public void onWarning(int warn){
-            Log.w(TAG, String.format("onWarning code %d message %s", warn, RtcEngine.getErrorDescription(warn)));
-        }
 
         /**Reports an error during SDK runtime.
          * Error code: https://docs.agora.io/en/Voice/API%20Reference/java/classio_1_1agora_1_1rtc_1_1_i_rtc_engine_event_handler_1_1_error_code.html*/
@@ -307,14 +310,15 @@ public class AgoraRtcPresenter {
         }
 
         @Override
-        public void onLocalVideoStateChanged(int localVideoState, int error) {
-            super.onLocalVideoStateChanged(localVideoState, error);
+        public void onLocalVideoStateChanged(Constants.VideoSourceType source, int state, int error) {
+            super.onLocalVideoStateChanged(source, state, error);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type","video");
             jsonObject.put("uuid","me");
-            jsonObject.put("status",localVideoState);
+            jsonObject.put("status",state);
             mStatusCallback.invokeAndKeepAlive(jsonObject);
         }
+
 
         /**
          * 远端用户加入当前频道回调

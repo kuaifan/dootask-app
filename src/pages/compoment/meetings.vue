@@ -1,12 +1,21 @@
 <template>
     <div class="mask" v-if="showShow" :style="videoStyle" @click="zoomClick(false)">
-        <div style="padding: 16px; flex:1;background-color: #00A77D;">
+        <div style="padding: 16px; flex:1;background-color: white;">
             <div class="render-views">
                 <div class="grid-item" v-for="item in uuids">
                     <eeuiAgoro-com class="local" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
+                    <image v-if="item.videoStatus == 0" :src="item.avatar" style="position: absolute; top: 0;left: 0;right: 0;bottom: 0; flex-direction: row; background-color: #00A77D;"></image>
                     <div style="position: absolute; top: 5px;right: 10px; flex-direction: row;" >
                         <image v-if="!item.video"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
                         <image v-if="!item.audio"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
+                    </div>
+
+                    <div style="position: absolute; bottom: 4px; right: 4px; width: 80px; height: 80px; border-radius: 40px;overflow: hidden;">
+                        <image style="width: 80px; height: 80px; border-radius: 40px; background-color: white;" :src="item.avatar"></image>
+                        <div class="status-indicator" >
+                            <div class="sub-status-indicator" :style="getStatus(item.audioStatus,item.videoStatus)"></div>
+                        </div>
+
                     </div>
 <!--                    <image class="mute" :src="item.mute?'root://assets/mute_on@2x.png':'root://assets/mute_off@2x.png'" @click="remoteSlicent(item)"></image>-->
 <!--                    <image class="mute" :src="item.video?'root://assets/mute_on@2x.png':'root://assets/mute_off@2x.png'" @click="remoteVideo(item)"></image>-->
@@ -15,7 +24,7 @@
 
             <div style="flex: 1;"></div>
 
-            <div style="flex-wrap: wrap;flex-direction: row; background-color: #0a3069;">
+            <div style="flex-wrap: wrap;flex-direction: row; background-color: white;">
                 <div class="button" @click="joint">
                     <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_video_off.png"></image>
                 </div>
@@ -32,7 +41,7 @@
                     <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_mini.png"></image>
                 </div>
 <!--                exitAction-->
-                <div class="button" :style="{backgroundColor:'yellow'}" @click="exitAction">
+                <div class="button" :style="{backgroundColor:'#f28500'}" @click="exitAction">
                     <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_exit.png"></image>
                 </div>
             </div>
@@ -45,7 +54,7 @@
                     <image style="width:40px;height: 40px;align-self: center" :src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
                 </div>
                 <div style="padding: 12px;align-self: center;">
-                    <text style="align-self: center">{{"会议中"}}</text>
+                    <text style="align-self: center;font-size: 24px;">{{"会议中"}}</text>
                 </div>
 
             </div>
@@ -62,36 +71,38 @@
 .render-views {
     flex-wrap: wrap;
     flex-direction:row;
-}
-.grid {
-    width: 750px;
-    height: 570px;
+    justify-content: space-between;
 }
 .grid-item {
     width: 350px;
     height: 350px;
     align-items: center;
+    border-radius: 16px;
+    overflow: hidden;
 }
-.remote {
-    margin-top: 50px;
-    margin-left: 400px;
-    width: 300px;
-    height: 300px;
-    align-items: center;
+
+.status-indicator {
     position: absolute;
-
+    width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    bottom: 18px;
+    right: 18px;
+    background-color: white;
 }
 
-.items{
-    margin-top: 10px;
-    margin-left: 0px;
+.sub-status-indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    margin-top: 2px;
+    margin-left: 2px;
 }
+
 .local {
     width: 350px;
     height: 350px;
-    border-width: 3px;
-    border-color: blue;
-
+    border-radius: 16px;
 }
 .button {
     margin-left: 15px;
@@ -140,7 +151,8 @@ export default {
             mini:false,
             showShow: true,
             video:false,
-            audio:false
+            audio:false,
+            infos:[]
         };
     },
 
@@ -159,7 +171,8 @@ export default {
                 style.left = "0px";
             }
             return style;
-        }
+        },
+
     },
     methods:{
         /**
@@ -175,16 +188,29 @@ export default {
                     console.info("joint:"+ uuid);
                     console.info("jointData:"+ uuid);
                     var shouldAdd = true;
+                    let avatar = ""
                     for (let index = 0; index < this.uuids.length; index++) {
                         const element = this.uuids[index];
                         if (element.uuid == uuid) {
                             shouldAdd = false;
                         }
                     }
+                    this.infos.map((item)=>{
+                        if (item.uuid == this.uuids) {
+                            avatar = item.avatar;
+                        }
+                        return item
+                    })
                     if (shouldAdd == true) {
-                        this.uuids.push({uuid:uuid, audio:true, video:true});
+                        this.uuids.push({
+                            uuid:uuid,
+                            audio:false,
+                            video:false,
+                            videoStatus:0,
+                            audioStatus:0,
+                            avatar:avatar
+                        });
                     }
-                    //
 
                 } else if (jointData.action == "leave") {
                     console.info("leave:"+ uuid);
@@ -197,14 +223,16 @@ export default {
             });
             agoro.statusCallback((statsParam)=>{
                 console.info("statsParam:",statsParam);
-                return;
                 // console.info(statsParam);
                 if (statsParam.uuid === "me") {
+
                     // 本地状态回调
                     if (statsParam.type === "video"){
-                        if (this.uuids[0]) this.uuids[0].video = (statsParam.status == 1 || statsParam.status == 2);
+                        if (this.uuids[0]) this.uuids[0].video = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3);
+                        if (this.uuids[0]) this.uuids[0].videoStatus = statsParam.status;
                     } else  {
-                        if (this.uuids[0]) this.uuids[0].audio = (statsParam.status == 1 || statsParam.status == 2);
+                        if (this.uuids[0]) this.uuids[0].audio = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3);
+                        if (this.uuids[0]) this.uuids[0].audioStatus = statsParam.status;
                     }
                 } else {
                     // 其他状态回调
@@ -213,10 +241,12 @@ export default {
                     this.uuids = this.uuids.map(item =>{
                         if(item.uuid == uuid) {
                             if (statsParam.type === "video"){
-                                item.video = (statsParam.status == 1 || statsParam.status == 2)
+                                item.videoStatus = statsParam.status;
+                                item.video = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3)
                                 return item;
                             } else  {
-                                item.audio = (statsParam.status == 1 || statsParam.status == 2)
+                                item.audioStatus = statsParam.status;
+                                item.audio = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3)
                                 return item;
                             }
 
@@ -241,6 +271,7 @@ export default {
         destroyed() {
             agoro.destroy()
             this.showShow = false
+            this.infos = []
             this.$emit("endMeeting",'')
         },
 
@@ -248,21 +279,26 @@ export default {
             agoro.leaveChannel();
         },
 
+        /**
+         *
+         * param = {
+         *                 token: "007eJxSYBDWMQtcavZkw8++a6sKXpQ6nrhdsm/O+y1nDzlzm18ImXRegcHYxCjZzMDE1MTIxMIkySDF0szU0tTIPM3cMjE1LTklKVlnUUqDERPD1w9XWBgZGBlYGBgZQHwmMMkMJlnAJCtDSWpxiSEDAyAAAP//gmokgQ==",
+         *                 channel:"test1",
+         *                 uuid: "0",
+         *                 appid:"342c604542484b0d9659527f79aefcdb",
+         *                 video:true,
+         *                 audio:true,
+         *             }
+         *
+         * @param param
+         */
         joint(param){
 
-            param = {
-                token: "007eJxSYBDWMQtcavZkw8++a6sKXpQ6nrhdsm/O+y1nDzlzm18ImXRegcHYxCjZzMDE1MTIxMIkySDF0szU0tTIPM3cMjE1LTklKVlnUUqDERPD1w9XWBgZGBlYGBgZQHwmMMkMJlnAJCtDSWpxiSEDAyAAAP//gmokgQ==",
-                channel:"test1",
-                uid: "0",
-                appid:"342c604542484b0d9659527f79aefcdb",
-                video:true,
-                audio:true,
-            }
+
 
             let appid = param.appid;
 
             this.initAgoro(appid)
-            param.uuid = param.uid
 
             this.video = param.video;
             this.audio = param.audio;
@@ -272,15 +308,30 @@ export default {
                     this.showShow = true;
                     this.mini = false;
                     this.uuid = info.uuid;
+
+                    let avatar = ""
+                    this.infos.map((item)=>{
+                        if (item.uuid == this.uuids) {
+                            avatar = item.avatar;
+                        }
+
+                        return item
+                    })
+
                     this.uuids.push({
                         uuid: this.uuid,
                         audio: param.audio,
-                        video: param.video
+                        video: param.video,
+                        videoStatus:0,
+                        audioStatus:0,
+                        avatar:avatar
                     })
-                    this.$nextTick(()=>{
+
+                    if (!param.video) {
                         agoro.enableVideo(param.video)
-                        agoro.enableAudio(param.audio)
-                    })
+                    }
+                    agoro.enableAudio(param.audio)
+
                     console.info(info)
                 })
             },500)
@@ -305,7 +356,8 @@ export default {
         },
 
         invent() {
-
+            this.mini = true;
+            this.$emit("invent")
         },
 
         switchClicked(){
@@ -337,8 +389,9 @@ export default {
 
         load(param){
             console.info(param)
-            let uuid = param.target.attr.uuid;
 
+            let uuid = param.target.attr.uuid;
+            console.info("load:"+uuid);
             if (uuid === this.uuid) {
                 console.info("blindLocal");
                 this.$nextTick(()=>{
@@ -346,11 +399,27 @@ export default {
                 })
                 return;
             }
-
+            console.info("blindRemote");
             agoro.blindRemote(uuid);
 
-            console.info("load:"+uuid);
-            console.info(param);
+        },
+
+        getStatus(videoStatus,audioStatus) {
+            let style = {}
+            if (videoStatus > 2 || audioStatus >2) {
+                style.backgroundColor = "#f28500"
+            } else {
+                style.backgroundColor = "#00ff00"
+            }
+            return style
+        },
+
+        /**
+         * meetingInfos = [{uuid,avatar}]
+         * @param meetingInfos
+         */
+        updateMeetingInfo(meetingInfos){
+            this.infos = meetingInfos;
         }
     },
 

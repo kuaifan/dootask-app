@@ -36,7 +36,7 @@ dependencies {
     compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
     //
     compileOnly project(":eeui")
-    implementation 'io.agora.rtc:full-sdk:3.7.0'
+    implementation 'io.agora.rtc:full-sdk:4.2.0'
     implementation 'com.yanzhenjie:permission:2.0.2'
     implementation 'org.greenrobot:eventbus:3.3.1'
 }

@@ -8,7 +8,7 @@
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
-        <meetings ref="meeting" @endMeeting="endMeeting"></meetings>
+        <meetings ref="meeting" @endMeeting="endMeeting" @invent="invent"></meetings>
     </div>
 </template>
 
@@ -190,6 +190,8 @@ export default {
                     break
                 case 'startMeeting':
                     this.$refs.meeting && this.$refs.meeting.joint(message.meetingParams)
+                case 'meetingInfo':
+                    this.$refs.meeting && this.$refs.meeting.updateMeetingInfo(message.infos)
             }
         },
 
@@ -257,6 +259,12 @@ export default {
         endMeeting(){
             // const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
             // this.$refs.web.setJavaScript(javascript);
+        },
+        /**
+         * 邀请会议
+         */
+        invent(){
+
         }
     }
 }

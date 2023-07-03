@@ -1,6 +1,6 @@
 package eeui.android.eeuiAgoro.component;
 
-import static io.agora.rtc.video.VideoCanvas.RENDER_MODE_HIDDEN;
+import static io.agora.rtc2.video.VideoCanvas.RENDER_MODE_HIDDEN;
 
 import android.content.Context;
 import android.util.Log;
@@ -24,10 +24,10 @@ import java.util.HashMap;
 
 import eeui.android.eeuiAgoro.client.AgoraRtcPresenter;
 import eeui.android.eeuiAgoro.client.Event;
-import io.agora.rtc.Constants;
-import io.agora.rtc.IRtcEngineEventHandler;
-import io.agora.rtc.RtcEngine;
-import io.agora.rtc.video.VideoCanvas;
+import io.agora.rtc2.Constants;
+import io.agora.rtc2.IRtcEngineEventHandler;
+import io.agora.rtc2.RtcEngine;
+import io.agora.rtc2.video.VideoCanvas;
 
 public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
     private static final String TAG = "Agora";
@@ -38,11 +38,9 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
     public eeuiAgoroComponent(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
         super(instance, parent, basicComponentData);
         Log.d(TAG, "eeuiAgoroComponent: ");
-
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-
     }
 
     @Override
@@ -57,6 +55,7 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
     @WXComponentProp(name = "uuid")
     public void uuid(int uuid) {
         this.uuid = uuid;
+
         HashMap map = new HashMap();
         map.put("uuid",this.uuid);
         fireEvent("load",map);//和vue文件里面对应的函数通信
@@ -66,7 +65,7 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
      * 接收消息
      * @param event
      */
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEvent(Event event) {
         if (mFrameLayout == null){
             mFrameLayout = new FrameLayout(getContext());
@@ -83,6 +82,9 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
     public void setupLocalVideo(Event event){
         int uid = event.getUid();
         Log.d(TAG,"setupLocalVideo()->"+uid);
+        if (this.uuid != uid){
+            return;
+        }
         RtcEngine mRtcEngine = event.getRtcEngine();
 
         /** Sets the channel profile of the Agora RtcEngine.
@@ -93,23 +95,27 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
          an audience can only receive streams.*/
 
         if (mSurfaceView == null) {
-            mSurfaceView = RtcEngine.CreateRendererView(getContext());
+            mSurfaceView = new SurfaceView(getContext());
             if (mSurfaceView == null) {
                 Log.d(TAG, "mSurfaceView: fail ");
                 return;
             }
             // Add to the local container
             mFrameLayout.addView(mSurfaceView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
             //Setup local video to render your local camera preview
             mRtcEngine.setupLocalVideo(new VideoCanvas(mSurfaceView, RENDER_MODE_HIDDEN, uid));
+            mRtcEngine.enableVideo();
 
-            mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
-            /**In the demo, the default is to enter as the anchor.*/
-            mRtcEngine.setClientRole(IRtcEngineEventHandler.ClientRole.CLIENT_ROLE_BROADCASTER);
+            if (AgoraRtcPresenter.getInstance().currentVideo) {
+
+                mRtcEngine.startPreview();
+            }else {
+                mRtcEngine.enableLocalVideo(false);
+            }
+
             // Set audio route to microPhone
             mRtcEngine.setDefaultAudioRoutetoSpeakerphone(true);
-            //开启视频预览
-            mRtcEngine.startPreview();
         }
 
     }
@@ -122,14 +128,16 @@ public class eeuiAgoroComponent extends WXComponent<FrameLayout> {
         }
         RtcEngine mRtcEngine = event.getRtcEngine();
         if (mSurfaceView == null) {
-            mSurfaceView = RtcEngine.CreateRendererView(getContext());
+            mSurfaceView = new SurfaceView(getContext());
             // Add to the local container
             mFrameLayout.addView(mSurfaceView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             mSurfaceView.setZOrderMediaOverlay(true);
         }
         //远端绑定
 
-        mRtcEngine.setupRemoteVideo(new VideoCanvas(mSurfaceView, VideoCanvas.RENDER_MODE_HIDDEN, uid));
+        int res = mRtcEngine.setupRemoteVideo(new VideoCanvas(mSurfaceView, VideoCanvas.RENDER_MODE_HIDDEN, uid));
+        Log.d(TAG, "setupRemoteVideo: "+res);
+        Log.d(TAG, "setupRemoteVideo: "+mFrameLayout.getChildCount());
     }
     @Override
     public void onActivityDestroy() {
