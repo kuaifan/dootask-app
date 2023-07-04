@@ -17,17 +17,12 @@
                         </div>
 
                     </div>
-<!--                    <image class="mute" :src="item.mute?'root://assets/mute_on@2x.png':'root://assets/mute_off@2x.png'" @click="remoteSlicent(item)"></image>-->
-<!--                    <image class="mute" :src="item.video?'root://assets/mute_on@2x.png':'root://assets/mute_off@2x.png'" @click="remoteVideo(item)"></image>-->
                 </div>
             </div>
 
             <div style="flex: 1;"></div>
 
             <div style="flex-wrap: wrap;flex-direction: row; background-color: white;">
-                <div class="button" @click="joint">
-                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_video_off.png"></image>
-                </div>
                 <div class="button" @click="videoEnable">
                     <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
                 </div>
@@ -185,8 +180,8 @@ export default {
             },(jointData)=>{
                 let uuid = jointData.uuid;
                 if (jointData.action == "joint") {
-                    console.info("joint:"+ uuid);
-                    console.info("jointData:"+ uuid);
+                    // console.info("joint:"+ uuid);
+                    // console.info("jointData:"+ uuid);
                     var shouldAdd = true;
                     let avatar = ""
                     for (let index = 0; index < this.uuids.length; index++) {
@@ -213,12 +208,12 @@ export default {
                     }
 
                 } else if (jointData.action == "leave") {
-                    console.info("leave:"+ uuid);
-                    console.info(this.uuids);
+                    // console.info("leave:"+ uuid);
+                    // console.info(this.uuids);
                     this.uuids = this.uuids.filter(item=>{
                         return item.uuid != uuid;
                     })
-                    console.info(this.uuids);
+                    // console.info(this.uuids);
                 }
             });
             agoro.statusCallback((statsParam)=>{
@@ -237,7 +232,7 @@ export default {
                 } else {
                     // 其他状态回调
                     let uuid = statsParam.uuid
-                    console.info("beforeStatus:",this.uuids)
+                    // console.info("beforeStatus:",this.uuids)
                     this.uuids = this.uuids.map(item =>{
                         if(item.uuid == uuid) {
                             if (statsParam.type === "video"){
@@ -254,7 +249,7 @@ export default {
                             return item
                         }
                     })
-                    console.info("afterStatus:",this.uuids)
+                    // console.info("afterStatus:",this.uuids)
                 }
 
             });
@@ -294,8 +289,6 @@ export default {
          */
         joint(param){
 
-
-
             let appid = param.appid;
 
             this.initAgoro(appid)
@@ -332,7 +325,7 @@ export default {
                     }
                     agoro.enableAudio(param.audio)
 
-                    console.info(info)
+                    // console.info(info)
                 })
             },500)
 
@@ -391,15 +384,15 @@ export default {
             console.info(param)
 
             let uuid = param.target.attr.uuid;
-            console.info("load:"+uuid);
+            // console.info("load:"+uuid);
             if (uuid === this.uuid) {
-                console.info("blindLocal");
+                // console.info("blindLocal");
                 this.$nextTick(()=>{
                     agoro.blindLocal(this.uuid);
                 })
                 return;
             }
-            console.info("blindRemote");
+            // console.info("blindRemote");
             agoro.blindRemote(uuid);
 
         },
