@@ -323,17 +323,9 @@
 			path = navView;
 			sourceTree = "<group>";
 		};
-		ADE69EC22A2DD360000C6883 /* netWork */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = netWork;
-			sourceTree = "<group>";
-		};
 		ADEB12482A284ABE00FCE69B /* share */ = {
 			isa = PBXGroup;
 			children = (
-				ADE69EC22A2DD360000C6883 /* netWork */,
 				ADDB131B2A2D747100AD375E /* navView */,
 				ADEB12492A286E7200FCE69B /* ShareListViewController.h */,
 				ADEB124A2A286E7200FCE69B /* ShareListViewController.m */,

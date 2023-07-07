@@ -495,20 +495,15 @@
 }
 
 - (void)checkEnable {
-    if (self.isRoot) {
-       
+    if (self.isRoot) {       
         int select = 0;
         for (ChatModelData *obj in self.showArray) {
             if (obj.select){
-                
                 select ++;
             }
         }
-        if (select > 1) {
+        if (select >= 1) {
             [self.comfirnButton setTitle:[NSLocalizedString(@"sendTitle", @"") stringByAppendingFormat:@"(%d)",select] forState:UIControlStateNormal];
-            self.comfirnButton.enabled = YES;
-        }else if (select == 1) {
-            [self.comfirnButton setTitle:NSLocalizedString(@"sendTitle", @"") forState:UIControlStateNormal];
             self.comfirnButton.enabled = YES;
         } else {
             [self.comfirnButton setTitle:NSLocalizedString(@"sendTitle", @"") forState:UIControlStateNormal];

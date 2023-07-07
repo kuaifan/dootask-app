@@ -3,7 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -44,16 +44,16 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NickName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="whV-fr-YOQ">
-                        <rect key="frame" x="58" y="21" width="325" height="18"/>
+                        <rect key="frame" x="58" y="21" width="327" height="18"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="76A-Rb-V4Q">
-                        <rect key="frame" x="391" y="19" width="22" height="22"/>
+                        <rect key="frame" x="393" y="20" width="20" height="20"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="22" id="4Cm-Kn-AU0"/>
-                            <constraint firstAttribute="height" constant="22" id="w0V-R4-pbs"/>
+                            <constraint firstAttribute="width" constant="20" id="4Cm-Kn-AU0"/>
+                            <constraint firstAttribute="height" constant="20" id="w0V-R4-pbs"/>
                         </constraints>
                     </imageView>
                 </subviews>
