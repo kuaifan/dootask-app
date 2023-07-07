@@ -8,7 +8,7 @@
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
-        <meetings ref="meeting" @endMeeting="endMeeting" @invent="invent"></meetings>
+        <meetings ref="meeting" @endMeeting="endMeeting" @invent="invent" @meetingEvent="meetingEvent"></meetings>
     </div>
 </template>
 
@@ -190,8 +190,10 @@ export default {
                     break
                 case 'startMeeting':
                     this.$refs.meeting && this.$refs.meeting.joint(message.meetingParams)
-                case 'meetingInfo':
+                    break
+                case 'updateMeetingInfo':
                     this.$refs.meeting && this.$refs.meeting.updateMeetingInfo(message.infos)
+                    break
             }
         },
 
@@ -257,14 +259,33 @@ export default {
          *  结束会议
          */
         endMeeting(){
-            // const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
-            // this.$refs.web.setJavaScript(javascript);
+            const javascript = `if (typeof window.__onEndMeeting === "function"){window.__onEndMeeting()}`;
+            this.$refs.web.setJavaScript(javascript);
         },
         /**
          * 邀请会议
          */
         invent(){
+            const javascript = `if (typeof window.__onInvent === "function"){window.__onInvent()}`;
+            this.$refs.web.setJavaScript(javascript);
+        },
 
+        meetingEvent(param) {
+            if (param.act == 'invent') {
+                this.inventEvent(param)
+                return
+            }
+            const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent({"uuid":"${param.uuid}","act":"${param.act}"})}`;
+            console.info("__onMeetingEvent");
+            console.info(javascript);
+            this.$refs.web.setJavaScript(javascript);
+        },
+
+        inventEvent(param) {
+            const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent({"meetingid":"${param.meetingid}","act":"${param.act}"})}`;
+            console.info("__onMeetingEvent");
+            console.info(javascript);
+            this.$refs.web.setJavaScript(javascript);
         }
     }
 }
