@@ -24,26 +24,28 @@
 
             <div style="flex: 1;"></div>
 
-            <div style="flex-wrap: wrap;flex-direction: row; justify-content: space-between; background-color: white;">
-                <div class="button" @click="videoEnable">
-                    <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
+            <div style="position: absolute; bottom: 0px;right: 0px;left: 0px; height: 80px;">
+                <div style="flex-wrap: wrap;flex-direction: row; justify-content: space-between; background-color: white; margin-left: 16px; margin-right: 16px;">
+                    <div class="button" @click="videoEnable">
+                        <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
+                    </div>
+                    <div class="button" @click="audioEnable">
+                        <image style="width:40px;height: 40px;" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
+                    </div>
+                    <div class="button" @click="switchClicked">
+                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_camera_reverse.png"></image>
+                    </div>
+                    <div class="button" @click="invent">
+                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_invent.png"></image>
+                    </div>
+                    <div class="button" @click="hideClicked">
+                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_mini.png"></image>
+                    </div>
+                    <div class="button" :style="{backgroundColor:'#f28500'}" @click="exitAction">
+                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_exit.png"></image>
+                    </div>
                 </div>
-                <div class="button" @click="audioEnable">
-                    <image style="width:40px;height: 40px;" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
-                </div>
-                <div class="button" @click="switchClicked">
-                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_camera_reverse.png"></image>
-                </div>
-                <div class="button" @click="invent">
-                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_invent.png"></image>
-                </div>
-                <div class="button" @click="hideClicked">
-                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_mini.png"></image>
-                </div>
-<!--                exitAction-->
-                <div class="button" :style="{backgroundColor:'#f28500'}" @click="exitAction">
-                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_exit.png"></image>
-                </div>
+
             </div>
 
             <div style="flex-direction: row; position: absolute; justify-content: right; background-color: white; top: 0;left: 0;right: 0;bottom: 0;" v-if="mini" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
@@ -162,6 +164,8 @@ export default {
             isTouch:false,
             startPosX:0,
             startPosY:0,
+            bottomShow:true,
+            bottomColor:'white'
         };
     },
 
@@ -372,6 +376,12 @@ export default {
             }
 
             this.mini = false;
+            this.bottomShow = false;
+            this.$nextTick(()=>{
+
+                this.bottomShow = true;
+            })
+
         },
 
         miniClick() {

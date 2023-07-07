@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>DooTask</string>
+	<string>$(BASE_DISPLAY_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -22,7 +22,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.27.26</string>
+	<string>$(BASE_SHORT_VERSON)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -43,7 +43,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>89</string>
+	<string>$(BASE_CODE_VERSON)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>weixin</string>
