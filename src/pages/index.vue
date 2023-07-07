@@ -8,6 +8,7 @@
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
+        <meetings ref="meeting" @endMeeting="endMeeting" @invent="invent"></meetings>
     </div>
 </template>
 
@@ -17,6 +18,8 @@
 }
 </style>
 <script>
+import Meetings from "./compoment/meetings.vue";
+
 const eeui = app.requireModule('eeui');
 const deviceInfo = app.requireModule("eeui/deviceInfo");
 const umengPush = app.requireModule("eeui/umengPush");
@@ -26,6 +29,7 @@ const picture = app.requireModule("eeui/picture");
 const shareFile = app.requireModule("eeuiShareFiles");
 
 export default {
+    components: {Meetings},
     data() {
         return {
             uniqueId: '',
@@ -34,8 +38,9 @@ export default {
             umengInit: false,
             umengMessage: {},
             umengError: false,
-            appGroupID:"group.im.dootask", // iOS共享储存的应用唯一标识符
-            appSubPath:"share" //iOS 储存下一级目录
+            screenHeight: 0,
+            appGroupID: "group.im.dootask", // iOS共享储存的应用唯一标识符
+            appSubPath: "share", //iOS 储存下一级目录
         }
     },
 
@@ -70,10 +75,11 @@ export default {
     },
 
     mounted() {
+        this.screenHeight = WXEnvironment.deviceHeight
 
         // iOS初始化共享内存
         if (WXEnvironment.platform.toLowerCase() === "ios") {
-            shareFile.shareFileWithGroupID(this.appGroupID,this.appSubPath);
+            shareFile.shareFileWithGroupID(this.appGroupID, this.appSubPath);
         }
 
         this.uniqueId = eeui.getCachesString("appUniqueId", "");
@@ -86,24 +92,9 @@ export default {
         // this.$refs.web.setUrl("http://192.168.0.111:2222");
         // this.$refs.web.setUrl("http://192.168.100.36:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
-
-        // setTimeout(()=>{
-        //     // this.onReceiveMessage(123)
-        //     let message = {
-        //         action:"userUploadUrl",
-        //         url:"http://www.google.com",
-        //     }
-        //
-        //     this.onReceiveMessage({
-        //         message
-        //     })
-        //
-        // },2000)
     },
 
-    computed: {
-
-    },
+    computed: {},
 
     methods: {
         /**
@@ -164,15 +155,17 @@ export default {
                 case 'videoPreview':
                     picture.videoPreview(message.path)
                     break;
+
                 // iOS 储存本地获取聊天消息
                 case 'userChatList':
                     if (WXEnvironment.platform.toLowerCase() === "ios") {
-                        shareFile.setShareStorage('chatList',message.url)
+                        shareFile.setShareStorage('chatList', message.url)
                     } else {
                         eeui.setCaches('chatList', message.url, 0)
                     }
 
                     break;
+
                 // iOS 储存本地上传地址
                 case 'userUploadUrl':
                     if (WXEnvironment.platform.toLowerCase() === "ios") {
@@ -182,8 +175,15 @@ export default {
                         eeui.setCaches('upLoadUrl', message.chatUrl, 0)
                         eeui.setCaches('fileUpLoadUrl', message.dirUrl, 0)
                     }
+                    break;
 
-                    break
+                case 'startMeeting':
+                    this.$refs.meeting && this.$refs.meeting.joint(message.meetingParams)
+                    break;
+
+                case 'meetingInfo':
+                    this.$refs.meeting && this.$refs.meeting.updateMeetingInfo(message.infos)
+                    break;
             }
         },
 
@@ -244,6 +244,21 @@ export default {
                 const javascript = `if (typeof window.__onPagePause === "function"){window.__onNotificationPermissionStatus(${ret})}`;
                 this.$refs.web.setJavaScript(javascript);
             });
+        },
+
+        /**
+         *  结束会议
+         */
+        endMeeting() {
+            // const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
+            // this.$refs.web.setJavaScript(javascript);
+        },
+
+        /**
+         * 邀请会议
+         */
+        invent() {
+
         }
     }
 }

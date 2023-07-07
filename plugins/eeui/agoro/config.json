@@ -1,0 +1,5 @@
+{
+	"desc": "Agoro音视频会议功能实现",
+	"requireFormatName": "eeuiAgoro",
+	"requireName": "eeui/Agoro"
+}

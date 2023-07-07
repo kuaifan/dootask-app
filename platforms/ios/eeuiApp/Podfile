@@ -13,6 +13,7 @@ def common
     pod 'eeuiShareFiles', :path => '../../../plugins/eeui/shareFiles/ios'
     
     pod 'eeuiShare', :path => '../../../plugins/eeui/share/ios'
+    pod 'eeuiAgoro', :path => '../../../plugins/eeui/agoro/ios'
 end
 
 def share

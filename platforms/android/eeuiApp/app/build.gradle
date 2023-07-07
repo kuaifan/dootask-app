@@ -92,4 +92,5 @@ dependencies {
     implementation project(":eeuiPicture")
     implementation project(":eeuiShareFiles")
     implementation project(":eeuiShare")
+    implementation project(":eeuiAgoro")
 }
