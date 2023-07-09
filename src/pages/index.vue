@@ -8,7 +8,7 @@
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
-        <meetings ref="meeting" @endMeeting="endMeeting" @invent="invent"></meetings>
+        <meetings ref="meeting" @meetingEvent="meetingEvent"></meetings>
     </div>
 </template>
 
@@ -38,7 +38,7 @@ export default {
             umengInit: false,
             umengMessage: {},
             umengError: false,
-            screenHeight: 0,
+
             appGroupID: "group.im.dootask", // iOS共享储存的应用唯一标识符
             appSubPath: "share", //iOS 储存下一级目录
         }
@@ -75,8 +75,6 @@ export default {
     },
 
     mounted() {
-        this.screenHeight = WXEnvironment.deviceHeight
-
         // iOS初始化共享内存
         if (WXEnvironment.platform.toLowerCase() === "ios") {
             shareFile.shareFileWithGroupID(this.appGroupID, this.appSubPath);
@@ -155,7 +153,6 @@ export default {
                 case 'videoPreview':
                     picture.videoPreview(message.path)
                     break;
-
                 // iOS 储存本地获取聊天消息
                 case 'userChatList':
                     if (WXEnvironment.platform.toLowerCase() === "ios") {
@@ -165,7 +162,6 @@ export default {
                     }
 
                     break;
-
                 // iOS 储存本地上传地址
                 case 'userUploadUrl':
                     if (WXEnvironment.platform.toLowerCase() === "ios") {
@@ -175,15 +171,13 @@ export default {
                         eeui.setCaches('upLoadUrl', message.chatUrl, 0)
                         eeui.setCaches('fileUpLoadUrl', message.dirUrl, 0)
                     }
-                    break;
-
+                    break
                 case 'startMeeting':
                     this.$refs.meeting && this.$refs.meeting.joint(message.meetingParams)
-                    break;
-
-                case 'meetingInfo':
+                    break
+                case 'updateMeetingInfo':
                     this.$refs.meeting && this.$refs.meeting.updateMeetingInfo(message.infos)
-                    break;
+                    break
             }
         },
 
@@ -246,19 +240,18 @@ export default {
             });
         },
 
-        /**
-         *  结束会议
-         */
-        endMeeting() {
-            // const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
-            // this.$refs.web.setJavaScript(javascript);
+        meetingEvent(param) {
+            if (param.act == 'invent') {
+                this.inventEvent(param)
+                return
+            }
+            const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent({"uuid":"${param.uuid}","act":"${param.act}"})}`;
+            this.$refs.web.setJavaScript(javascript);
         },
 
-        /**
-         * 邀请会议
-         */
-        invent() {
-
+        inventEvent(param) {
+            const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent({"meetingid":"${param.meetingid}","act":"${param.act}"})}`;
+            this.$refs.web.setJavaScript(javascript);
         }
     }
 }

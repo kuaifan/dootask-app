@@ -43,8 +43,7 @@ WX_EXPORT_METHOD(@selector(animate))//导出方法
     
     //如何向前端发送时间
     [self fireEvent:@"load" params:@{@"uuid":@(uuid)}];
-    
-    self.view.backgroundColor = [UIColor blackColor];
+
 }
 
 - (void)animate{

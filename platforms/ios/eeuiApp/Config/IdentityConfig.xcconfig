@@ -7,4 +7,14 @@
 
 // Configuration settings file format documentation can be found at:
 
-BASEBUNDLEID = com.dootask.task
+BASE_DISPLAY_NAME = DooTask
+
+BASE_BUNDLE_ID = com.dootask.task
+
+BASE_SHARE_BUNDLE_ID = com.dootask.task.shareExtension
+
+BASE_SHORT_VERSON = 0.28.6
+
+BASE_CODE_VERSON = 91
+
+// END

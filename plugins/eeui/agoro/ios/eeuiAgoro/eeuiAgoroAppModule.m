@@ -307,7 +307,7 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
 }
 
 -(void)rtcEngine:(AgoraRtcEngineKit *)engine connectionChangedToState:(AgoraConnectionState)state reason:(AgoraConnectionChangedReason)reason{
-    self.statusBlock?self.statusBlock(@{@"uuid": @(0), @"status": @(state)}, YES): nil;
+    self.localStatusBlock?self.localStatusBlock(@(state), YES): nil;
     if (state == AgoraConnectionStateFailed) {
         __weak typeof(self) weakself = self;
         [engine leaveChannel:^(AgoraChannelStats * _Nonnull stat) {

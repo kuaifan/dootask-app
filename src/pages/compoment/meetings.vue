@@ -1,55 +1,59 @@
 <template>
-    <div class="mask" v-if="showShow" :style="videoStyle" @click="zoomClick(false)">
+    <div class="mask" v-if="showShow" :style="videoStyle" >
         <div style="padding: 16px; flex:1;background-color: white;">
+            <text style="font-size: 30px; padding: 16px;">{{title}}</text>
             <div class="render-views">
                 <div class="grid-item" v-for="item in uuids">
-                    <eeuiAgoro-com class="local" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
-                    <image v-if="item.videoStatus == 0" :src="item.avatar" style="position: absolute; top: 0;left: 0;right: 0;bottom: 0; flex-direction: row; background-color: #00A77D;"></image>
-                    <div style="position: absolute; top: 5px;right: 10px; flex-direction: row;" >
+                    <div class="local hidden">
+                        <eeuiAgoro-com class="local" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
+                    </div>
+                    <image v-if="item.videoStatus == 0" :src="item.avatar" style="position: absolute; top: 15px;left: 15px;right: 5px;bottom: 15px; border-radius: 16px;flex-direction: row; background-color: #00A77D;"></image>
+                    <div style="position: absolute; top: 16px;right: 10px; flex-direction: row;" >
                         <image v-if="!item.video"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
                         <image v-if="!item.audio"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
                     </div>
 
-                    <div style="position: absolute; bottom: 4px; right: 4px; width: 80px; height: 80px; border-radius: 40px;overflow: hidden;">
-                        <image style="width: 80px; height: 80px; border-radius: 40px; background-color: white;" :src="item.avatar"></image>
-                        <div class="status-indicator" >
-                            <div class="sub-status-indicator" :style="getStatus(item.audioStatus,item.videoStatus)"></div>
-                        </div>
-
+                    <div style="position: absolute; bottom: 0px; right: 0px; width: 80px; height: 80px; border-radius: 40px; background-color: white;overflow: hidden;">
+                        <image style="width: 70px; height: 70px; margin-top: 5px; margin-left: 5px; border-radius: 35px; background-color: greenyellow;" :src="item.avatar"></image>
+                    </div>
+                    <div class="status-indicator" >
+                        <div class="sub-status-indicator" :style="getStatus(item.audioStatus,item.videoStatus)"></div>
                     </div>
                 </div>
             </div>
 
             <div style="flex: 1;"></div>
 
-            <div style="flex-wrap: wrap;flex-direction: row; background-color: white;">
-                <div class="button" @click="videoEnable">
-                    <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
+            <div style="position: absolute; bottom: 0px;right: 0px;left: 0px; height: 80px;">
+                <div style="flex-wrap: wrap;flex-direction: row; justify-content: space-between; background-color: white; margin-left: 16px; margin-right: 16px;">
+                    <div class="button" @click="videoEnable">
+                        <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
+                    </div>
+                    <div class="button" @click="audioEnable">
+                        <image style="width:40px;height: 40px;" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
+                    </div>
+                    <div class="button" @click="switchClicked">
+                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_camera_reverse.png"></image>
+                    </div>
+                    <div class="button" @click="invent">
+                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_invent.png"></image>
+                    </div>
+                    <div class="button" @click="hideClicked">
+                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_mini.png"></image>
+                    </div>
+                    <div class="button" :style="{backgroundColor:'#f28500'}" @click="exitAction">
+                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_exit.png"></image>
+                    </div>
                 </div>
-                <div class="button" @click="audioEnable">
-                    <image style="width:40px;height: 40px;" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
-                </div>
-                <div class="button" @click="invent">
-                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_invent.png"></image>
-                </div>
-                <div class="button" @click="hideClicked">
-                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_mini.png"></image>
-                </div>
-                <!--exitAction-->
-                <div class="button" :style="{backgroundColor:'#f28500'}" @click="exitAction">
-                    <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_exit.png"></image>
-                </div>
+
             </div>
 
-            <div style="flex-direction: row; position: absolute; justify-content: right; background-color: white; top: 0;left: 0;right: 0;bottom: 0;" v-if="mini">
-                <div style="padding: 12px;align-self: center;">
+            <div style="flex-direction: row; position: absolute; justify-content: right; background-color: white; top: 0;left: 0;right: 0;bottom: 0;" v-if="mini" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
+                <div style="padding: 12px;align-self: center; margin-left: 22px;">
                     <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
                 </div>
-                <div style="padding: 12px;align-self: center;">
+                <div style="padding: 12px;align-self: center; margin-left: 4px;">
                     <image style="width:40px;height: 40px;align-self: center" :src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
-                </div>
-                <div style="padding: 12px;align-self: center;">
-                    <text style="align-self: center;font-size: 24px;">{{"会议中"}}</text>
                 </div>
 
             </div>
@@ -72,32 +76,37 @@
     width: 350px;
     height: 350px;
     align-items: center;
-    border-radius: 16px;
-    overflow: hidden;
 }
 
 .status-indicator {
     position: absolute;
-    width: 18px;
-    height: 18px;
-    border-radius: 9px;
-    bottom: 18px;
-    right: 18px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    bottom: 6px;
+    right: 6px;
     background-color: white;
 }
 
 .sub-status-indicator {
-    width: 14px;
-    height: 14px;
-    border-radius: 7px;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
     margin-top: 2px;
     margin-left: 2px;
 }
 
 .local {
-    width: 350px;
-    height: 350px;
+    width: 320px;
+    height: 320px;
     border-radius: 16px;
+    overflow: hidden;
+}
+
+.hidden {
+    margin-top: 15px;
+    margin-left: 15px;
+    overflow: hidden;
 }
 .button {
     margin-left: 15px;
@@ -140,14 +149,23 @@ export default {
     name:"meetings",
     data() {
         return {
-            title: "Hello, World!",
+            title: "",
             uuids:[],
             uuid:0,
+            meetingid:0,
             mini:false,
-            showShow: true,
+            showShow: false,
             video:false,
             audio:false,
-            infos:[]
+            infos:[],
+            screenH:WXEnvironment.deviceHeight/WXEnvironment.deviceWidth *750 ,
+            bottomPos:100,
+            rightPos:0,
+            isTouch:false,
+            startPosX:0,
+            startPosY:0,
+            bottomShow:true,
+            bottomColor:'white'
         };
     },
 
@@ -155,10 +173,13 @@ export default {
         videoStyle(){
             let style = {}
             if (this.mini) {
-                style.width = "300px";
-                style.height = "100px";
-                style.right = "0px";
-                style.bottom = "100px";
+                style.width = "182px";
+                style.height = "80px";
+                style.right = this.rightPos+"px";
+                style.bottom = this.bottomPos+"px";
+                style.borderRadius = "8px";
+                style.borderWidth = "2px";
+                style.borderColor = "#D9E2E9";
             }else {
                 style.top = "0px";
                 style.bottom = "0px";
@@ -205,6 +226,7 @@ export default {
                             audioStatus:0,
                             avatar:avatar
                         });
+                        this.infoParam(uuid);
                     }
 
                 } else if (jointData.action == "leave") {
@@ -259,6 +281,8 @@ export default {
                 if(stats == -1){
                     this.destroyed();
                     this.uuids = [];
+                }else if (stats == 5) {
+                    this.errorParam(this.uuid)
                 }
             });
         },
@@ -267,11 +291,18 @@ export default {
             agoro.destroy()
             this.showShow = false
             this.infos = []
-            this.$emit("endMeeting",'')
+            this.uuids = []
+            this.title = ""
+            let param = {
+                act:'endMeeting',
+                uuid:this.uuid+""
+            }
+            this.callbackParam(param);
         },
 
         exitAction() {
             agoro.leaveChannel();
+            this.showShow = false;
         },
 
         /**
@@ -281,6 +312,8 @@ export default {
          *                 channel:"test1",
          *                 uuid: "0",
          *                 appid:"342c604542484b0d9659527f79aefcdb",
+         *                 avatar:"",
+         *                 username:"",
          *                 video:true,
          *                 audio:true,
          *             }
@@ -288,6 +321,8 @@ export default {
          * @param param
          */
         joint(param){
+            console.info("joint:")
+            console.info(param)
 
             let appid = param.appid;
 
@@ -298,13 +333,13 @@ export default {
 
             setTimeout(()=>{
                 agoro.jointChanel(param, (info)=>{
-                    this.showShow = true;
-                    this.mini = false;
-                    this.uuid = info.uuid;
 
+                    this.uuid = info.uuid;
+                    this.meetingid = param.meetingid
+                    this.title = param.name
                     let avatar = ""
                     this.infos.map((item)=>{
-                        if (item.uuid == this.uuids) {
+                        if (item.uuid == this.uuid) {
                             avatar = item.avatar;
                         }
 
@@ -317,9 +352,14 @@ export default {
                         video: param.video,
                         videoStatus:0,
                         audioStatus:0,
-                        avatar:avatar
+                        avatar:param.avatar
                     })
+                    console.info("afterjoint:")
+                    console.info(this.uuids)
 
+                    this.successParam(this.uuid);
+                    this.showShow = true;
+                    this.mini = false;
                     if (!param.video) {
                         agoro.enableVideo(param.video)
                     }
@@ -331,11 +371,28 @@ export default {
 
         },
         zoomClick() {
+            if (this.isTouch) {
+                return;
+            }
+
             this.mini = false;
+            this.bottomShow = false;
+            this.$nextTick(()=>{
+
+                this.bottomShow = true;
+            })
+
         },
 
         miniClick() {
             this.mini = true
+            if (this.bottomPos <0) {
+                this.bottomPos = 100;
+            }
+
+            if (this.rightPos <0) {
+                this.rightPos = 0;
+            }
         },
 
         videoEnable() {
@@ -350,7 +407,36 @@ export default {
 
         invent() {
             this.mini = true;
-            this.$emit("invent")
+            let param = {
+                act:'invent',
+                meetingid:this.meetingid+""
+            }
+            this.callbackParam(param);
+        },
+        infoParam(uuid){
+            let param = {
+                act:'getInfo',
+                uuid:uuid+""
+            }
+
+            this.callbackParam(param);
+        },
+        successParam(uuid){
+            let param = {
+                act:'success',
+                uuid:uuid+""
+            }
+            this.callbackParam(param);
+        },
+        errorParam(uuid){
+            let param = {
+                act:'error',
+                uuid:uuid+""
+            }
+            this.callbackParam(param);
+        },
+        callbackParam(param){
+            this.$emit("meetingEvent",param);
         },
 
         switchClicked(){
@@ -381,7 +467,6 @@ export default {
         },
 
         load(param){
-            console.info(param)
 
             let uuid = param.target.attr.uuid;
             // console.info("load:"+uuid);
@@ -412,7 +497,58 @@ export default {
          * @param meetingInfos
          */
         updateMeetingInfo(meetingInfos){
-            this.infos = meetingInfos;
+            this.infos.push(meetingInfos);
+            this.updateUidInfo();
+        },
+
+        /**
+         * 更新个人信息
+         */
+        updateUidInfo(){
+            if (this.infos.length == 0) {
+                return;
+            }
+
+            this.uuids = this.uuids.map(item=>{
+
+                for (let i = 0; i < this.infos.length; i++) {
+                    const element = this.infos[i];
+                    if (element.uuid == item.uuid) {
+                        item.username = element.username;
+                        item.avatar = element.avatar;
+                    }
+                }
+
+                return item;
+            })
+
+        },
+        touchstart(touch){
+
+            if (this.mini == true) {
+                this.startPosX = 750 - touch.changedTouches[0].screenX - this.rightPos;
+                this.startPosY = this.screenH - touch.changedTouches[0].screenY - this.bottomPos;
+            }
+
+        },
+
+        touchAction(touch) {
+
+            if (this.mini == true) {
+
+                this.isTouch = true
+                this.rightPos = 750 - touch.changedTouches[0].screenX-this.startPosX;
+                this.bottomPos = this.screenH - touch.changedTouches[0].screenY -this.startPosY;
+            }
+        },
+        touchend() {
+
+            this.isTouch = false;
+            if (this.mini == true) {
+                this.startPosX = 0;
+                this.startPosY = 0;
+            }
+
         }
     },
 

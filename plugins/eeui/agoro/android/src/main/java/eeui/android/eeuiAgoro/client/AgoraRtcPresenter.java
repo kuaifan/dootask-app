@@ -116,8 +116,8 @@ public class AgoraRtcPresenter {
         JSONObject jsonObject = JSONObject.parseObject(object);
         accessToken = jsonObject.getString("token");
         channelName = jsonObject.getString("channel");
-        uid = jsonObject.getIntValue("uid");
-        Log.d(TAG,"jointChanel->uid->"+uid);
+        uid = jsonObject.getIntValue("uuid");
+        Log.d(TAG,"c"+uid);
         ChannelMediaOptions options = new ChannelMediaOptions();
         // 视频通话场景下，设置频道场景为 BROADCASTING。
         options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION;
@@ -253,7 +253,21 @@ public class AgoraRtcPresenter {
         @Override
         public void onLeaveChannel(RtcStats stats) {
             super.onLeaveChannel(stats);
-            Log.d(TAG, String.format("local user %d leaveChannel!"));
+            JSONObject json = new JSONObject();
+            json.put("state",-1);
+            mLocalJSCallback.invokeAndKeepAlive(json);
+
+        }
+
+        @Override
+        public void onConnectionStateChanged(int state, int reason) {
+            super.onConnectionStateChanged(state, reason);
+            JSONObject json = new JSONObject();
+            json.put("state",state);
+            mLocalJSCallback.invokeAndKeepAlive(json);
+            if (state == 5) {
+                mRtcEngine.leaveChannel();
+            }
         }
 
         @Override
