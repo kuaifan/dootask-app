@@ -150,6 +150,7 @@ import CustomAlert from "./customAlert.vue";
 const agoro = app.requireModule("eeuiAgoro");
 const eeui = app.requireModule("eeui")
 const animation = app.requireModule("animation")
+const deviceInfo = app.requireModule("eeui/deviceInfo");
 
 export default {
     name:"meetings",
@@ -308,6 +309,8 @@ export default {
 
         destroyed() {
             agoro.destroy()
+            //关闭屏幕常亮
+            deviceInfo.keepScreenOn(false);
             this.showShow = false
             this.infos = []
             this.uuids = []
@@ -379,9 +382,10 @@ export default {
 
                     this.showShow = true;
                     this.mini = false;
+                    //开启屏幕常亮
+                    deviceInfo.keepScreenOn(true);
                     // 延迟一秒发送
                     this.$nextTick(()=>{
-
                         this.successParam(this.uuid);
                     })
 
@@ -389,8 +393,6 @@ export default {
                         agoro.enableVideo(param.video)
                     }
                     agoro.enableAudio(param.audio)
-
-                    // console.info(info)
                 })
             },500)
 
