@@ -50,10 +50,10 @@ export default {
         return {
             back: false,
             show: false,
-            title:"111",
-            message:"111",
-            cancel:"111",
-            confirm:"111",
+            title:"",
+            message:"",
+            cancel:"",
+            confirm:"",
         }
     },
     computed: {
@@ -119,10 +119,10 @@ export default {
             this.$emit('exitConfirm');
         },
         showWithParam(param){
-            // this.title = param.title;
-            // this.message = param.message;
-            // this.cancel = param.cancel;
-            // this.confirm = param.confirm;
+            this.title = param.title;
+            this.message = param.message;
+            this.cancel = param.cancel;
+            this.confirm = param.confirm;
 
             this.show= true;
         }

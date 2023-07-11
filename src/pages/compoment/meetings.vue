@@ -155,17 +155,8 @@ export default {
     components: {CustomAlert},
     data() {
         return {
-            title: "12312312",
+            title: "",
             uuids:[
-                {uuid:0},
-                {uuid:0},
-                {uuid:0},
-                {uuid:0},
-                {uuid:0},
-                {uuid:0},
-                {uuid:0},
-                {uuid:0},
-                {uuid:0}
             ],
             uuid:0,
             meetingid:0,
