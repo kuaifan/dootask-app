@@ -1,5 +1,5 @@
 <template>
-    <div class="mask" v-if="showShow" :style="videoStyle" >
+    <div ref="root" class="mask" v-if="showShow" :style="videoStyle" >
         <div style="padding: 16px; flex:1;background-color: white;">
             <text style="font-size: 30px; padding: 16px;">{{title}}</text>
             <div class="render-views">
@@ -7,7 +7,7 @@
                     <div class="local hidden">
                         <eeuiAgoro-com class="local" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
                     </div>
-                    <image v-if="item.videoStatus == 0" :src="item.avatar" style="position: absolute; top: 15px;left: 15px;right: 5px;bottom: 15px; border-radius: 16px;flex-direction: row; background-color: #00A77D;"></image>
+                    <image v-if="item.videoStatus == 0" :src="item.avatar" style="position: absolute; top: 15px;left: 15px;right: 6px;bottom: 15px; border-radius: 16px;flex-direction: row;"></image>
                     <div style="position: absolute; top: 16px;right: 10px; flex-direction: row;" >
                         <image v-if="!item.video"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
                         <image v-if="!item.audio"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
@@ -41,14 +41,14 @@
                     <div class="button" @click="hideClicked">
                         <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_mini.png"></image>
                     </div>
-                    <div class="button" :style="{backgroundColor:'#f28500'}" @click="exitAction">
+                    <div class="button" :style="{backgroundColor:'#f28500'}" @click="exitClick">
                         <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_exit.png"></image>
                     </div>
                 </div>
 
             </div>
 
-            <div style="flex-direction: row; position: absolute; justify-content: right; background-color: white; top: 0;left: 0;right: 0;bottom: 0;" v-if="mini" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
+            <div style="flex-direction: row; position: absolute; justify-content: right; background-color: white; border-color:#D9E2E9; border-width: 2px; top: -4px;left: -4px;right: -4px;;bottom: -4px; overflow: hidden;" v-if="mini" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
                 <div style="padding: 12px;align-self: center; margin-left: 22px;">
                     <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
                 </div>
@@ -58,6 +58,8 @@
 
             </div>
         </div>
+
+        <custom-alert ref="alert" :pos="'top'" :offset="150" @exitConfirm="exitAction"></custom-alert>
     </div>
 </template>
 
@@ -101,6 +103,7 @@
     height: 320px;
     border-radius: 16px;
     overflow: hidden;
+    background-color: rgba(211, 211, 211, 0.99);
 }
 
 .hidden {
@@ -142,15 +145,21 @@
 </style>
 
 <script>
+import CustomAlert from "./customAlert.vue";
+
 const agoro = app.requireModule("eeuiAgoro");
 const eeui = app.requireModule("eeui")
+const animation = app.requireModule("animation")
+const deviceInfo = app.requireModule("eeui/deviceInfo");
 
 export default {
     name:"meetings",
+    components: {CustomAlert},
     data() {
         return {
             title: "",
-            uuids:[],
+            uuids:[
+            ],
             uuid:0,
             meetingid:0,
             mini:false,
@@ -165,7 +174,14 @@ export default {
             startPosX:0,
             startPosY:0,
             bottomShow:true,
-            bottomColor:'white'
+            bottomColor:'white',
+            alertParams:{
+                title:"",
+                message:"",
+                cancel:"",
+                confirm:""
+            },
+            exitAlert:false
         };
     },
 
@@ -178,7 +194,7 @@ export default {
                 style.right = this.rightPos+"px";
                 style.bottom = this.bottomPos+"px";
                 style.borderRadius = "8px";
-                style.borderWidth = "2px";
+                style.borderWidth = "1px";
                 style.borderColor = "#D9E2E9";
             }else {
                 style.top = "0px";
@@ -226,7 +242,11 @@ export default {
                             audioStatus:0,
                             avatar:avatar
                         });
-                        this.infoParam(uuid);
+
+                        if (this.uuid !== uuid){
+                            this.infoParam(uuid);
+                        }
+
                     }
 
                 } else if (jointData.action == "leave") {
@@ -289,6 +309,8 @@ export default {
 
         destroyed() {
             agoro.destroy()
+            //关闭屏幕常亮
+            deviceInfo.keepScreenOn(false);
             this.showShow = false
             this.infos = []
             this.uuids = []
@@ -337,6 +359,7 @@ export default {
                     this.uuid = info.uuid;
                     this.meetingid = param.meetingid
                     this.title = param.name
+                    this.alertParams = param.alert
                     let avatar = ""
                     this.infos.map((item)=>{
                         if (item.uuid == this.uuid) {
@@ -357,15 +380,19 @@ export default {
                     console.info("afterjoint:")
                     console.info(this.uuids)
 
-                    this.successParam(this.uuid);
                     this.showShow = true;
                     this.mini = false;
+                    //开启屏幕常亮
+                    deviceInfo.keepScreenOn(true);
+                    // 延迟一秒发送
+                    this.$nextTick(()=>{
+                        this.successParam(this.uuid);
+                    })
+
                     if (!param.video) {
                         agoro.enableVideo(param.video)
                     }
                     agoro.enableAudio(param.audio)
-
-                    // console.info(info)
                 })
             },500)
 
@@ -465,9 +492,11 @@ export default {
         hideClicked(){
             this.miniClick();
         },
+        exitClick() {
+            this.$refs.alert.showWithParam(this.alertParams);
+        },
 
         load(param){
-
             let uuid = param.target.attr.uuid;
             // console.info("load:"+uuid);
             if (uuid === this.uuid) {
@@ -533,7 +562,6 @@ export default {
         },
 
         touchAction(touch) {
-
             if (this.mini == true) {
 
                 this.isTouch = true
@@ -542,13 +570,31 @@ export default {
             }
         },
         touchend() {
-
             this.isTouch = false;
             if (this.mini == true) {
                 this.startPosX = 0;
                 this.startPosY = 0;
+                this.stickyMoving()
+            }
+        },
+        stickyMoving() {
+
+            let move = 0
+            if(this.rightPos > 284) {
+                move = 750 - 182;
             }
 
+            animation.transition(this.$refs.root, {
+                styles: {
+                    translateX: move+"px",
+                },
+                duration: 600, //ms
+                timingFunction: 'linear',
+                needLayout:false,
+                delay: 0 //ms
+            }, ()=> {
+                this.rightPos = move
+            })
         }
     },
 

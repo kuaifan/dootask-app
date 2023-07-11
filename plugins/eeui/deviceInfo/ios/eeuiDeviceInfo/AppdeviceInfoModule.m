@@ -34,6 +34,8 @@ WX_EXPORT_METHOD(@selector(getVolume:))
 
 WX_EXPORT_METHOD(@selector(batteryStatus:))
 
+WX_EXPORT_METHOD(@selector(keepScreenOn:))
+
 - (void)info:(WXModuleCallback)callback{
     [[AppDeviceInfo singletonManger] info:^(id error, id result) {
         if (callback) {
@@ -152,6 +154,11 @@ WX_EXPORT_METHOD(@selector(batteryStatus:))
             }
         }
     }];
+}
+
+
+- (void)keepScreenOn:(BOOL)keep {
+    [UIApplication sharedApplication].idleTimerDisabled = keep;
 }
 
 @end

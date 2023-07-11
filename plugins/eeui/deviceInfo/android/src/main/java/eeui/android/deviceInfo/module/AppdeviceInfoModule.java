@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
@@ -189,5 +191,16 @@ public class AppdeviceInfoModule extends WXModule {
     @JSMethod
     public void batteryStatus(final JSCallback jsCallback){
         BatteryModule.getInstance(mWXSDKInstance.getContext()).status(jsCallback::invoke);
+    }
+
+    @JSMethod
+    public void keepScreenOn(final boolean keepOn){
+        Activity activity = (Activity )mWXSDKInstance.getContext();
+        Window window = activity.getWindow();
+        if (keepOn) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
     }
 }
