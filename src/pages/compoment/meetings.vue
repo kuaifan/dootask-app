@@ -161,7 +161,7 @@ export default {
             uuid:0,
             meetingid:0,
             mini:false,
-            showShow: true,
+            showShow: false,
             video:false,
             audio:false,
             infos:[],
