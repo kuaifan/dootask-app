@@ -1,65 +1,68 @@
 <template>
     <div ref="root" class="mask" v-if="showShow" :style="videoStyle" >
-        <div style="padding: 16px; flex:1;background-color: white;">
-            <text style="font-size: 30px; padding: 16px;">{{title}}</text>
+        <scroller style="position:absolute; top:0px; left: 0px; bottom: 0px; right: 0px; padding: 16px; background-color: white;">
+            <text :style="{fontSize: miniRate<1?'32px':'36px', padding:scaleSize(16)}">{{title}}</text>
             <div class="render-views">
-                <div class="grid-item" v-for="item in uuids">
-                    <div class="local hidden">
-                        <eeuiAgoro-com class="local" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
+                <div class="grid-item" :style="{width: scaleSize(350),height: scaleSize(350)}" v-for="item in uuids">
+                    <div class="local hidden" :style="{width: scaleSize(320),height: scaleSize(320),marginTop:scaleSize(15),marginLeft:scaleSize(15),borderRadius: '16px'}">
+                        <eeuiAgoro-com class="local" :style="{width: scaleSize(320),height: scaleSize(320),borderRadius: '16px'}" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
                     </div>
-                    <image v-if="item.videoStatus == 0" :src="item.avatar" style="position: absolute; top: 15px;left: 15px;right: 6px;bottom: 15px; border-radius: 16px;flex-direction: row;"></image>
-                    <div style="position: absolute; top: 16px;right: 10px; flex-direction: row;" >
-                        <image v-if="!item.video"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
-                        <image v-if="!item.audio"  style="width:40px;height: 40px;margin-right: 12px;" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
+                    <image v-if="item.videoStatus == 0"  :src="item.avatar" :style="{position: 'absolute', top: scaleSize(6),left: scaleSize(6),right: scaleSize(6),bottom: scaleSize(6), borderRadius: '16px',flexDirection: 'row',backgroundColor:'white'}"></image>
+                    <div :style="{position: 'absolute', top: scaleSize(16),right: scaleSize(10), flexDirection: 'row'}" >
+                        <image v-if="!item.video"  :style="{width:scaleSize(40),height: scaleSize(40),marginRight: scaleSize(12)}" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
+                        <image v-if="!item.audio"  :style="{width:scaleSize(40),height: scaleSize(40),marginRight: scaleSize(12)}" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
                     </div>
 
-                    <div style="position: absolute; bottom: 0px; right: 0px; width: 80px; height: 80px; border-radius: 40px; background-color: white;overflow: hidden;">
-                        <image style="width: 70px; height: 70px; margin-top: 5px; margin-left: 5px; border-radius: 35px; background-color: greenyellow;" :src="item.avatar"></image>
+                    <div :style="{position: 'absolute', bottom: '0px', right: '0px', width: scaleSize(80), height: scaleSize(80), borderRadius: scaleSize(40), backgroundColor: 'white',overflow: 'hidden'}">
+                        <image :style="{width: scaleSize(70), height: scaleSize(70), marginTop: scaleSize(5), marginLeft: scaleSize(5), borderRadius: scaleSize(35), backgroundColor: 'greenyellow'}" :src="item.avatar"></image>
                     </div>
-                    <div class="status-indicator" >
+                    <div class="status-indicator" :style="{ width: scaleSize(20),height: scaleSize(20),borderRadius: scaleSize(10),bottom: scaleSize(6),right: scaleSize(6),}">
                         <div class="sub-status-indicator" :style="getStatus(item.audioStatus,item.videoStatus)"></div>
                     </div>
                 </div>
             </div>
+        </scroller>
+        <div style="position: absolute; flex-direction: row; bottom: 0px;right: 0px;left: 0px;">
 
-            <div style="flex: 1;"></div>
-
-            <div style="position: absolute; bottom: 0px;right: 0px;left: 0px; height: 80px;">
-                <div style="flex-wrap: wrap;flex-direction: row; justify-content: space-between; background-color: white; margin-left: 16px; margin-right: 16px;">
-                    <div class="button" @click="videoEnable">
-                        <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
-                    </div>
-                    <div class="button" @click="audioEnable">
-                        <image style="width:40px;height: 40px;" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
-                    </div>
-                    <div class="button" @click="switchClicked">
-                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_camera_reverse.png"></image>
-                    </div>
-                    <div class="button" @click="invent">
-                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_invent.png"></image>
-                    </div>
-                    <div class="button" @click="hideClicked">
-                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_mini.png"></image>
-                    </div>
-                    <div class="button" :style="{backgroundColor:'#f28500'}" @click="exitClick">
-                        <image style="width:40px;height: 40px;" src="root://pages/assets/images/meeting_exit.png"></image>
-                    </div>
+            <div v-if="miniRate< 1" style="flex: 1;"></div>
+            <div style="flex-direction: row; justify-content: space-between;" :style="{marginLeft: scaleSize(16), marginRight: scaleSize(18)}">
+                <div class="button" :style="buttonPadding" @click="videoEnable">
+                    <image :style="buttonSize" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
+                </div>
+                <div class="button" :style="buttonPadding" @click="audioEnable">
+                    <image :style="buttonSize" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
+                </div>
+                <div class="button" :style="buttonPadding" @click="switchClicked">
+                    <image :style="buttonSize" src="root://pages/assets/images/meeting_camera_reverse.png"></image>
+                </div>
+                <div class="button" :style="buttonPadding" @click="invent">
+                    <image :style="buttonSize" src="root://pages/assets/images/meeting_invent.png"></image>
+                </div>
+                <div class="button" :style="buttonPadding" @click="hideClicked">
+                    <image :style="buttonSize" src="root://pages/assets/images/meeting_mini.png"></image>
                 </div>
 
+                <div class="exit" :style="buttonPadding"  @click="exitClick">
+                    <image :style="buttonSize" src="root://pages/assets/images/meeting_exit.png"></image>
+                </div>
+
+<!--                :style="{backgroundColor:'#f28500'}"-->
+<!--                <div v-if="isAndroid" class="exit" :style="buttonPadding"  @click="exitClick">-->
+<!--                    <image :style="buttonSize" src="root://pages/assets/images/meeting_exit.png"></image>-->
+<!--                </div>-->
             </div>
 
-            <div style="flex-direction: row; position: absolute; justify-content: right; background-color: white; border-color:#D9E2E9; border-width: 2px; top: -4px;left: -4px;right: -4px;;bottom: -4px; overflow: hidden;" v-if="mini" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
-                <div style="padding: 12px;align-self: center; margin-left: 22px;">
-                    <image style="width:40px;height: 40px;" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
-                </div>
-                <div style="padding: 12px;align-self: center; margin-left: 4px;">
-                    <image style="width:40px;height: 40px;align-self: center" :src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
-                </div>
 
+        </div>
+        <div style="flex-direction: row; position: absolute; justify-content: right; background-color: white; border-color:#D9E2E9; border-width: 2px; top: -4px;left: -4px;right: -4px;;bottom: -4px; overflow: hidden;" v-if="mini" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
+            <div :style="{padding:scaleSize(12),marginLeft:scaleSize(22)}" style="align-self: center; margin-left: 22px;">
+                <image :style="{width:scaleSize(40),height:scaleSize(40)}" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
+            </div>
+            <div style="padding: 12px;align-self: center; margin-left: 4px;">
+                <image :style="{width:scaleSize(40),height:scaleSize(40)}":src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
             </div>
         </div>
-
-        <custom-alert ref="alert" :pos="'top'" :offset="150" @exitConfirm="exitAction"></custom-alert>
+        <custom-alert ref="alert" :mini-rate="miniRate" :pos="'top'" :offset="150" @exitConfirm="exitAction"></custom-alert>
     </div>
 </template>
 
@@ -75,18 +78,12 @@
     justify-content: space-between;
 }
 .grid-item {
-    width: 350px;
-    height: 350px;
     align-items: center;
 }
 
 .status-indicator {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    bottom: 6px;
-    right: 6px;
+
     background-color: white;
 }
 
@@ -99,11 +96,8 @@
 }
 
 .local {
-    width: 320px;
-    height: 320px;
-    border-radius: 16px;
     overflow: hidden;
-    background-color: rgba(211, 211, 211, 0.99);
+    background-color: lightgray;
 }
 
 .hidden {
@@ -112,11 +106,15 @@
     overflow: hidden;
 }
 .button {
-    margin-left: 15px;
+
     /*border-width: 1px;*/
     /*border-color: rgb(20, 172, 78);*/
     background-color: rgb(20, 172, 78);
-    padding: 12px 32px;
+    border-radius: 8px;
+}
+
+.exit {
+    background-color:#f28500;
     border-radius: 8px;
 }
 .switch{
@@ -157,17 +155,27 @@ export default {
     components: {CustomAlert},
     data() {
         return {
-            title: "",
+            title: "12312312",
             uuids:[
+                {uuid:0},
+                {uuid:0},
+                {uuid:0},
+                {uuid:0},
+                {uuid:0},
+                {uuid:0},
+                {uuid:0},
+                {uuid:0},
+                {uuid:0}
             ],
             uuid:0,
             meetingid:0,
             mini:false,
-            showShow: false,
+            showShow: true,
             video:false,
             audio:false,
             infos:[],
             screenH:WXEnvironment.deviceHeight/WXEnvironment.deviceWidth *750 ,
+            screenW:750,
             bottomPos:100,
             rightPos:0,
             isTouch:false,
@@ -181,7 +189,9 @@ export default {
                 cancel:"",
                 confirm:""
             },
-            exitAlert:false
+            miniRate:1,
+            exitAlert:false,
+            isAndroid:false //android bug 只有一项无法显示
         };
     },
 
@@ -189,11 +199,11 @@ export default {
         videoStyle(){
             let style = {}
             if (this.mini) {
-                style.width = "182px";
-                style.height = "80px";
+                style.width = this.scaleSize(182);
+                style.height = this.scaleSize(80);
                 style.right = this.rightPos+"px";
                 style.bottom = this.bottomPos+"px";
-                style.borderRadius = "8px";
+                style.borderRadius =  this.scaleSize(8);
                 style.borderWidth = "1px";
                 style.borderColor = "#D9E2E9";
             }else {
@@ -205,8 +215,62 @@ export default {
             return style;
         },
 
+        styleChange(param) {
+            return param;
+        },
+        buttonPadding(){
+            return {
+                marginLeft: this.scaleSize(15),
+                paddingTop:this.scaleSize(12),
+                paddingBottom: this.scaleSize(12),
+                paddingLeft:this.scaleSize(32),
+                paddingRight:this.scaleSize(32),
+            }
+        },
+        buttonSize() {
+            return {
+                width:this.scaleSize(40),
+                height:this.scaleSize(40)
+            }
+        }
+
+    },
+
+    mounted() {
+        console.info(WXEnvironment.deviceHeight)
+        console.info(this.screenH)
+        this.isAndroid = WXEnvironment.platform.toLowerCase() == 'android'
+
+        let height = WXEnvironment.deviceHeight
+        let width = WXEnvironment.deviceWidth
+
+        //取宽高最小值
+        let min = height > width?width:height;
+
+        let currentScale = width/750.0
+
+        if (width>height) {
+            //横屏
+            let realScale = height/750.0
+            this.screenW = width/realScale;
+        }
+
+        console.info(currentScale)
+        let maxScale = 1.92;
+
+        let minScale = maxScale/currentScale;
+        if (minScale < 1) {
+            this.miniRate = minScale
+        }
+        console.info(minScale)
     },
     methods:{
+
+        scaleSize(current){
+
+            return this.miniRate*current+'px';
+        },
+
         /**
          *
          * @param appid
@@ -398,7 +462,7 @@ export default {
 
         },
         zoomClick() {
-            if (this.isTouch) {
+            if (this.isTouch === true) {
                 return;
             }
 
@@ -497,6 +561,7 @@ export default {
         },
 
         load(param){
+            return;
             let uuid = param.target.attr.uuid;
             // console.info("load:"+uuid);
             if (uuid === this.uuid) {
@@ -512,7 +577,17 @@ export default {
         },
 
         getStatus(videoStatus,audioStatus) {
+            // width: 16px;
+            // height: 16px;
+            // border-radius: 8px;
+            // margin-top: 2px;
+            // margin-left: 2px;
             let style = {}
+            style.width = this.scaleSize(16)
+            style.height = this.scaleSize(16)
+            style.borderRadius = this.scaleSize(8)
+            style.marginTop = this.scaleSize(2)
+            style.marginLeft = this.scaleSize(2)
             if (videoStatus > 2 || audioStatus >2) {
                 style.backgroundColor = "#f28500"
             } else {
@@ -554,8 +629,9 @@ export default {
         },
         touchstart(touch){
 
+            this.isTouch = true
             if (this.mini == true) {
-                this.startPosX = 750 - touch.changedTouches[0].screenX - this.rightPos;
+                this.startPosX = this.screenW - touch.changedTouches[0].screenX - this.rightPos;
                 this.startPosY = this.screenH - touch.changedTouches[0].screenY - this.bottomPos;
             }
 
@@ -565,7 +641,7 @@ export default {
             if (this.mini == true) {
 
                 this.isTouch = true
-                this.rightPos = 750 - touch.changedTouches[0].screenX-this.startPosX;
+                this.rightPos = this.screenW - touch.changedTouches[0].screenX-this.startPosX;
                 this.bottomPos = this.screenH - touch.changedTouches[0].screenY -this.startPosY;
             }
         },
@@ -580,15 +656,22 @@ export default {
         stickyMoving() {
 
             let move = 0
-            if(this.rightPos > 284) {
-                move = 750 - 182;
+            let center = 284
+
+            if (this.miniRate<1){
+                let des = (this.screenW - 750)/2.0
+                center = center +des
             }
+            if(this.rightPos > center) {
+                move = this.screenW - 182*this.miniRate;
+            }
+            console.info(this.screenW)
 
             animation.transition(this.$refs.root, {
                 styles: {
                     translateX: move+"px",
                 },
-                duration: 600, //ms
+                duration: 400, //ms
                 timingFunction: 'linear',
                 needLayout:false,
                 delay: 0 //ms
