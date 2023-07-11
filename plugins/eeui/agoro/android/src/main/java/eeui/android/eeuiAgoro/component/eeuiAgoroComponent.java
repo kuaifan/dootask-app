@@ -24,8 +24,6 @@ import java.util.HashMap;
 
 import eeui.android.eeuiAgoro.client.AgoraRtcPresenter;
 import eeui.android.eeuiAgoro.client.Event;
-import io.agora.rtc2.Constants;
-import io.agora.rtc2.IRtcEngineEventHandler;
 import io.agora.rtc2.RtcEngine;
 import io.agora.rtc2.video.VideoCanvas;
 
