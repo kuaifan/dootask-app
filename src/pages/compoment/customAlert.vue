@@ -3,21 +3,21 @@
     <div class="g-cover" v-if="show" @overlay="cancelClick">
         <div class="container flex-d-c" :style="posStyle">
             <div style="flex-direction: row;">
-                <image style="width: 50px; height: 50px;" src="root://pages/assets/images/alert-icon.png"></image>
-                <div style=" justify-content: left; margin-left: 32px; ">
-                    <text style="font-size: 30px; font-weight: 300; color: black; margin-top: 4px;">{{title}}</text>
-                    <text style="font-size: 26px; font-weight: 300; color: black; margin-top: 32px;">{{message}}</text>
+                <image :style="{width:scaleSize(50),height:scaleSize(50)}" src="root://pages/assets/images/alert-icon.png"></image>
+                <div :style="{justifyContent:'left', marginLeft:scaleSize(32)}" >
+                    <text :style="{fontSize:scaleSize(30),marginTop:scaleSize(4)}" style="font-weight: 300; color: black; ">{{title}}</text>
+                    <text :style="{fontSize:scaleSize(26),marginTop:scaleSize(32)}" style="font-size: 26px; font-weight: 300; color: black; ">{{message}}</text>
                 </div>
             </div>
 
             <div style="flex-direction: row;">
                 <div style="flex: 1"></div>
-                <div style="flex-direction: row; justify-content: space-between; margin-top: 64px;">
-                    <div class="cancelTitle" @click="cancelClick" style="justify-content: center;">
-                        <text style="font-size: 26px; font-weight: 300; color: black;" >{{cancel}}</text>
+                <div style="flex-direction: row; justify-content: space-between; " :style="{marginTop:scaleSize(64)}">
+                    <div class="cancelTitle" @click="cancelClick" style="justify-content: center;" :style="{marginRight:scaleSize(64)}">
+                        <text :style="{fontSize:scaleSize(26)}" style="font-weight: 300; color: black;" >{{cancel}}</text>
                     </div>
-                    <div class="confirmTitle" @click="confirmClick">
-                        <text style="font-size: 26px; font-weight: 300; color: white;" >{{confirm}}</text>
+                    <div class="confirmTitle" :style="{paddingLeft:scaleSize(32),paddingRight:scaleSize(32),paddingTop:scaleSize(12),paddingBottom:scaleSize(12)}" @click="confirmClick">
+                        <text :style="{fontSize:scaleSize(26)}" style="font-weight: 300; color: white;" >{{confirm}}</text>
                     </div>
                 </div>
             </div>
@@ -41,6 +41,9 @@ export default {
             type: Boolean,
             default: true,
         },
+        miniRate:{
+            default:1.0
+        }
 
     },
     data() {
@@ -60,6 +63,9 @@ export default {
             const pos  = this.pos ? this.pos:"center";
             style.position = "absolute";
 
+            style.width = this.scaleSize(718)
+            style.padding = this.scaleSize(48)
+            style.marginLeft = this.scaleSize(16)
             switch (pos) {
                 case "center":
                     style.alignSelf = "center";
@@ -79,6 +85,7 @@ export default {
         gStyle(){
             const style = {};
             const pos  = this.pos ? this.pos : "center";
+            style.width = this.scaleSize(718)
             //style.justifyContent = "center"
             switch (pos) {
                 case "center":
@@ -96,6 +103,9 @@ export default {
         this.show = false;
     },
     methods:{
+        scaleSize(current){
+            return this.miniRate*current+'px';
+        },
 
         hide(){
             this.show = false;
@@ -132,15 +142,12 @@ export default {
     /* justify-content:center; */
 }
 .container{
-    width: 718px;
     background-color: white;
     border-radius: 16px;
-    padding: 48px;
-    margin-left: 16px;
+    align-self: center;
 }
 
 .cancelTitle{
-    margin-right: 64px;
 }
 
 .confirmTitle{
