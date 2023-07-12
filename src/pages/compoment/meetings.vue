@@ -1,36 +1,36 @@
 <template>
     <div ref="root" class="mask" v-if="showShow" :style="videoStyle" >
         <scroller style="position:absolute; top:0px; left: 0px; bottom: 0px; right: 0px; padding: 16px; background-color: white;">
-            <text :style="{fontSize: miniRate<1?'32px':'36px', padding:scaleSize(16)}">{{title}}</text>
-            <div class="render-views">
-                <div class="grid-item" :style="{width: scaleSize(350),height: scaleSize(350)}" v-for="item in uuids">
-                    <div class="local hidden" :style="{width: scaleSize(320),height: scaleSize(320),marginTop:scaleSize(15),marginLeft:scaleSize(15),borderRadius: '16px'}">
-                        <eeuiAgoro-com class="local" :style="{width: scaleSize(320),height: scaleSize(320),borderRadius: '16px'}" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
+            <text :style="titleStyle">{{title}}</text>
+            <div class="render-views" :style="{justifyContent:miniRate<1?'start':'space-between'}">
+                <div class="grid-item" :style="gridItemStyle" v-for="item in uuids">
+                    <div class="local hidden" :style="localStyle">
+                        <eeuiAgoro-com class="local" :style="camaraStyle" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
                     </div>
-                    <image v-if="item.videoStatus == 0"  :src="item.avatar" :style="{position: 'absolute', top: scaleSize(6),left: scaleSize(6),right: scaleSize(6),bottom: scaleSize(6), borderRadius: '16px',flexDirection: 'row',backgroundColor:'white'}"></image>
-                    <div :style="{position: 'absolute', top: scaleSize(16),right: scaleSize(10), flexDirection: 'row'}" >
-                        <image v-if="!item.video"  :style="{width:scaleSize(40),height: scaleSize(40),marginRight: scaleSize(12)}" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
-                        <image v-if="!item.audio"  :style="{width:scaleSize(40),height: scaleSize(40),marginRight: scaleSize(12)}" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
+                    <image v-if="item.videoStatus == 0"  :src="item.avatar" :style="avatarStyle"></image>
+                    <div :style="videoButtonStyle" >
+                        <image v-if="!item.video"  :style="videoSubStyle" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
+                        <image v-if="!item.audio"  :style="videoSubStyle" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
                     </div>
 
-                    <div :style="{position: 'absolute', bottom: '0px', right: '0px', width: scaleSize(80), height: scaleSize(80), borderRadius: scaleSize(40), backgroundColor: 'white',overflow: 'hidden'}">
-                        <image :style="{width: scaleSize(70), height: scaleSize(70), marginTop: scaleSize(5), marginLeft: scaleSize(5), borderRadius: scaleSize(35), backgroundColor: 'greenyellow'}" :src="item.avatar"></image>
+                    <div :style="subAvatarContainerStyle">
+                        <image :style="subAvatarStyle" :src="item.avatar"></image>
                     </div>
-                    <div class="status-indicator" :style="{ width: scaleSize(20),height: scaleSize(20),borderRadius: scaleSize(10),bottom: scaleSize(6),right: scaleSize(6),}">
+                    <div class="status-indicator" :style="indicatorStyle">
                         <div class="sub-status-indicator" :style="getStatus(item.audioStatus,item.videoStatus)"></div>
                     </div>
                 </div>
             </div>
         </scroller>
-        <div style="position: absolute; flex-direction: row; bottom: 0px;right: 0px;left: 0px;">
+        <div style="position: absolute; flex-direction: row; bottom: 16px;right: 0px;left: 0px;">
 
             <div v-if="miniRate< 1" style="flex: 1;"></div>
-            <div style="flex-direction: row; justify-content: space-between;" :style="{marginLeft: scaleSize(16), marginRight: scaleSize(18)}">
-                <div class="button" :style="buttonPadding" @click="videoEnable">
-                    <image :style="buttonSize" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
-                </div>
+            <div style="flex-direction: row; justify-content: space-between;" :style="subButtonStyle">
                 <div class="button" :style="buttonPadding" @click="audioEnable">
                     <image :style="buttonSize" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
+                </div>
+                <div class="button" :style="buttonPadding" @click="videoEnable">
+                    <image :style="buttonSize" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
                 </div>
                 <div class="button" :style="buttonPadding" @click="switchClicked">
                     <image :style="buttonSize" src="root://pages/assets/images/meeting_camera_reverse.png"></image>
@@ -55,11 +55,11 @@
 
         </div>
         <div style="flex-direction: row; position: absolute; justify-content: right; background-color: white; border-color:#D9E2E9; border-width: 2px; top: -4px;left: -4px;right: -4px;;bottom: -4px; overflow: hidden;" v-if="mini" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
-            <div :style="{padding:scaleSize(12),marginLeft:scaleSize(22)}" style="align-self: center; margin-left: 22px;">
-                <image :style="{width:scaleSize(40),height:scaleSize(40)}" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
+            <div :style="popVideoContainerStyle" style="align-self: center; margin-left: 22px;">
+                <image :style="popVideoStyle" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
             </div>
-            <div style="padding: 12px;align-self: center; margin-left: 4px;">
-                <image :style="{width:scaleSize(40),height:scaleSize(40)}":src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
+            <div :style="popAudioContainerStyle">
+                <image :style="popVideoStyle":src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
             </div>
         </div>
         <custom-alert ref="alert" :mini-rate="miniRate" :pos="'top'" :offset="150" @exitConfirm="exitAction"></custom-alert>
@@ -72,13 +72,13 @@
     overflow: hidden;
     background-color: white;
 }
+
 .render-views {
     flex-wrap: wrap;
-    flex-direction:row;
-    justify-content: space-between;
+    flex-direction: row;
 }
+
 .grid-item {
-    align-items: center;
 }
 
 .status-indicator {
@@ -105,6 +105,7 @@
     margin-left: 15px;
     overflow: hidden;
 }
+
 .button {
 
     /*border-width: 1px;*/
@@ -114,28 +115,34 @@
 }
 
 .exit {
-    background-color:#f28500;
+    background-color: #f28500;
     border-radius: 8px;
 }
-.switch{
+
+.switch {
     margin-top: 850px;
     margin-left: -420px;
 }
+
 .silence {
     margin-top: 850px;
     margin-left: 0px;
 }
+
 .loudly {
     margin-top: 850px;
     margin-left: 320px;
 }
-.shut{
+
+.shut {
     margin-left: 420px;
 }
+
 .hide {
     margin-top: 1100px;
     margin-left: 100px;
 }
+
 .content {
     font-size: 40px;
     color: gray;
@@ -151,53 +158,171 @@ const animation = app.requireModule("animation")
 const deviceInfo = app.requireModule("eeui/deviceInfo");
 
 export default {
-    name:"meetings",
+    name: "meetings",
     components: {CustomAlert},
     data() {
         return {
             title: "",
-            uuids:[
-            ],
-            uuid:0,
-            meetingid:0,
-            mini:false,
+            uuids: [],
+            uuid: 0,
+            meetingid: 0,
+            mini: false,
             showShow: false,
-            video:false,
-            audio:false,
-            infos:[],
-            screenH:WXEnvironment.deviceHeight/WXEnvironment.deviceWidth *750 ,
-            screenW:750,
-            bottomPos:100,
-            rightPos:0,
-            isTouch:false,
-            startPosX:0,
-            startPosY:0,
-            bottomShow:true,
-            bottomColor:'white',
-            alertParams:{
-                title:"",
-                message:"",
-                cancel:"",
-                confirm:""
+            video: false,
+            audio: false,
+            infos: [],
+            screenH: WXEnvironment.deviceHeight / WXEnvironment.deviceWidth * 750,
+            screenW: 750,
+            bottomPos: 100,
+            rightPos: 0,
+            isTouch: false,
+            startPosX: 0,
+            startPosY: 0,
+            bottomShow: true,
+            bottomColor: 'white',
+            alertParams: {
+                title: "",
+                message: "",
+                cancel: "",
+                confirm: ""
             },
-            miniRate:1,
-            exitAlert:false,
-            isAndroid:false //android bug 只有一项无法显示
+            miniRate: 1,
+            exitAlert: false,
+            isAndroid: false //android bug 只有一项无法显示
         };
     },
 
-    computed:{
-        videoStyle(){
+    computed: {
+        titleStyle() {
+            return {
+                fontSize: this.miniRate < 1 ? '28px' : '36px',
+                padding: this.scaleSize(16)
+            }
+        },
+
+        gridItemStyle() {
+            return {
+                width: this.scaleSize(350),
+                height: this.scaleSize(350)
+            }
+        },
+        localStyle() {
+            return {
+                width: this.scaleSize(320),
+                height: this.scaleSize(320),
+                marginTop: this.scaleSize(15),
+                marginLeft: this.scaleSize(15),
+                borderRadius: '16px'
+            }
+        },
+        camaraStyle() {
+            return {
+                width: this.scaleSize(320),
+                height: this.scaleSize(320),
+                borderRadius: '16px'
+            }
+        },
+        avatarStyle() {
+            return {
+                position: 'absolute',
+                top: this.scaleSize(15),
+                left: this.scaleSize(15),
+                right: this.scaleSize(15),
+                bottom: this.scaleSize(15),
+                borderRadius: '16px',
+                flexDirection: 'row',
+                backgroundColor: 'white'
+            };
+        },
+
+        videoButtonStyle() {
+            return {
+                position: 'absolute',
+                top: this.scaleSize(16),
+                right: this.scaleSize(10),
+                flexDirection: 'row'
+            }
+        },
+        videoSubStyle() {
+            return {
+                width: this.scaleSize(40),
+                height: this.scaleSize(40),
+                marginRight: this.scaleSize(12)
+            };
+        },
+        subAvatarContainerStyle() {
+            return {
+                position: 'absolute',
+                bottom: '0px',
+                right: '0px',
+                width: this.scaleSize(80),
+                height: this.scaleSize(80),
+                borderRadius: this.scaleSize(40),
+                backgroundColor: 'white',
+                overflow: 'hidden'
+            };
+        },
+        subAvatarStyle() {
+            return {
+                width: this.scaleSize(70),
+                height: this.scaleSize(70),
+                marginTop: this.scaleSize(5),
+                marginLeft: this.scaleSize(5),
+                borderRadius: this.scaleSize(35),
+                backgroundColor: 'greenyellow'
+            };
+        },
+        indicatorStyle() {
+            return {
+                width: this.scaleSize(20),
+                height: this.scaleSize(20),
+                borderRadius: this.scaleSize(10),
+                bottom: this.scaleSize(6),
+                right: this.scaleSize(6)
+            };
+        },
+        subIndicatorStyle() {
+
+        },
+        subButtonStyle() {
+            return {
+                marginLeft: this.scaleSize(16),
+                marginRight: this.scaleSize(18)
+            }
+        },
+        popVideoContainerStyle() {
+            return {
+                padding: this.scaleSize(12),
+                marginLeft: this.scaleSize(22)
+            }
+        },
+        popAudioContainerStyle() {
+            return {
+                padding: this.scaleSize(12),
+                marginLeft: this.scaleSize(4),
+                alignSelf: 'center'
+            }
+        },
+        popVideoStyle() {
+            return {
+                width: this.scaleSize(40),
+                height: this.scaleSize(40)
+            }
+        },
+        popAudioStyle() {
+
+        },
+        videoStyle() {
             let style = {}
             if (this.mini) {
                 style.width = this.scaleSize(182);
                 style.height = this.scaleSize(80);
-                style.right = this.rightPos+"px";
-                style.bottom = this.bottomPos+"px";
-                style.borderRadius =  this.scaleSize(8);
+                style.right = this.rightPos + "px";
+                style.bottom = this.bottomPos + "px";
+                style.borderRadius = this.scaleSize(8);
                 style.borderWidth = "1px";
                 style.borderColor = "#D9E2E9";
-            }else {
+            } else {
                 style.top = "0px";
                 style.bottom = "0px";
                 style.right = "0px";
@@ -206,22 +331,28 @@ export default {
             return style;
         },
 
-        styleChange(param) {
-            return param;
+        /**
+         * 转译样式类型 （还是会在标签里调用方法是否多此一举？）
+         * @return {function(*): *}
+         */
+        styleChange() {
+            return function (params) {
+                return params
+            };
         },
-        buttonPadding(){
+        buttonPadding() {
             return {
                 marginLeft: this.scaleSize(15),
-                paddingTop:this.scaleSize(12),
+                paddingTop: this.scaleSize(12),
                 paddingBottom: this.scaleSize(12),
-                paddingLeft:this.scaleSize(32),
-                paddingRight:this.scaleSize(32),
+                paddingLeft: this.scaleSize(32),
+                paddingRight: this.scaleSize(32),
             }
         },
         buttonSize() {
             return {
-                width:this.scaleSize(40),
-                height:this.scaleSize(40)
+                width: this.scaleSize(40),
+                height: this.scaleSize(40)
             }
         }
 
@@ -236,30 +367,36 @@ export default {
         let width = WXEnvironment.deviceWidth
 
         //取宽高最小值
-        let min = height > width?width:height;
+        let min = height > width ? width : height;
 
-        let currentScale = width/750.0
+        let currentScale = width / 750.0
 
-        if (width>height) {
+        if (width > height) {
             //横屏
-            let realScale = height/750.0
-            this.screenW = width/realScale;
+            let realScale = height / 750.0
+            this.screenW = width / realScale;
         }
 
         console.info(currentScale)
         let maxScale = 1.92;
 
-        let minScale = maxScale/currentScale;
+        let minScale = maxScale / currentScale;
         if (minScale < 1) {
             this.miniRate = minScale
         }
         console.info(minScale)
+        // test
+
+        for (let i = 0; i < 5; i++) {
+            this.uuids.push({uuid: 0})
+        }
+        this.showShow = true
     },
-    methods:{
+    methods: {
 
-        scaleSize(current){
+        scaleSize(current) {
 
-            return this.miniRate*current+'px';
+            return this.miniRate * current + 'px';
         },
 
         /**
@@ -269,7 +406,7 @@ export default {
         initAgoro(appid) {
             agoro.initialWithParam({
                 id: appid
-            },(jointData)=>{
+            }, (jointData) => {
                 let uuid = jointData.uuid;
                 if (jointData.action == "joint") {
                     // console.info("joint:"+ uuid);
@@ -282,7 +419,7 @@ export default {
                             shouldAdd = false;
                         }
                     }
-                    this.infos.map((item)=>{
+                    this.infos.map((item) => {
                         if (item.uuid == this.uuids) {
                             avatar = item.avatar;
                         }
@@ -290,15 +427,15 @@ export default {
                     })
                     if (shouldAdd == true) {
                         this.uuids.push({
-                            uuid:uuid,
-                            audio:false,
-                            video:false,
-                            videoStatus:0,
-                            audioStatus:0,
-                            avatar:avatar
+                            uuid: uuid,
+                            audio: false,
+                            video: false,
+                            videoStatus: 0,
+                            audioStatus: 0,
+                            avatar: avatar
                         });
 
-                        if (this.uuid !== uuid){
+                        if (this.uuid !== uuid) {
                             this.infoParam(uuid);
                         }
 
@@ -307,22 +444,22 @@ export default {
                 } else if (jointData.action == "leave") {
                     // console.info("leave:"+ uuid);
                     // console.info(this.uuids);
-                    this.uuids = this.uuids.filter(item=>{
+                    this.uuids = this.uuids.filter(item => {
                         return item.uuid != uuid;
                     })
                     // console.info(this.uuids);
                 }
             });
-            agoro.statusCallback((statsParam)=>{
-                console.info("statsParam:",statsParam);
+            agoro.statusCallback((statsParam) => {
+                console.info("statsParam:", statsParam);
                 // console.info(statsParam);
                 if (statsParam.uuid === "me") {
 
                     // 本地状态回调
-                    if (statsParam.type === "video"){
+                    if (statsParam.type === "video") {
                         if (this.uuids[0]) this.uuids[0].video = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3);
                         if (this.uuids[0]) this.uuids[0].videoStatus = statsParam.status;
-                    } else  {
+                    } else {
                         if (this.uuids[0]) this.uuids[0].audio = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3);
                         if (this.uuids[0]) this.uuids[0].audioStatus = statsParam.status;
                     }
@@ -330,19 +467,19 @@ export default {
                     // 其他状态回调
                     let uuid = statsParam.uuid
                     // console.info("beforeStatus:",this.uuids)
-                    this.uuids = this.uuids.map(item =>{
-                        if(item.uuid == uuid) {
-                            if (statsParam.type === "video"){
+                    this.uuids = this.uuids.map(item => {
+                        if (item.uuid == uuid) {
+                            if (statsParam.type === "video") {
                                 item.videoStatus = statsParam.status;
                                 item.video = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3)
                                 return item;
-                            } else  {
+                            } else {
                                 item.audioStatus = statsParam.status;
                                 item.audio = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3)
                                 return item;
                             }
 
-                        }else  {
+                        } else {
                             return item
                         }
                     })
@@ -350,13 +487,13 @@ export default {
                 }
 
             });
-            agoro.localStatusCallback((stats)=>{
+            agoro.localStatusCallback((stats) => {
                 // console.info("leaveRoom");
 
-                if(stats == -1){
+                if (stats == -1) {
                     this.destroyed();
                     this.uuids = [];
-                }else if (stats == 5) {
+                } else if (stats == 5) {
                     this.errorParam(this.uuid)
                 }
             });
@@ -371,8 +508,8 @@ export default {
             this.uuids = []
             this.title = ""
             let param = {
-                act:'endMeeting',
-                uuid:this.uuid+""
+                act: 'endMeeting',
+                uuid: this.uuid + ""
             }
             this.callbackParam(param);
         },
@@ -397,7 +534,7 @@ export default {
          *
          * @param param
          */
-        joint(param){
+        joint(param) {
             console.info("joint:")
             console.info(param)
 
@@ -408,15 +545,15 @@ export default {
             this.video = param.video;
             this.audio = param.audio;
 
-            setTimeout(()=>{
-                agoro.jointChanel(param, (info)=>{
+            setTimeout(() => {
+                agoro.jointChanel(param, (info) => {
 
                     this.uuid = info.uuid;
                     this.meetingid = param.meetingid
                     this.title = param.name
                     this.alertParams = param.alert
                     let avatar = ""
-                    this.infos.map((item)=>{
+                    this.infos.map((item) => {
                         if (item.uuid == this.uuid) {
                             avatar = item.avatar;
                         }
@@ -428,9 +565,9 @@ export default {
                         uuid: this.uuid,
                         audio: param.audio,
                         video: param.video,
-                        videoStatus:0,
-                        audioStatus:0,
-                        avatar:param.avatar
+                        videoStatus: 0,
+                        audioStatus: 0,
+                        avatar: param.avatar
                     })
                     console.info("afterjoint:")
                     console.info(this.uuids)
@@ -440,7 +577,7 @@ export default {
                     //开启屏幕常亮
                     deviceInfo.keepScreenOn(true);
                     // 延迟一秒发送
-                    this.$nextTick(()=>{
+                    this.$nextTick(() => {
                         this.successParam(this.uuid);
                     })
 
@@ -449,7 +586,7 @@ export default {
                     }
                     agoro.enableAudio(param.audio)
                 })
-            },500)
+            }, 500)
 
         },
         zoomClick() {
@@ -459,7 +596,7 @@ export default {
 
             this.mini = false;
             this.bottomShow = false;
-            this.$nextTick(()=>{
+            this.$nextTick(() => {
 
                 this.bottomShow = true;
             })
@@ -468,11 +605,11 @@ export default {
 
         miniClick() {
             this.mini = true
-            if (this.bottomPos <0) {
+            if (this.bottomPos < 0) {
                 this.bottomPos = 100;
             }
 
-            if (this.rightPos <0) {
+            if (this.rightPos < 0) {
                 this.rightPos = 0;
             }
         },
@@ -490,73 +627,73 @@ export default {
         invent() {
             this.mini = true;
             let param = {
-                act:'invent',
-                meetingid:this.meetingid+""
+                act: 'invent',
+                meetingid: this.meetingid + ""
             }
             this.callbackParam(param);
         },
-        infoParam(uuid){
+        infoParam(uuid) {
             let param = {
-                act:'getInfo',
-                uuid:uuid+""
+                act: 'getInfo',
+                uuid: uuid + ""
             }
 
             this.callbackParam(param);
         },
-        successParam(uuid){
+        successParam(uuid) {
             let param = {
-                act:'success',
-                uuid:uuid+""
+                act: 'success',
+                uuid: uuid + ""
             }
             this.callbackParam(param);
         },
-        errorParam(uuid){
+        errorParam(uuid) {
             let param = {
-                act:'error',
-                uuid:uuid+""
+                act: 'error',
+                uuid: uuid + ""
             }
             this.callbackParam(param);
         },
-        callbackParam(param){
-            this.$emit("meetingEvent",param);
+        callbackParam(param) {
+            this.$emit("meetingEvent", param);
         },
 
-        switchClicked(){
+        switchClicked() {
             agoro.switchCamera()
         },
 
-        silenceClicked(uids){
+        silenceClicked(uids) {
             // agoro.
             // agoro.silence(true);
         },
-        remoteSlicent(item){
+        remoteSlicent(item) {
             agoro.muteRemoteAudioStream(item.uuids, !item.mute);
         },
 
-        remoteVideo(item){
+        remoteVideo(item) {
             agoro.muteRemoteVideoStream(item.uuids, !item.mute);
         },
 
-        loudlyClicked(){
+        loudlyClicked() {
 
         },
 
-        shutClicked(){
+        shutClicked() {
             agoro.leaveChannel();
         },
-        hideClicked(){
+        hideClicked() {
             this.miniClick();
         },
         exitClick() {
             this.$refs.alert.showWithParam(this.alertParams);
         },
 
-        load(param){
+        load(param) {
             let uuid = param.target.attr.uuid;
             // console.info("load:"+uuid);
             if (uuid === this.uuid) {
                 // console.info("blindLocal");
-                this.$nextTick(()=>{
+                this.$nextTick(() => {
                     agoro.blindLocal(this.uuid);
                 })
                 return;
@@ -566,19 +703,14 @@ export default {
 
         },
 
-        getStatus(videoStatus,audioStatus) {
-            // width: 16px;
-            // height: 16px;
-            // border-radius: 8px;
-            // margin-top: 2px;
-            // margin-left: 2px;
+        getStatus(videoStatus, audioStatus) {
             let style = {}
             style.width = this.scaleSize(16)
             style.height = this.scaleSize(16)
             style.borderRadius = this.scaleSize(8)
             style.marginTop = this.scaleSize(2)
             style.marginLeft = this.scaleSize(2)
-            if (videoStatus > 2 || audioStatus >2) {
+            if (videoStatus > 2 || audioStatus > 2) {
                 style.backgroundColor = "#f28500"
             } else {
                 style.backgroundColor = "#00ff00"
@@ -587,10 +719,11 @@ export default {
         },
 
         /**
-         * meetingInfos = [{uuid,avatar}]
+         * 加入用户的信息
+         * meetingInfos = {uuid,avatar}
          * @param meetingInfos
          */
-        updateMeetingInfo(meetingInfos){
+        updateMeetingInfo(meetingInfos) {
             this.infos.push(meetingInfos);
             this.updateUidInfo();
         },
@@ -598,12 +731,11 @@ export default {
         /**
          * 更新个人信息
          */
-        updateUidInfo(){
+        updateUidInfo() {
             if (this.infos.length == 0) {
                 return;
             }
-
-            this.uuids = this.uuids.map(item=>{
+            this.uuids = this.uuids.map(item => {
 
                 for (let i = 0; i < this.infos.length; i++) {
                     const element = this.infos[i];
@@ -617,7 +749,10 @@ export default {
             })
 
         },
-        touchstart(touch){
+        /**
+         * 拖拽开始
+         */
+        touchstart(touch) {
 
             this.isTouch = true
             if (this.mini == true) {
@@ -626,15 +761,21 @@ export default {
             }
 
         },
-
+        /**
+         * 拖拽中
+         */
         touchAction(touch) {
             if (this.mini == true) {
 
                 this.isTouch = true
-                this.rightPos = this.screenW - touch.changedTouches[0].screenX-this.startPosX;
-                this.bottomPos = this.screenH - touch.changedTouches[0].screenY -this.startPosY;
+                this.rightPos = this.screenW - touch.changedTouches[0].screenX - this.startPosX;
+                this.bottomPos = this.screenH - touch.changedTouches[0].screenY - this.startPosY;
             }
         },
+        /**
+         * 拖拽结束
+         * (安卓的触碰结束时间出现比较晚，稍微有延迟)
+         */
         touchend() {
             this.isTouch = false;
             if (this.mini == true) {
@@ -648,24 +789,24 @@ export default {
             let move = 0
             let center = 284
 
-            if (this.miniRate<1){
-                let des = (this.screenW - 750)/2.0
-                center = center +des
+            if (this.miniRate < 1) {
+                let des = (this.screenW - 750) / 2.0
+                center = center + des
             }
-            if(this.rightPos > center) {
-                move = this.screenW - 182*this.miniRate;
+            if (this.rightPos > center) {
+                move = this.screenW - 182 * this.miniRate;
             }
             console.info(this.screenW)
 
             animation.transition(this.$refs.root, {
                 styles: {
-                    translateX: move+"px",
+                    translateX: move + "px",
                 },
                 duration: 400, //ms
                 timingFunction: 'linear',
-                needLayout:false,
+                needLayout: false,
                 delay: 0 //ms
-            }, ()=> {
+            }, () => {
                 this.rightPos = move
             })
         }

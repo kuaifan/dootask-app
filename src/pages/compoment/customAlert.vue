@@ -3,21 +3,21 @@
     <div class="g-cover" v-if="show" @overlay="cancelClick">
         <div class="container flex-d-c" :style="posStyle">
             <div style="flex-direction: row;">
-                <image :style="{width:scaleSize(50),height:scaleSize(50)}" src="root://pages/assets/images/alert-icon.png"></image>
-                <div :style="{justifyContent:'left', marginLeft:scaleSize(32)}" >
-                    <text :style="{fontSize:scaleSize(30),marginTop:scaleSize(4)}" style="font-weight: 300; color: black; ">{{title}}</text>
-                    <text :style="{fontSize:scaleSize(26),marginTop:scaleSize(32)}" style="font-size: 26px; font-weight: 300; color: black; ">{{message}}</text>
+                <image :style="iconStyle" src="root://pages/assets/images/alert-icon.png"></image>
+                <div :style="HStyle" >
+                    <text :style="titleStyle" style="font-weight: 300; color: black; ">{{title}}</text>
+                    <text :style="subTitleStyle" style="font-size: 26px; font-weight: 300; color: black; ">{{message}}</text>
                 </div>
             </div>
 
             <div style="flex-direction: row;">
                 <div style="flex: 1"></div>
-                <div style="flex-direction: row; justify-content: space-between; " :style="{marginTop:scaleSize(64)}">
-                    <div class="cancelTitle" @click="cancelClick" style="justify-content: center;" :style="{marginRight:scaleSize(64)}">
-                        <text :style="{fontSize:scaleSize(26)}" style="font-weight: 300; color: black;" >{{cancel}}</text>
+                <div style="flex-direction: row; justify-content: space-between; " :style="buttonGroupStyle">
+                    <div class="cancelTitle" @click="cancelClick" style="justify-content: center;" :style="buttonBGStyle">
+                        <text :style="buttonTextStyle" style="font-weight: 300; color: black;" >{{cancel}}</text>
                     </div>
-                    <div class="confirmTitle" :style="{paddingLeft:scaleSize(32),paddingRight:scaleSize(32),paddingTop:scaleSize(12),paddingBottom:scaleSize(12)}" @click="confirmClick">
-                        <text :style="{fontSize:scaleSize(26)}" style="font-weight: 300; color: white;" >{{confirm}}</text>
+                    <div class="confirmTitle" :style="confirmButtonStyle" @click="confirmClick">
+                        <text :style="buttonTextStyle" style="font-weight: 300; color: white;" >{{confirm}}</text>
                     </div>
                 </div>
             </div>
@@ -97,7 +97,54 @@ export default {
                     break;
             }
             return style
-        }
+        },
+        iconStyle(){
+            return {
+                width:this.scaleSize(50),
+                height:this.scaleSize(50)
+            };
+        },
+        HStyle(){
+            return {
+                justifyContent:'left',
+                marginLeft:this.scaleSize(32)
+            }
+        },
+        titleStyle() {
+            return {
+                fontSize:this.scaleSize(30),
+                marginTop:this.scaleSize(4)
+            }
+        },
+        subTitleStyle() {
+            return {
+                fontSize:this.scaleSize(26),
+                marginTop:this.scaleSize(32)
+            }
+        },
+        buttonGroupStyle() {
+            return {
+                marginTop:this.scaleSize(64)
+            }
+        },
+        buttonBGStyle() {
+            return {
+                marginRight:this.scaleSize(64)
+            }
+        },
+        confirmButtonStyle() {
+            return {
+                paddingLeft:this.scaleSize(32),
+                paddingRight:this.scaleSize(32),
+                paddingTop:this.scaleSize(12),
+                paddingBottom:this.scaleSize(12)
+            }
+        },
+        buttonTextStyle() {
+            return {
+                fontSize:this.scaleSize(26)
+            }
+        },
     },
     mounted(){
         this.show = false;
