@@ -359,8 +359,8 @@ export default {
     },
 
     mounted() {
-        console.info(WXEnvironment.deviceHeight)
-        console.info(this.screenH)
+        // console.info(WXEnvironment.deviceHeight)
+        // console.info(this.screenH)
         this.isAndroid = WXEnvironment.platform.toLowerCase() == 'android'
 
         let height = WXEnvironment.deviceHeight
@@ -377,20 +377,14 @@ export default {
             this.screenW = width / realScale;
         }
 
-        console.info(currentScale)
+        // console.info(currentScale)
         let maxScale = 1.92;
 
         let minScale = maxScale / currentScale;
         if (minScale < 1) {
             this.miniRate = minScale
         }
-        console.info(minScale)
-        // test
-
-        for (let i = 0; i < 5; i++) {
-            this.uuids.push({uuid: 0})
-        }
-        this.showShow = true
+        // console.info(minScale)
     },
     methods: {
 
