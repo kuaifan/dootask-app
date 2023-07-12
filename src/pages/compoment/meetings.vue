@@ -387,10 +387,10 @@ export default {
         console.info(minScale)
         // test
 
-        for (let i = 0; i < 5; i++) {
-            this.uuids.push({uuid: 0})
-        }
-        this.showShow = true
+        // for (let i = 0; i < 5; i++) {
+        //     this.uuids.push({uuid: 0})
+        // }
+        // this.showShow = true
     },
     methods: {
 
@@ -689,7 +689,7 @@ export default {
         },
 
         load(param) {
-            return;
+            // return;
             let uuid = param.target.attr.uuid;
             // console.info("load:"+uuid);
             if (uuid === this.uuid) {
