@@ -1,31 +1,31 @@
 <template>
     <div ref="root" class="mask" v-if="showShow" :style="videoStyle" >
         <scroller style="position:absolute; top:0px; left: 0px; bottom: 0px; right: 0px; padding: 16px; background-color: white;">
-            <text :style="{fontSize: miniRate<1?'28px':'36px', padding:scaleSize(16)}">{{title}}</text>
+            <text :style="titleStyle">{{title}}</text>
             <div class="render-views" :style="{justifyContent:miniRate<1?'start':'space-between'}">
-                <div class="grid-item" :style="{width: scaleSize(350),height: scaleSize(350)}" v-for="item in uuids">
-                    <div class="local hidden" :style="{width: scaleSize(320),height: scaleSize(320),marginTop:scaleSize(15),marginLeft:scaleSize(15),borderRadius: '16px'}">
-                        <eeuiAgoro-com class="local" :style="{width: scaleSize(320),height: scaleSize(320),borderRadius: '16px'}" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
+                <div class="grid-item" :style="gridItemStyle" v-for="item in uuids">
+                    <div class="local hidden" :style="localStyle">
+                        <eeuiAgoro-com class="local" :style="camaraStyle" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
                     </div>
-                    <image v-if="item.videoStatus == 0"  :src="item.avatar" :style="{position: 'absolute', top: scaleSize(15),left: scaleSize(15),right: scaleSize(15),bottom: scaleSize(15), borderRadius: '16px',flexDirection: 'row',backgroundColor:'white'}"></image>
-                    <div :style="{position: 'absolute', top: scaleSize(16),right: scaleSize(10), flexDirection: 'row'}" >
-                        <image v-if="!item.video"  :style="{width:scaleSize(40),height: scaleSize(40),marginRight: scaleSize(12)}" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
-                        <image v-if="!item.audio"  :style="{width:scaleSize(40),height: scaleSize(40),marginRight: scaleSize(12)}" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
+                    <image v-if="item.videoStatus == 0"  :src="item.avatar" :style="avatarStyle"></image>
+                    <div :style="videoButtonStyle" >
+                        <image v-if="!item.video"  :style="videoSubStyle" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
+                        <image v-if="!item.audio"  :style="videoSubStyle" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
                     </div>
 
-                    <div :style="{position: 'absolute', bottom: '0px', right: '0px', width: scaleSize(80), height: scaleSize(80), borderRadius: scaleSize(40), backgroundColor: 'white',overflow: 'hidden'}">
-                        <image :style="{width: scaleSize(70), height: scaleSize(70), marginTop: scaleSize(5), marginLeft: scaleSize(5), borderRadius: scaleSize(35), backgroundColor: 'greenyellow'}" :src="item.avatar"></image>
+                    <div :style="subAvatarContainerStyle">
+                        <image :style="subAvatarStyle" :src="item.avatar"></image>
                     </div>
-                    <div class="status-indicator" :style="{ width: scaleSize(20),height: scaleSize(20),borderRadius: scaleSize(10),bottom: scaleSize(6),right: scaleSize(6),}">
+                    <div class="status-indicator" :style="indicatorStyle">
                         <div class="sub-status-indicator" :style="getStatus(item.audioStatus,item.videoStatus)"></div>
                     </div>
                 </div>
             </div>
         </scroller>
-        <div style="position: absolute; flex-direction: row; bottom: 0px;right: 0px;left: 0px;">
+        <div style="position: absolute; flex-direction: row; bottom: 16px;right: 0px;left: 0px;">
 
             <div v-if="miniRate< 1" style="flex: 1;"></div>
-            <div style="flex-direction: row; justify-content: space-between;" :style="{marginLeft: scaleSize(16), marginRight: scaleSize(18)}">
+            <div style="flex-direction: row; justify-content: space-between;" :style="subButtonStyle">
                 <div class="button" :style="buttonPadding" @click="audioEnable">
                     <image :style="buttonSize" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
                 </div>
@@ -55,11 +55,11 @@
 
         </div>
         <div style="flex-direction: row; position: absolute; justify-content: right; background-color: white; border-color:#D9E2E9; border-width: 2px; top: -4px;left: -4px;right: -4px;;bottom: -4px; overflow: hidden;" v-if="mini" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
-            <div :style="{padding:scaleSize(12),marginLeft:scaleSize(22)}" style="align-self: center; margin-left: 22px;">
-                <image :style="{width:scaleSize(40),height:scaleSize(40)}" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
+            <div :style="popVideoContainerStyle" style="align-self: center; margin-left: 22px;">
+                <image :style="popVideoStyle" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
             </div>
-            <div style="padding: 12px;align-self: center; margin-left: 4px;">
-                <image :style="{width:scaleSize(40),height:scaleSize(40)}":src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
+            <div :style="popAudioContainerStyle">
+                <image :style="popVideoStyle":src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
             </div>
         </div>
         <custom-alert ref="alert" :mini-rate="miniRate" :pos="'top'" :offset="150" @exitConfirm="exitAction"></custom-alert>
@@ -162,6 +162,7 @@ export default {
     components: {CustomAlert},
     data() {
         return {
+            title: "",
             uuids: [],
             uuid: 0,
             meetingid: 0,
@@ -192,6 +193,125 @@ export default {
     },
 
     computed: {
+        titleStyle() {
+            return {
+                fontSize: this.miniRate < 1 ? '28px' : '36px',
+                padding: this.scaleSize(16)
+            }
+        },
+
+        gridItemStyle() {
+            return {
+                width: this.scaleSize(350),
+                height: this.scaleSize(350)
+            }
+        },
+        localStyle() {
+            return {
+                width: this.scaleSize(320),
+                height: this.scaleSize(320),
+                marginTop: this.scaleSize(15),
+                marginLeft: this.scaleSize(15),
+                borderRadius: '16px'
+            }
+        },
+        camaraStyle() {
+            return {
+                width: this.scaleSize(320),
+                height: this.scaleSize(320),
+                borderRadius: '16px'
+            }
+        },
+        avatarStyle() {
+            return {
+                position: 'absolute',
+                top: this.scaleSize(15),
+                left: this.scaleSize(15),
+                right: this.scaleSize(15),
+                bottom: this.scaleSize(15),
+                borderRadius: '16px',
+                flexDirection: 'row',
+                backgroundColor: 'white'
+            };
+        },
+
+        videoButtonStyle() {
+            return {
+                position: 'absolute',
+                top: this.scaleSize(16),
+                right: this.scaleSize(10),
+                flexDirection: 'row'
+            }
+        },
+        videoSubStyle() {
+            return {
+                width: this.scaleSize(40),
+                height: this.scaleSize(40),
+                marginRight: this.scaleSize(12)
+            };
+        },
+        subAvatarContainerStyle() {
+            return {
+                position: 'absolute',
+                bottom: '0px',
+                right: '0px',
+                width: this.scaleSize(80),
+                height: this.scaleSize(80),
+                borderRadius: this.scaleSize(40),
+                backgroundColor: 'white',
+                overflow: 'hidden'
+            };
+        },
+        subAvatarStyle() {
+            return {
+                width: this.scaleSize(70),
+                height: this.scaleSize(70),
+                marginTop: this.scaleSize(5),
+                marginLeft: this.scaleSize(5),
+                borderRadius: this.scaleSize(35),
+                backgroundColor: 'greenyellow'
+            };
+        },
+        indicatorStyle() {
+            return {
+                width: this.scaleSize(20),
+                height: this.scaleSize(20),
+                borderRadius: this.scaleSize(10),
+                bottom: this.scaleSize(6),
+                right: this.scaleSize(6)
+            };
+        },
+        subIndicatorStyle() {
+
+        },
+        subButtonStyle() {
+            return {
+                marginLeft: this.scaleSize(16),
+                marginRight: this.scaleSize(18)
+            }
+        },
+        popVideoContainerStyle() {
+            return {
+                padding: this.scaleSize(12),
+                marginLeft: this.scaleSize(22)
+            }
+        },
+        popAudioContainerStyle() {
+            return {
+                padding: this.scaleSize(12),
+                marginLeft: this.scaleSize(4),
+                alignSelf: 'center'
+            }
+        },
+        popVideoStyle() {
+            return {
+                width: this.scaleSize(40),
+                height: this.scaleSize(40)
+            }
+        },
+        popAudioStyle() {
+
+        },
         videoStyle() {
             let style = {}
             if (this.mini) {
@@ -266,6 +386,11 @@ export default {
         }
         console.info(minScale)
         // test
+
+        for (let i = 0; i < 5; i++) {
+            this.uuids.push({uuid: 0})
+        }
+        this.showShow = true
     },
     methods: {
 
@@ -564,6 +689,7 @@ export default {
         },
 
         load(param) {
+            return;
             let uuid = param.target.attr.uuid;
             // console.info("load:"+uuid);
             if (uuid === this.uuid) {
