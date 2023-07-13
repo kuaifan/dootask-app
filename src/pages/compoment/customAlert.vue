@@ -1,5 +1,4 @@
 <template>
-    <!--    <div class="g-cover" :style="gStyle" v-if="show" @click="backClick()">-->
     <div class="g-cover" v-if="show" @overlay="cancelClick">
         <div class="container flex-d-c" :style="posStyle">
             <div style="flex-direction: row;">
@@ -29,20 +28,20 @@
 <script>
 export default {
     props: {
-        pos:{
+        pos: {
             type: String,
             default: "center"
         },
-        offset:{
+        offset: {
             type: Number,
-            default:0
+            default: 0
         },
         canOverlayClick: {
             type: Boolean,
             default: true,
         },
-        miniRate:{
-            default:1.0
+        miniRate: {
+            default: 1.0
         }
 
     },
@@ -50,114 +49,96 @@ export default {
         return {
             back: false,
             show: false,
-            title:"",
-            message:"",
-            cancel:"",
-            confirm:"",
+            title: "",
+            message: "",
+            cancel: "",
+            confirm: "",
         }
     },
     computed: {
-        posStyle(){
+        posStyle() {
             const style = {};
 
-            const pos  = this.pos ? this.pos:"center";
+            const pos = this.pos ? this.pos : "center";
             style.position = "absolute";
 
             style.width = this.scaleSize(718)
             style.padding = this.scaleSize(48)
-            style.marginLeft = this.scaleSize(16)
             switch (pos) {
                 case "center":
                     style.alignSelf = "center";
-
                     break;
                 case "bottom":
-                    style.bottom = this.offset+"px";
-
+                    style.bottom = this.offset + "px";
+                    break;
                 case "top":
-                    style.top = this.offset+"px";
-
+                    style.top = (this.offset * this.miniRate) + "px";
+                    break;
                 default:
                     break;
             }
             return style
         },
-        gStyle(){
-            const style = {};
-            const pos  = this.pos ? this.pos : "center";
-            style.width = this.scaleSize(718)
-            //style.justifyContent = "center"
-            switch (pos) {
-                case "center":
-                    style.justifyContent = "center"
-
-                    break;
-
-                default:
-                    break;
-            }
-            return style
-        },
-        iconStyle(){
+        iconStyle() {
             return {
-                width:this.scaleSize(50),
-                height:this.scaleSize(50)
+                width: this.scaleSize(50),
+                height: this.scaleSize(50)
             };
         },
-        HStyle(){
+        HStyle() {
             return {
-                justifyContent:'left',
-                marginLeft:this.scaleSize(32)
+                justifyContent: 'left',
+                marginLeft: this.scaleSize(32)
             }
         },
         titleStyle() {
             return {
-                fontSize:this.scaleSize(30),
-                marginTop:this.scaleSize(4)
+                fontSize: this.scaleSize(30),
+                marginTop: this.scaleSize(4)
             }
         },
         subTitleStyle() {
             return {
-                fontSize:this.scaleSize(26),
-                marginTop:this.scaleSize(32)
+                fontSize: this.scaleSize(26),
+                marginTop: this.scaleSize(32)
             }
         },
         buttonGroupStyle() {
             return {
-                marginTop:this.scaleSize(64)
+                marginTop: this.scaleSize(64)
             }
         },
         buttonBGStyle() {
             return {
-                marginRight:this.scaleSize(64)
+                marginRight: this.scaleSize(64)
             }
         },
         confirmButtonStyle() {
             return {
-                paddingLeft:this.scaleSize(32),
-                paddingRight:this.scaleSize(32),
-                paddingTop:this.scaleSize(12),
-                paddingBottom:this.scaleSize(12)
+                paddingLeft: this.scaleSize(32),
+                paddingRight: this.scaleSize(32),
+                paddingTop: this.scaleSize(12),
+                paddingBottom: this.scaleSize(12)
             }
         },
         buttonTextStyle() {
             return {
-                fontSize:this.scaleSize(26)
+                fontSize: this.scaleSize(26)
             }
         },
     },
-    mounted(){
+    mounted() {
         this.show = false;
     },
-    methods:{
-        scaleSize(current){
-            return this.miniRate*current+'px';
+    methods: {
+        scaleSize(current) {
+            return this.miniRate * current + 'px';
         },
 
-        hide(){
+        hide() {
             this.show = false;
         },
-        cancelClick(){
+        cancelClick() {
             this.hide();
 
         },
@@ -165,42 +146,40 @@ export default {
             this.hide();
             this.$emit('exitConfirm');
         },
-        showWithParam(param){
+        showWithParam(param) {
             this.title = param.title;
             this.message = param.message;
             this.cancel = param.cancel;
             this.confirm = param.confirm;
 
-            this.show= true;
+            this.show = true;
         }
     }
 }
 </script>
 
 <style>
-.g-cover{
+.g-cover {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
-
-    /* justify-content:center; */
 }
-.container{
+
+.container {
     background-color: white;
     border-radius: 16px;
     align-self: center;
 }
 
-.cancelTitle{
+.cancelTitle {
 }
 
-.confirmTitle{
+.confirmTitle {
     padding: 16px 32px;
     background-color: #84c56a;
     border-radius: 8px;
 }
-
 </style>
