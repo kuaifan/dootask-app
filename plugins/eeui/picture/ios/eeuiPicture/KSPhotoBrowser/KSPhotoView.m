@@ -13,7 +13,8 @@
 #import "KSPhotoBrowser.h"
 
 const CGFloat kKSPhotoViewPadding = 10;
-const CGFloat kKSPhotoViewMaxScale = 3;
+const CGFloat kKSPhotoViewMaxScale = 5;
+const CGFloat kKSPhotoViewMiniScale = 0.1;
 
 @interface KSPhotoView ()<UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
@@ -30,6 +31,7 @@ const CGFloat kKSPhotoViewMaxScale = 3;
     if (self) {
         self.bouncesZoom = YES;
         self.maximumZoomScale = kKSPhotoViewMaxScale;
+        self.minimumZoomScale = kKSPhotoViewMiniScale;
         self.multipleTouchEnabled = YES;
         self.showsHorizontalScrollIndicator = YES;
         self.showsVerticalScrollIndicator = YES;
