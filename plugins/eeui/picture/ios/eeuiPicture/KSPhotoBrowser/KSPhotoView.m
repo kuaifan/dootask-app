@@ -107,18 +107,34 @@ const CGFloat kKSPhotoViewMiniScale = 0.1;
 - (void)resizeImageView {
     if (_imageView.image) {
         CGSize imageSize = _imageView.image.size;
-        CGFloat width = self.frame.size.width - 2 * kKSPhotoViewPadding;
-        CGFloat height = width * (imageSize.height / imageSize.width);
-        CGRect rect = CGRectMake(0, 0, width, height);
+        CGRect rect;
+        CGFloat width;
+        CGFloat height;
+        
+        CGFloat wDistance = imageSize.width - self.frame.size.width - 2 * kKSPhotoViewPadding;
+        CGFloat hDistance = (imageSize.height - self.frame.size.height - 2 * kKSPhotoViewPadding)*(self.frame.size.width/self.frame.size.height);
+        
+        if (hDistance < wDistance) {
+            //宽度基准
+            width = self.frame.size.width - 2 * kKSPhotoViewPadding;
+            height = width * (imageSize.height / imageSize.width);
+            rect = CGRectMake(0, 0, width, height);
+            
+        } else {
+            height = self.frame.size.height - 2 * kKSPhotoViewPadding;
+            width = height * (imageSize.width / imageSize.height);
+            rect = CGRectMake(0, 0, width, height);
+        }
         
         _imageView.frame = rect;
+        _imageView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
         
         // If image is very high, show top content.
-        if (height <= self.bounds.size.height) {
-            _imageView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
-        } else {
-            _imageView.center = CGPointMake(self.bounds.size.width/2, height/2);
-        }
+//        if (height <= self.bounds.size.height) {
+//            _imageView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
+//        } else {
+//            _imageView.center = CGPointMake(self.bounds.size.width/2, height/2);
+//        }
         
         // If image is very wide, make sure user can zoom to fullscreen.
         if (width / height > 2) {
