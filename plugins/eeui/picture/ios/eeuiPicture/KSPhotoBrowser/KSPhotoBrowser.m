@@ -503,7 +503,7 @@ static Class ImageViewClass = nil;
             CGFloat rateY = (_startLocation.y - self.startFrame.origin.y) / self.startFrame.size.height;
             CGFloat y = location.y - height * rateY;
             
-            NSLog(@"%f", rateY);
+            // NSLog(@"%f", rateY);
             
             photoView.imageView.frame = CGRectMake(x, y, width, height);
             
