@@ -62,6 +62,10 @@ export default {
 
     pageMessage({message}) {
         switch (message.messageType) {
+            case "theme":
+                let theme = message.data;
+                this.switchTheme(theme == 1);
+                break;
             case 'notificationClick':
                 // console.log('点击了通知栏消息：', message);
                 break;
@@ -79,7 +83,7 @@ export default {
 
         // iOS初始化共享内存
         if (WXEnvironment.platform.toLowerCase() === "ios") {
-            shareFile.shareFileWithGroupID(this.appGroupID,this.appSubPath);
+            shareFile.shareFileWithGroupID(this.appGroupID, this.appSubPath);
         }
 
         this.uniqueId = eeui.getCachesString("appUniqueId", "");
@@ -88,7 +92,7 @@ export default {
             eeui.setCachesString("appUniqueId", this.uniqueId, 0);
         }
         //
-        eeui.setStatusBarStyle(false)
+        // eeui.setStatusBarStyle(false)
         // this.$refs.web.setUrl("http://192.168.0.111:2222");
         // this.$refs.web.setUrl("http://192.168.100.36:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
@@ -119,6 +123,25 @@ export default {
             return Math.round(new Date().getTime() / 1000)
         },
 
+        switchTheme(theme) {
+            let config = eeui.getConfigString("homePageParams");
+            config = JSON.parse(config)
+            console.info(config)
+            eeui.setStatusBarStyle(theme);
+            let color = "";
+            let backgroudColor = "";
+            if (theme) {
+                // 暗黑
+                color = config.statusBarDarkColor;
+                backgroudColor = config.backgroundDarkColor;
+            }else{
+                color = config.statusBarColor;
+                backgroudColor = config.backgroundColor;
+            }
+            console.info(color)
+            eeui.setStatusBarColor(color)
+            eeui.setBackgroundColor(backgroudColor)
+        },
         /**
          * 来自网页的消息
          * @param message

@@ -89,10 +89,12 @@ eeuiViewController *homeController;
             homeController.isDisSwipeFullBack = NO;
             homeController.statusBarType = [Config getHomeParams:@"statusBarType" defaultVal:@"normal"];
             homeController.statusBarColor = [Config getHomeParams:@"statusBarColor" defaultVal:@"#3EB4FF"];
+            homeController.statusBarDarkColor = [Config getHomeParams:@"statusBarDarkColor" defaultVal:@"#3EB4FF"];
             homeController.statusBarAlpha = [[Config getHomeParams:@"statusBarAlpha" defaultVal:@"0"] intValue];
             homeController.statusBarStyleCustom = [Config getHomeParams:@"statusBarStyle" defaultVal:@""];
             homeController.softInputMode = [Config getHomeParams:@"softInputMode" defaultVal:@"auto"];
             homeController.backgroundColor = [Config getHomeParams:@"backgroundColor" defaultVal:@"#ffffff"];
+            homeController.backgroundDarkColor = [Config getHomeParams:@"backgroundDarkColor" defaultVal:@"#000000"];
             homeController.statusBlock = ^(NSString *status) {
                 if ([status isEqualToString:@"create"]) {
                     [Cloud appData:NO];

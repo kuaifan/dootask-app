@@ -6,8 +6,10 @@ module.exports = {
 	"serviceUrl": "",
 	"homePage": "",
 	"homePageParams": {
-		statusBarColor: "#f8f8f8",
-		backgroundColor: "#f8f8f8",
+        statusBarColor: "#f8f8f8",
+        backgroundColor: "#f8f8f8",
+        statusBarDarkColor: "#000000",
+        backgroundDarkColor: "#000000",
 		softInputMode: "resize",
 	},
 	"appKey": "8mNBgptMSQFe5BXf1TQhlh6WUOEcjefP",
