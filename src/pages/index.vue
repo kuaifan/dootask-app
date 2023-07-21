@@ -126,7 +126,7 @@ export default {
         switchTheme(theme) {
             let config = eeui.getConfigString("homePageParams");
             config = JSON.parse(config)
-            console.info(config)
+
             eeui.setStatusBarStyle(theme);
             let color = "";
             let backgroudColor = "";
@@ -138,7 +138,6 @@ export default {
                 color = config.statusBarColor;
                 backgroudColor = config.backgroundColor;
             }
-            console.info(color)
             eeui.setStatusBarColor(color)
             eeui.setBackgroundColor(backgroudColor)
         },

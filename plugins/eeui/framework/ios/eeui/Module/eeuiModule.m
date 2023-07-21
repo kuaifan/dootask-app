@@ -181,6 +181,9 @@ WX_EXPORT_METHOD(@selector(reloadPage:))
 WX_EXPORT_METHOD(@selector(setSoftInputMode:modo:))
 WX_EXPORT_METHOD(@selector(setStatusBarStyle:))
 WX_EXPORT_METHOD(@selector(statusBarStyle:))
+WX_EXPORT_METHOD(@selector(setStatusBarColor:))
+WX_EXPORT_METHOD(@selector(setBackgroundColor:))
+WX_EXPORT_METHOD_SYNC(@selector(getTheme))
 WX_EXPORT_METHOD(@selector(setPageBackPressed:callback:))
 WX_EXPORT_METHOD(@selector(setOnRefreshListener:callback:))
 WX_EXPORT_METHOD(@selector(setRefreshing:refreshing:))
@@ -232,9 +235,43 @@ WX_EXPORT_METHOD_SYNC(@selector(rewriteUrl:))
     [[eeuiNewPageManager sharedIntstance] setStatusBarStyle:isLight weexInstance:weexInstance];
 }
 
+- (void)setStatusBarColor:(NSString *)colorString{
+    if([weexInstance.viewController isKindOfClass:[eeuiViewController class]]){
+        eeuiViewController *setVC = (eeuiViewController *) weexInstance.viewController;
+        [setVC resetStatusBarColor:colorString];
+    }
+    
+}
+
+- (void)setBackgroundColor:(NSString *)backgroundColor{
+    if([weexInstance.viewController isKindOfClass:[eeuiViewController class]]){
+        eeuiViewController *setVC = (eeuiViewController *) weexInstance.viewController;
+        [setVC resetBackgroundColor:backgroundColor];
+    }
+}
+
 - (void)statusBarStyle:(BOOL)isLight
 {
     [[eeuiNewPageManager sharedIntstance] setStatusBarStyle:isLight weexInstance:weexInstance];
+}
+
+- (BOOL)getTheme {
+    if (@available(iOS 13.0, *)) {
+        if([weexInstance.viewController isKindOfClass:[eeuiViewController class]]){
+            eeuiViewController *setVC = (eeuiViewController *) weexInstance.viewController;
+            UIUserInterfaceStyle mode = setVC.traitCollection.userInterfaceStyle;
+            if (mode == UIUserInterfaceStyleDark) {
+                return true;
+            } else {
+                
+            }
+        }
+        
+    } else {
+        // Fallback on earlier versions
+    }
+    
+    return false;
 }
 
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback

@@ -32,11 +32,13 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 
 @property (nonatomic, strong) NSString *statusBarType;
 @property (nonatomic, strong) NSString *statusBarColor;//状态栏颜色值
+@property (nonatomic, strong) NSString *statusBarDarkColor;//状态栏黑色主题
 @property (nonatomic, assign) NSInteger statusBarAlpha;//状态栏透明度， 0-255
 @property (nonatomic, strong) NSString *statusBarStyleCustom; //状态栏样式
 @property (nonatomic, strong) NSString *pageName;
 @property (nonatomic, strong) NSString *pageTitle;
 @property (nonatomic, strong) NSString *backgroundColor;
+@property (nonatomic, strong) NSString *backgroundDarkColor;
 @property (nonatomic, strong) NSString *softInputMode;
 @property (nonatomic, strong) NSString *safeAreaBottom;//底部安全距离
 @property (nonatomic, strong) NSString *animatedType;//页面动画效果类型
@@ -91,5 +93,7 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 
 - (void)showFixedVersionUpdate:(NSString *)templateId;
 - (void)hideFixedVersionUpdate;
+- (void)resetStatusBarColor:(NSString *)statusBarColor;
+- (void)resetBackgroundColor:(NSString *)backgroundColor;
 
 @end

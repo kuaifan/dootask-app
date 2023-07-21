@@ -103,7 +103,17 @@ static int easyNavigationButtonTag = 8000;
     }
 
     if (_backgroundColor) {
-        self.view.backgroundColor = [WXConvert UIColor:_backgroundColor];
+        
+        if (@available(iOS 13.0, *)) {
+            UIUserInterfaceStyle mode = self.view.traitCollection.userInterfaceStyle;
+            if (mode == UIUserInterfaceStyleDark) {
+                self.view.backgroundColor = [WXConvert UIColor:_backgroundDarkColor];
+            } else {
+                self.view.backgroundColor = [WXConvert UIColor:_backgroundColor];
+            }
+        }else {
+            self.view.backgroundColor = [WXConvert UIColor:_backgroundColor];
+        }
     }
 
     [self setupUI];
@@ -595,6 +605,15 @@ static int easyNavigationButtonTag = 8000;
     self.statusBar = [[UIView alloc] init];
     CGFloat alpha = ((255 - _statusBarAlpha)*1.0/255);
     _statusBar.backgroundColor = [[WXConvert UIColor:_statusBarColor?_statusBarColor : @"#3EB4FF"] colorWithAlphaComponent:alpha];
+    if (@available(iOS 13.0, *)) {
+        UIUserInterfaceStyle mode = self.view.traitCollection.userInterfaceStyle;
+        if (mode == UIUserInterfaceStyleDark) {
+            _statusBar.backgroundColor = [WXConvert UIColor:_statusBarDarkColor?_statusBarDarkColor:@"#3EB4FF"];
+        } else {
+            
+        }
+    }
+    
     [self.view addSubview:_statusBar];
     _statusBar.hidden = YES;
 }
@@ -1479,6 +1498,55 @@ static int easyNavigationButtonTag = 8000;
         return NO;
     }else{
         return YES;
+    }
+}
+
+// 暗黑模式变化
+-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [super traitCollectionDidChange:previousTraitCollection];
+    if (@available(iOS 12.0, *)) {
+        if (previousTraitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
+            // 切换到深色模式
+            NSDictionary *paramDic = @{
+                @"messageType":@"theme",
+                @"data":@(YES)
+            };
+            
+            [[eeuiNewPageManager sharedIntstance] postMessage:paramDic];
+        }else {
+            NSDictionary *paramDic = @{
+                @"messageType":@"theme",
+                @"data":@(NO)
+            };
+            
+            [[eeuiNewPageManager sharedIntstance] postMessage:paramDic];
+        }
+    } else {
+        // Fallback on earlier versions
+        NSDictionary *paramDic = @{
+            @"messageType":@"theme",
+            @"data":@(NO)
+        };
+        
+        [[eeuiNewPageManager sharedIntstance] postMessage:paramDic];
+    }
+    
+}
+
+-(void)resetStatusBarColor:(NSString *)statusBarColor {
+    _statusBarColor = statusBarColor;
+    if(_statusBar) {
+        CGFloat alpha = ((255 - _statusBarAlpha)*1.0/255);
+        
+        _statusBar.backgroundColor = [[WXConvert UIColor:_statusBarColor?_statusBarColor : @"#3EB4FF"] colorWithAlphaComponent:alpha];
+    }
+}
+-(void)resetBackgroundColor:(NSString *)backgroundColor {
+    _backgroundColor = backgroundColor;
+    if (self.view) {
+        if (_backgroundColor) {
+            self.view.backgroundColor = [WXConvert UIColor:_backgroundColor];
+        }
     }
 }
 
