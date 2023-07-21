@@ -181,6 +181,8 @@ WX_EXPORT_METHOD(@selector(reloadPage:))
 WX_EXPORT_METHOD(@selector(setSoftInputMode:modo:))
 WX_EXPORT_METHOD(@selector(setStatusBarStyle:))
 WX_EXPORT_METHOD(@selector(statusBarStyle:))
+WX_EXPORT_METHOD(@selector(setStatusBarColor:))
+WX_EXPORT_METHOD(@selector(setBackgroundColor:))
 WX_EXPORT_METHOD(@selector(setPageBackPressed:callback:))
 WX_EXPORT_METHOD(@selector(setOnRefreshListener:callback:))
 WX_EXPORT_METHOD(@selector(setRefreshing:refreshing:))
@@ -194,6 +196,7 @@ WX_EXPORT_METHOD(@selector(closePage:))
 WX_EXPORT_METHOD(@selector(closePageTo:))
 WX_EXPORT_METHOD(@selector(openWeb:))
 WX_EXPORT_METHOD(@selector(goDesktop))
+WX_EXPORT_METHOD_SYNC(@selector(getThemeName))
 WX_EXPORT_METHOD_SYNC(@selector(getConfigRaw:))
 WX_EXPORT_METHOD_SYNC(@selector(getConfigString:))
 WX_EXPORT_METHOD_SYNC(@selector(setCustomConfig:params:))
@@ -235,6 +238,16 @@ WX_EXPORT_METHOD_SYNC(@selector(rewriteUrl:))
 - (void)statusBarStyle:(BOOL)isLight
 {
     [[eeuiNewPageManager sharedIntstance] setStatusBarStyle:isLight weexInstance:weexInstance];
+}
+
+- (void)setStatusBarColor:(NSString *)colorString
+{
+    [[eeuiNewPageManager sharedIntstance] setStatusBarColor:colorString weexInstance:weexInstance];
+}
+
+- (void)setBackgroundColor:(NSString *)backgroundColor
+{
+    [[eeuiNewPageManager sharedIntstance] setBackgroundColor:backgroundColor weexInstance:weexInstance];
 }
 
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback
@@ -301,6 +314,12 @@ WX_EXPORT_METHOD_SYNC(@selector(rewriteUrl:))
 {
     [[eeuiNewPageManager sharedIntstance] goDesktop];
 }
+
+- (NSString*)getThemeName
+{
+    return [[eeuiNewPageManager sharedIntstance] getThemeName:weexInstance];
+}
+
 
 - (id)getConfigRaw:(NSString*)key
 {

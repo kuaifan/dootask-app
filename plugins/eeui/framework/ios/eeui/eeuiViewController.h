@@ -92,4 +92,7 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 - (void)showFixedVersionUpdate:(NSString *)templateId;
 - (void)hideFixedVersionUpdate;
 
+- (void)resetStatusBarColor:(NSString *)statusBarColor;
+- (void)resetBackgroundColor:(NSString *)backgroundColor;
+
 @end

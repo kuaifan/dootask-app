@@ -41,10 +41,20 @@ export default {
 
             appGroupID: "group.im.dootask", // iOS共享储存的应用唯一标识符
             appSubPath: "share", //iOS 储存下一级目录
+
+            themeName: "", // 主题名称
         }
     },
 
+    // APP进入前台：App从【后台】切换至【前台】时触发
+    appActive() {
+        this.updateStatusBar()
+    },
+
+    // 页面激活：页面【恢复】时触发（渲染完成时也会触发1次）
     pageResume() {
+        this.updateStatusBar()
+        //
         const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
         this.$refs.web.setJavaScript(javascript);
         this.resumeNum++;
@@ -55,11 +65,13 @@ export default {
         }
     },
 
+    // 页面失活：页面【暂停】时触发
     pagePause() {
         const javascript = `if (typeof window.__onPagePause === "function"){window.__onPagePause()}`;
         this.$refs.web.setJavaScript(javascript);
     },
 
+    // 接收到的信息
     pageMessage({message}) {
         switch (message.messageType) {
             case 'notificationClick':
@@ -85,14 +97,11 @@ export default {
             this.uniqueId = this.randomString(6);
             eeui.setCachesString("appUniqueId", this.uniqueId, 0);
         }
-        //
-        eeui.setStatusBarStyle(false)
+
         // this.$refs.web.setUrl("http://192.168.0.111:2222");
         // this.$refs.web.setUrl("http://192.168.100.36:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
     },
-
-    computed: {},
 
     methods: {
         /**
@@ -101,6 +110,23 @@ export default {
          */
         time() {
             return Math.round(new Date().getTime() / 1000)
+        },
+
+        /**
+         * 更新状态栏
+         */
+        updateStatusBar() {
+            const name = eeui.getThemeName()
+            if (this.themeName !== name) {
+                this.themeName = name
+                //
+                eeui.setStatusBarStyle(name === 'dark')
+                eeui.setStatusBarColor(name === 'dark' ? '#1a1a1a' : '#f8f8f8')
+                eeui.setBackgroundColor(name === 'dark' ? '#1a1a1a' : '#f8f8f8')
+                //
+                const javascript = `if (typeof window.__onThemeChange === "function"){window.__onThemeChange("${name}")}`;
+                this.$refs.web.setJavaScript(javascript);
+            }
         },
 
         /**

@@ -1482,4 +1482,20 @@ static int easyNavigationButtonTag = 8000;
     }
 }
 
+-(void)resetStatusBarColor:(NSString *)statusBarColor {
+    _statusBarColor = statusBarColor;
+    if(_statusBar) {
+        CGFloat alpha = ((255 - _statusBarAlpha)*1.0/255);
+        _statusBar.backgroundColor = [[WXConvert UIColor:_statusBarColor?_statusBarColor : @"#3EB4FF"] colorWithAlphaComponent:alpha];
+    }
+}
+
+-(void)resetBackgroundColor:(NSString *)backgroundColor {
+    _backgroundColor = backgroundColor;
+    if (self.view && _backgroundColor) {
+        self.view.backgroundColor = [WXConvert UIColor:_backgroundColor];
+    }
+}
+
+
 @end

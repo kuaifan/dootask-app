@@ -246,7 +246,7 @@
     [CustomWeexSDKManager setSoftInputMode:modo];
 }
 
-- (void)setStatusBarStyle:(BOOL)isLight weexInstance:(WXSDKInstance*)weexInstance
+- (eeuiViewController*)getViewController:(WXSDKInstance*)weexInstance
 {
     eeuiViewController *vc = nil;
     if (weexInstance && weexInstance.viewController) {
@@ -257,7 +257,12 @@
             vc = (eeuiViewController*)viewController;
         }
     }
-    
+    return vc;
+}
+
+- (void)setStatusBarStyle:(BOOL)isLight weexInstance:(WXSDKInstance*)weexInstance
+{
+    eeuiViewController *vc = [self getViewController:weexInstance];
     if (vc == nil) {
         return;
     }
@@ -267,6 +272,24 @@
     } else {
         [[UIApplication sharedApplication] setStatusBarStyle:isLight ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault];
     }
+}
+
+- (void)setStatusBarColor:(NSString *)colorString weexInstance:(WXSDKInstance*)weexInstance
+{
+    eeuiViewController *vc = [self getViewController:weexInstance];
+    if (vc == nil) {
+        return;
+    }
+    [vc resetStatusBarColor:colorString];
+}
+
+- (void)setBackgroundColor:(NSString *)backgroundColor weexInstance:(WXSDKInstance*)weexInstance
+{
+    eeuiViewController *vc = [self getViewController:weexInstance];
+    if (vc == nil) {
+        return;
+    }
+    [vc resetBackgroundColor:backgroundColor];
 }
 
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback
@@ -652,6 +675,20 @@
 - (void)goDesktop
 {
     [[UIApplication sharedApplication] performSelector:@selector(suspend)];
+}
+
+- (NSString *)getThemeName:(WXSDKInstance*)weexInstance
+{
+    if (@available(iOS 13.0, *)) {
+        eeuiViewController *vc = [self getViewController:weexInstance];
+        if (vc != nil) {
+            UIUserInterfaceStyle mode = vc.traitCollection.userInterfaceStyle;
+            if (mode == UIUserInterfaceStyleDark) {
+                return @"dark";
+            }
+        }
+    }
+    return @"light";
 }
 
 - (void)removePageData:(NSString*)pageName
