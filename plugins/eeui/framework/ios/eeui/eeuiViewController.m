@@ -58,6 +58,7 @@ static int easyNavigationButtonTag = 8000;
 @property (nonatomic, strong) UIView *versionUpdateWeexView;
 
 @property (nonatomic, assign) CGFloat lastKeyboardHeight;
+@property (nonatomic, strong) NSString *lastNavigationTitle;
 
 @end
 
@@ -1255,6 +1256,11 @@ static int easyNavigationButtonTag = 8000;
     }
 
     //标题
+    if ([item objectForKey:@"title"]) {
+        _lastNavigationTitle = title;
+    } else {
+        title = _lastNavigationTitle;
+    }
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
     [titleLabel setBackgroundColor:[UIColor clearColor]];
     [titleLabel setTextColor:[WXConvert UIColor:titleColor]];
