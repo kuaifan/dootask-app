@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1AC7B52F5CED3B9A5456C7C5 /* libPods-DooTask.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A738B4F9AF20CA0CE1F3B5EB /* libPods-DooTask.a */; };
 		3AE14377282DE98E00B5E14E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE14375282DB85800B5E14E /* UserNotifications.framework */; };
-		532E406F594B06E77A17129D /* libPods-eeuiApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4738D867E50FB2D943A92A /* libPods-eeuiApp.a */; };
 		AD42310A2A29FA92002D1F86 /* ShareAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD4231092A29FA92002D1F86 /* ShareAssets.xcassets */; };
 		ADBB0ACF2A273D73007C9CC8 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBB0ACE2A273D73007C9CC8 /* ShareViewController.m */; };
 		ADBB0AD22A273D73007C9CC8 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADBB0AD02A273D73007C9CC8 /* MainInterface.storyboard */; };
@@ -105,8 +105,12 @@
 		21618EA4FE8A980870624E1A /* libPods-eeuiAppUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-eeuiAppUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AE14375282DB85800B5E14E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		3AE14378282E153500B5E14E /* UMDevice.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UMDevice.framework; path = ../../../../../Downloads/UMDevice.framework; sourceTree = "<group>"; };
+		4DD47481746A33D998BAC3E1 /* Pods-dootask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dootask.debug.xcconfig"; path = "Pods/Target Support Files/Pods-dootask/Pods-dootask.debug.xcconfig"; sourceTree = "<group>"; };
+		53D698B8183819BE34033A88 /* Pods-DooTask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DooTask.release.xcconfig"; path = "Pods/Target Support Files/Pods-DooTask/Pods-DooTask.release.xcconfig"; sourceTree = "<group>"; };
 		5B7109449833C8668CA8EA08 /* Pods-eeuiApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-eeuiApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-eeuiApp/Pods-eeuiApp.debug.xcconfig"; sourceTree = "<group>"; };
+		8468EBCABF04E29FA8A8E8C6 /* Pods-dootask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dootask.release.xcconfig"; path = "Pods/Target Support Files/Pods-dootask/Pods-dootask.release.xcconfig"; sourceTree = "<group>"; };
 		95526B5EB63E184E1D5E1E22 /* Pods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		A738B4F9AF20CA0CE1F3B5EB /* libPods-DooTask.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DooTask.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD4231092A29FA92002D1F86 /* ShareAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ShareAssets.xcassets; sourceTree = "<group>"; };
 		ADBB0ACB2A273D73007C9CC8 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADBB0ACD2A273D73007C9CC8 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
@@ -220,8 +224,8 @@
 		B2BF762C23320B4D001DF25B /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		B2FF80F222290D1800DB1E47 /* eeuiApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = eeuiApp.entitlements; sourceTree = "<group>"; };
 		B3954AB0077F67222589658D /* libPods-eeuiAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-eeuiAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BF4738D867E50FB2D943A92A /* libPods-eeuiApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-eeuiApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D238E6D44FDE0B1722A31614 /* Pods-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
+		D6D5AB4308DC986678F7CAFE /* Pods-DooTask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DooTask.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DooTask/Pods-DooTask.debug.xcconfig"; sourceTree = "<group>"; };
 		D8F4A873379E80A140D7BD31 /* Pods-eeuiApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-eeuiApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-eeuiApp/Pods-eeuiApp.release.xcconfig"; sourceTree = "<group>"; };
 		F8536FB2214044572CB0622D /* libPods-ShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -267,7 +271,7 @@
 				B2135A822124059C00EDD991 /* AudioToolbox.framework in Frameworks */,
 				B2135A802124059300EDD991 /* AssetsLibrary.framework in Frameworks */,
 				B2135A7E2124058300EDD991 /* AVFoundation.framework in Frameworks */,
-				532E406F594B06E77A17129D /* libPods-eeuiApp.a in Frameworks */,
+				1AC7B52F5CED3B9A5456C7C5 /* libPods-DooTask.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,6 +353,10 @@
 				D8F4A873379E80A140D7BD31 /* Pods-eeuiApp.release.xcconfig */,
 				95526B5EB63E184E1D5E1E22 /* Pods-ShareExtension.debug.xcconfig */,
 				D238E6D44FDE0B1722A31614 /* Pods-ShareExtension.release.xcconfig */,
+				4DD47481746A33D998BAC3E1 /* Pods-dootask.debug.xcconfig */,
+				8468EBCABF04E29FA8A8E8C6 /* Pods-dootask.release.xcconfig */,
+				D6D5AB4308DC986678F7CAFE /* Pods-DooTask.debug.xcconfig */,
+				53D698B8183819BE34033A88 /* Pods-DooTask.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -440,10 +448,10 @@
 				B2135A812124059C00EDD991 /* AudioToolbox.framework */,
 				B2135A7F2124059300EDD991 /* AssetsLibrary.framework */,
 				B2135A7D2124058300EDD991 /* AVFoundation.framework */,
-				BF4738D867E50FB2D943A92A /* libPods-eeuiApp.a */,
 				B3954AB0077F67222589658D /* libPods-eeuiAppTests.a */,
 				21618EA4FE8A980870624E1A /* libPods-eeuiAppUITests.a */,
 				F8536FB2214044572CB0622D /* libPods-ShareExtension.a */,
+				A738B4F9AF20CA0CE1F3B5EB /* libPods-DooTask.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -470,9 +478,9 @@
 			productReference = ADBB0ACB2A273D73007C9CC8 /* ShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		B213562F2124045E00EDD991 /* eeuiApp */ = {
+		B213562F2124045E00EDD991 /* DooTask */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B213565C2124046000EDD991 /* Build configuration list for PBXNativeTarget "eeuiApp" */;
+			buildConfigurationList = B213565C2124046000EDD991 /* Build configuration list for PBXNativeTarget "DooTask" */;
 			buildPhases = (
 				6CBDE484C89DF9ADF06C0F90 /* [CP] Check Pods Manifest.lock */,
 				B213562C2124045E00EDD991 /* Sources */,
@@ -487,7 +495,7 @@
 			dependencies = (
 				ADBB0AD52A273D73007C9CC8 /* PBXTargetDependency */,
 			);
-			name = eeuiApp;
+			name = DooTask;
 			productName = eeuiApp;
 			productReference = B21356302124045E00EDD991 /* DooTask.app */;
 			productType = "com.apple.product-type.application";
@@ -581,7 +589,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B213562F2124045E00EDD991 /* eeuiApp */,
+				B213562F2124045E00EDD991 /* DooTask */,
 				B21356472124046000EDD991 /* eeuiAppTests */,
 				B21356522124046000EDD991 /* eeuiAppUITests */,
 				ADBB0ACA2A273D73007C9CC8 /* ShareExtension */,
@@ -678,15 +686,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-eeuiApp/Pods-eeuiApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-eeuiApp/Pods-eeuiApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-eeuiApp/Pods-eeuiApp-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6CBDE484C89DF9ADF06C0F90 /* [CP] Check Pods Manifest.lock */ = {
@@ -700,7 +708,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-eeuiApp-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-DooTask-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -713,15 +721,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-eeuiApp/Pods-eeuiApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-eeuiApp/Pods-eeuiApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-eeuiApp/Pods-eeuiApp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -776,12 +784,12 @@
 		};
 		B213564A2124046000EDD991 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B213562F2124045E00EDD991 /* eeuiApp */;
+			target = B213562F2124045E00EDD991 /* DooTask */;
 			targetProxy = B21356492124046000EDD991 /* PBXContainerItemProxy */;
 		};
 		B21356552124046000EDD991 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B213562F2124045E00EDD991 /* eeuiApp */;
+			target = B213562F2124045E00EDD991 /* DooTask */;
 			targetProxy = B21356542124046000EDD991 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1057,7 +1065,7 @@
 		};
 		B213565D2124046000EDD991 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7109449833C8668CA8EA08 /* Pods-eeuiApp.debug.xcconfig */;
+			baseConfigurationReference = D6D5AB4308DC986678F7CAFE /* Pods-DooTask.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1092,7 +1100,7 @@
 		};
 		B213565E2124046000EDD991 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D8F4A873379E80A140D7BD31 /* Pods-eeuiApp.release.xcconfig */;
+			baseConfigurationReference = 53D698B8183819BE34033A88 /* Pods-DooTask.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1219,7 +1227,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B213565C2124046000EDD991 /* Build configuration list for PBXNativeTarget "eeuiApp" */ = {
+		B213565C2124046000EDD991 /* Build configuration list for PBXNativeTarget "DooTask" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B213565D2124046000EDD991 /* Debug */,

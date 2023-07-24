@@ -1433,6 +1433,39 @@ public class PageActivity extends AppCompatActivity {
     }
 
     /**
+     * 修改状态栏颜色
+     * @param color
+     */
+    public void setStatusBarColor(String color) {
+        if (mPageInfo == null) {
+            return;
+        }
+        mPageInfo.setStatusBarColor(color);
+        StatusBarUtil.setColor(this,Color.parseColor(color),0);
+    }
+
+    /**
+     * 修改背景颜色
+     * @param color
+     */
+    public void setBackgroundColor(String color) {
+        if (mPageInfo == null) {
+            return;
+        }
+        mPageInfo.setBackgroundColor(color);
+
+        mBody.setBackgroundColor(Color.parseColor(mPageInfo.getBackgroundColor()));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //实测11以下需要添加该方法
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R){
+                getWindow().setNavigationBarColor(Color.parseColor(mPageInfo.getBackgroundColor()));
+            }
+        }
+
+    }
+
+    /**
      * 转换键盘类型
      * @param mode
      * @return

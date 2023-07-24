@@ -124,6 +124,33 @@ public class WeexModule extends WXModule {
     }
 
     /**
+     * 修改状态栏字体颜色风格
+     * @param color 状态栏颜色
+     */
+    @JSMethod
+    public void setStatusBarColor(String color) {
+        myApp().setStatusBarColor(mWXSDKInstance.getContext(), color);
+    }
+
+    /**
+     * 修改背景颜色
+     * @param color 背景颜色
+     */
+    @JSMethod
+    public void setBackgroundColor(String color) {
+        myApp().setBackgroundColor(mWXSDKInstance.getContext(), color);
+    }
+
+    /**
+     * 获取主题
+     * @return dark 暗黑 light 明亮
+     */
+    @JSMethod(uiThread = false)
+    public String getThemeName() {
+        return myApp().getThemeName(mWXSDKInstance.getContext());
+    }
+
+    /**
      * 拦截返回按键事件
      * @param object
      * @param callback  为null时取消拦截

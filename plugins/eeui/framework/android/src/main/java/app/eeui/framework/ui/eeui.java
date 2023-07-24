@@ -2,6 +2,7 @@ package app.eeui.framework.ui;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.UiModeManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -719,6 +720,44 @@ public class eeui {
         } else {
             this.toast(context, "当前页面不支持状态栏字体变色");
         }
+    }
+
+    /**
+     * 修改状态栏颜色
+     * @param context
+     * @param color 颜色值
+     */
+    public void setStatusBarColor(Context context, String color) {
+        if (context instanceof PageActivity) {
+            ((PageActivity) context).setStatusBarColor(color);
+        } else {
+            this.toast(context, "当前页面不支持状态栏字体变色");
+        }
+    }
+
+    /**
+     * 修改背景颜色
+     * @param context
+     * @param color 颜色值
+     */
+    public void setBackgroundColor(Context context, String color) {
+        if (context instanceof PageActivity) {
+            ((PageActivity) context).setBackgroundColor(color);
+        } else {
+            this.toast(context, "当前页面不支持状态栏字体变色");
+        }
+    }
+
+    /**
+     *  获取主题名字
+     * @return
+     */
+    public String getThemeName(Context context) {
+        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
+        if (uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES) {
+            return "dark";
+        }
+        return "light";
     }
 
     /**
