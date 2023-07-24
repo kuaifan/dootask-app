@@ -23,7 +23,7 @@ def share
     
 end
 
-target 'eeuiApp' do
+target 'DooTask' do
     common
     share
 end
