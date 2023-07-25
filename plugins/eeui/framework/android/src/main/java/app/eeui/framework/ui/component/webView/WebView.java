@@ -1,11 +1,14 @@
 package app.eeui.framework.ui.component.webView;
 
 import android.app.Activity;
+import android.app.UiModeManager;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKInstance;
@@ -23,6 +26,7 @@ import app.eeui.framework.extend.module.eeuiJson;
 import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.extend.module.eeuiScreenUtils;
 import app.eeui.framework.extend.view.ExtendWebView;
+import app.eeui.framework.ui.eeui;
 
 /**
  * Created by WDM on 2018/4/13.
@@ -56,9 +60,32 @@ public class WebView extends WXVContainer<ViewGroup> {
 
     }
 
+    /**
+     * 主题匹配
+     */
+    public void setDefaultTheme() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            UiModeManager uiModeManager = (UiModeManager) getContext().getSystemService(Context.UI_MODE_SERVICE);
+            if (uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES) {
+                v_webview.getSettings().setForceDark(WebSettings.FORCE_DARK_ON);
+            } else {
+                v_webview.getSettings().setForceDark(WebSettings.FORCE_DARK_OFF);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResume() {
+        super.onActivityResume();
+
+        setDefaultTheme();
+    }
+
     private void initPagerView() {
         v_webview = mView.findViewById(R.id.v_webview);
         v_webview.setSupportMultipleWindows(true);
+
+        setDefaultTheme();
         //
         if (getEvents().contains(eeuiConstants.Event.STATE_CHANGED)) {
             v_webview.setOnStatusClient(new ExtendWebView.StatusCall() {
