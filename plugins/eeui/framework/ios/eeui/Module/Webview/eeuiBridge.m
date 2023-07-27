@@ -172,6 +172,16 @@
     [[eeuiNewPageManager sharedIntstance] setStatusBarStyle:isLight weexInstance:[[WXSDKManager bridgeMgr] topInstance]];
 }
 
+- (void)setStatusBarColor:(NSString *)colorString
+{
+    [[eeuiNewPageManager sharedIntstance] setStatusBarColor:colorString weexInstance:[[WXSDKManager bridgeMgr] topInstance]];
+}
+
+- (void)setBackgroundColor:(NSString *)backgroundColor
+{
+    [[eeuiNewPageManager sharedIntstance] setBackgroundColor:backgroundColor weexInstance:[[WXSDKManager bridgeMgr] topInstance]];
+}
+
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
     [[eeuiNewPageManager sharedIntstance] setPageBackPressed:params callback:callback];
@@ -235,6 +245,11 @@
 - (void)goDesktop
 {
     [[eeuiNewPageManager sharedIntstance] goDesktop];
+}
+
+- (NSString*)getThemeName
+{
+    return [[eeuiNewPageManager sharedIntstance] getThemeName:[[WXSDKManager bridgeMgr] topInstance]];
 }
 
 - (id)getConfigRaw:(NSString*)key

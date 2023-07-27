@@ -41,20 +41,23 @@ export default {
 
             appGroupID: "group.im.dootask", // iOS共享储存的应用唯一标识符
             appSubPath: "share", //iOS 储存下一级目录
-
-            themeName: "", // 主题名称
         }
     },
 
     // APP进入前台：App从【后台】切换至【前台】时触发
     appActive() {
-        this.updateStatusBar()
+        const javascript = `if (typeof window.__onAppActive === "function"){window.__onAppActive()}`;
+        this.$refs.web.setJavaScript(javascript);
+    },
+
+    // APP进入后台：App从【前台】切换至【后台】时触发
+    appDeactive() {
+        const javascript = `if (typeof window.__onAppDeactive === "function"){window.__onAppDeactive()}`;
+        this.$refs.web.setJavaScript(javascript);
     },
 
     // 页面激活：页面【恢复】时触发（渲染完成时也会触发1次）
     pageResume() {
-        this.updateStatusBar()
-        //
         const javascript = `if (typeof window.__onPageResume === "function"){window.__onPageResume(${this.resumeNum})}`;
         this.$refs.web.setJavaScript(javascript);
         this.resumeNum++;
@@ -113,23 +116,6 @@ export default {
         },
 
         /**
-         * 更新状态栏
-         */
-        updateStatusBar() {
-            const name = eeui.getThemeName()
-            if (this.themeName !== name) {
-                this.themeName = name
-                //
-                eeui.setStatusBarStyle(name === 'dark')
-                eeui.setStatusBarColor(name === 'dark' ? '#1a1a1a' : '#f8f8f8')
-                eeui.setBackgroundColor(name === 'dark' ? '#1a1a1a' : '#f8f8f8')
-                //
-                const javascript = `if (typeof window.__onThemeChange === "function"){window.__onThemeChange("${name}")}`;
-                this.$refs.web.setJavaScript(javascript);
-            }
-        },
-
-        /**
          * 来自网页的消息
          * @param message
          */
@@ -179,6 +165,7 @@ export default {
                 case 'videoPreview':
                     picture.videoPreview(message.path)
                     break;
+
                 // iOS 储存本地获取聊天消息
                 case 'userChatList':
                     if (WXEnvironment.platform.toLowerCase() === "ios") {
@@ -188,6 +175,7 @@ export default {
                     }
 
                     break;
+
                 // iOS 储存本地上传地址
                 case 'userUploadUrl':
                     if (WXEnvironment.platform.toLowerCase() === "ios") {
@@ -198,11 +186,21 @@ export default {
                         eeui.setCaches('fileUpLoadUrl', message.dirUrl, 0)
                     }
                     break
+
                 case 'startMeeting':
                     this.$refs.meeting && this.$refs.meeting.joint(message.meetingParams)
                     break
+
                 case 'updateMeetingInfo':
                     this.$refs.meeting && this.$refs.meeting.updateMeetingInfo(message.infos)
+                    break
+
+                // 更新状态栏
+                case 'updateTheme':
+                    eeui.setStatusBarStyle(message.themeName === 'dark')
+                    eeui.setStatusBarColor(message.themeName === 'dark' ? '#1a1a1a' : '#f8f8f8')
+                    eeui.setBackgroundColor(message.themeName === 'dark' ? '#1a1a1a' : '#f8f8f8')
+                    eeui.setCachesString("themeName", message.themeName, 0)
                     break
             }
         },

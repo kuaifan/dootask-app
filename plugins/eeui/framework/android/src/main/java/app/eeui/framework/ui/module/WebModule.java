@@ -114,6 +114,30 @@ public class WebModule {
     }
 
     /**
+     * 修改状态栏字体颜色风格
+     * @param color 状态栏颜色
+     */
+    public static void setStatusBarColor(ExtendWebView webView, String color) {
+        myApp().setStatusBarColor(webView.getContext(), color);
+    }
+
+    /**
+     * 修改背景颜色
+     * @param color 背景颜色
+     */
+    public static void setBackgroundColor(ExtendWebView webView, String color) {
+        myApp().setBackgroundColor(webView.getContext(), color);
+    }
+
+    /**
+     * 获取主题
+     * @return dark 暗黑 light 明亮
+     */
+    public static String getThemeName(ExtendWebView webView) {
+        return myApp().getThemeName(webView.getContext());
+    }
+
+    /**
      * 拦截返回按键事件
      * @param object
      * @param callback  为null时取消拦截
