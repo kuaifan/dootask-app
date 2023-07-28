@@ -50,9 +50,9 @@ export default {
             this.navColor = themeName === 'dark' ? '#cdcdcd' : '#232323'
             navigationBar.setLeftItem({
                 icon: 'tb-back',
-                iconSize: 40,
+                iconSize: 36,
                 iconColor: this.navColor,
-                width: 120,
+                width: 110,
             }, _ => {
                 eeui.closePage();
             })

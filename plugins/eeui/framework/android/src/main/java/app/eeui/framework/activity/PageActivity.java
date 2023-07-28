@@ -167,6 +167,7 @@ public class PageActivity extends AppCompatActivity {
     private LinearLayout titleBar, titleBarLeft, titleBarMiddle, titleBarRight;
     private TextView titleBarTitle, titleBarSubtitle;
     private String navigationBarBackgroundColor = null;
+    private String lastNavigationTitle = "";
     private boolean titleBarLeftNull = true;
 
     /****************************************************************************************************/
@@ -1455,6 +1456,9 @@ public class PageActivity extends AppCompatActivity {
         mPageInfo.setBackgroundColor(color);
 
         mBody.setBackgroundColor(Color.parseColor(mPageInfo.getBackgroundColor()));
+        if (mSwipeBackHelper != null) {
+            mSwipeBackHelper.setBackgroundColor(Color.parseColor(mPageInfo.getBackgroundColor()));
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //实测11以下需要添加该方法
@@ -1567,9 +1571,14 @@ public class PageActivity extends AppCompatActivity {
             subtitleColor = navigationBarBackgroundColor.contentEquals("#3EB4FF") ? "#ffffff" : "#232323";
         }
 
+        if (item.containsKey("title")) {
+            lastNavigationTitle = title;
+        } else {
+            title = lastNavigationTitle;
+        }
         if ("".equals(title)) {
             titleBarTitle.setVisibility(View.GONE);
-        }else{
+        } else {
             titleBarTitle.setVisibility(View.VISIBLE);
             titleBarTitle.setText(title);
             titleBarTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, eeuiScreenUtils.weexPx2dp(mWXSDKInstance, titleSize));
@@ -1579,7 +1588,7 @@ public class PageActivity extends AppCompatActivity {
 
         if ("".equals(subtitle)) {
             titleBarSubtitle.setVisibility(View.GONE);
-        }else{
+        } else {
             titleBarSubtitle.setVisibility(View.VISIBLE);
             titleBarSubtitle.setText(subtitle);
             titleBarSubtitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, eeuiScreenUtils.weexPx2dp(mWXSDKInstance, subtitleSize));
