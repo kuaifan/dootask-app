@@ -589,7 +589,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             CGFloat lastProgress = [self getTotalPercent];
             NSLog(@"总体进度:%f",lastProgress);
-            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f",NSLocalizedString(@"sendingTitle", @""),lastProgress*100] stringByAppendingString:@"%"]];
+            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f",NSLocalizedString(@"sendingTitle", @""),MIN(lastProgress*100,99)] stringByAppendingString:@"%"]];
             
         });
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
@@ -656,7 +656,7 @@
         result = DootaskShareResultSuccess;
     }
     
-    [SVProgressHUD dismissWithDelay:2 completion:^{
+    [SVProgressHUD dismissWithDelay:1 completion:^{
         self.completionCallback(result);
     }];
  
