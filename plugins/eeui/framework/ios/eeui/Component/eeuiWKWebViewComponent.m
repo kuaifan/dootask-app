@@ -154,6 +154,13 @@ WX_EXPORT_METHOD(@selector(goForward:))
         wv = [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     }
     wv.scrollView.backgroundColor = [UIColor clearColor];
+#ifdef DEBUG
+    if (@available(iOS 16.4, *)) {
+        wv.inspectable = YES;
+    } else {
+        // Fallback on earlier versions
+    }
+#endif
     return wv;
 }
 
