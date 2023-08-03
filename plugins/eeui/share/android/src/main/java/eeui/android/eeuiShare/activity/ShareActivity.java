@@ -39,6 +39,7 @@ import eeui.android.eeuiShare.utils.StringSplitUtils;
 import eeui.android.eeuiShare.utils.UriUtils;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import rxhttp.wrapper.param.RxHttp;
+import rxhttp.wrapper.param.RxHttpFormParam;
 
 public class ShareActivity extends AppCompatActivity  {
 
@@ -71,6 +72,8 @@ public class ShareActivity extends AppCompatActivity  {
     private Handler progressHandler ;
     private int uploadProgressTotal = 0;
     private LinearLayout refreshLayout;
+
+    private boolean isText;
     interface delayComplete {
         void complete();
     }
@@ -132,8 +135,9 @@ public class ShareActivity extends AppCompatActivity  {
                         for (int i=0;i<progressList.size();i++){
                             uploadProgressTotal += progressList.get(i) / progressList.size();
                         }
-                        kProgressHUD.setProgress(uploadProgressTotal);
-                        kProgressHUD.setLabel(getResources().getString(R.string.sendingTitle)+uploadProgressTotal+"%");
+
+                        kProgressHUD.setProgress(uploadProgressTotal/100 *99); // 添加100时显示99
+                        kProgressHUD.setLabel(getResources().getString(R.string.sendingTitle)+uploadProgressTotal/100 *99+"%");
                         break;
                     default:
                         break;
@@ -228,10 +232,21 @@ public class ShareActivity extends AppCompatActivity  {
         ArrayList<Uri> uriList = new ArrayList<>();
         ArrayList<String> pathList = new ArrayList<>();
         if (Intent.ACTION_SEND.equals(action) && type != null) {
-            uriList.add(intent.getParcelableExtra(Intent.EXTRA_STREAM));
-            String path = UriUtils.getRealPathFromURI(context,uriList.get(0));
-            Log.i(TAG,"path="+path);
-            pathList.add(path);
+
+            if ("text/plain".equals(type)){
+                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+
+                if (sharedText != null) {
+                    // Update UI to reflect text being shared
+                    pathList.add(sharedText);
+                    isText = true;
+                }
+            } else {
+                uriList.add(intent.getParcelableExtra(Intent.EXTRA_STREAM));
+                String path = UriUtils.getRealPathFromURI(context,uriList.get(0));
+                Log.i(TAG,"path="+path);
+                pathList.add(path);
+            }
 
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
             uriList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
@@ -348,6 +363,9 @@ public class ShareActivity extends AppCompatActivity  {
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setCancellable(true)
                 .show();
+        if (isText) {
+            urlUser = urlUser +"&type=text";
+        }
 
         RxHttp.get(urlUser)
                 .toObservableString()
@@ -411,7 +429,37 @@ public class ShareActivity extends AppCompatActivity  {
     @SuppressLint("CheckResult")
     private void upLoadFile(int index, boolean isUploadDir, String url, String token, String idsString, String filePath){
         completeSign ++;
-        RxHttp.postForm(url)
+        if (isText) {
+            RxHttp.postForm(url)
+                .add("token",token)
+                .add(isUploadDir?"upload_file_id":"dialog_ids",idsString)
+                .add("text",filePath)
+                .toObservableString()
+                .onMainProgress(progress -> {
+                    progressList.set(index, progress.getProgress());
+                    Message message = new Message();
+                    message.what = 1;
+                    progressHandler.sendMessage(message);
+                    Log.i(TAG,"getProgress="+progress.getProgress());
+                })
+                .subscribe(s -> {
+                    completeSign --;
+                    Log.i(TAG,"throwable="+s);
+                    JSONObject jsonObject = JSON.parseObject(s);
+                    Log.i(TAG,"success="+jsonObject.getIntValue("ret"));
+                    if (completeSign == 0) {
+                        uploadComplete();
+                    }
+                },throwable -> {
+                    completeSign --;
+                    if (completeSign == 0) {
+                        uploadComplete();
+                    }
+                    Log.i(TAG,"throwable="+throwable);
+                });
+
+        } else {
+            RxHttp.postForm(url)
                 .add("token",token)
                 .add(isUploadDir?"upload_file_id":"dialog_ids",idsString)
                 .addFile("files",new File(filePath))
@@ -438,6 +486,9 @@ public class ShareActivity extends AppCompatActivity  {
                     }
                     Log.i(TAG,"throwable="+throwable);
                 });
+        }
+
+
     }
 
     private void uploadComplete() {

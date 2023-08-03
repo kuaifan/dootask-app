@@ -31,4 +31,6 @@
 @interface ChatModelDataExtend: NSObject
 @property (nonatomic, assign) int upload_file_id;
 @property (nonatomic, assign) int dialog_ids;
+@property (nonatomic, copy) NSString *text_type;
+@property (nonatomic, assign) int reply_id;
 @end
