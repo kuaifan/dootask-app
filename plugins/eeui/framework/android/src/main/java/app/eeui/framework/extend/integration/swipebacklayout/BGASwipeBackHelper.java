@@ -195,6 +195,18 @@ public class BGASwipeBackHelper {
     }
 
     /**
+     * 设置背景颜色
+     *
+     * @param color
+     */
+    public BGASwipeBackHelper setBackgroundColor(int color) {
+        if (mSwipeBackLayout != null) {
+            mSwipeBackLayout.setBackgroundColor(color);
+        }
+        return this;
+    }
+
+    /**
      * 是否正在滑动
      *
      * @return

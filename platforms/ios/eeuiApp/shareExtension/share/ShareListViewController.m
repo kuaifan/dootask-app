@@ -68,8 +68,6 @@
 @property (nonatomic, assign)BOOL completeFlag;
 @property (nonatomic, copy  )NSString *currentToken;
 @property (nonatomic, strong)dispatch_group_t currenGruop;
-
-@property (nonatomic, assign)BOOL isText;
 @end
 
 @implementation ShareListViewController
@@ -107,7 +105,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-//    [self getMainList];
+    [self getMainList];
 }
 
 - (void)creatMonitorData{
@@ -305,35 +303,14 @@
                 if ([itemProvider hasItemConformingToTypeIdentifier:registered])
                 {
                     dispatch_group_enter(group);
-                    [itemProvider loadItemForTypeIdentifier:registered options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {
-                        //在这里保存获取到的分享数据
+                    [itemProvider loadItemForTypeIdentifier:registered options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
                         
                         if([(NSObject *)item isKindOfClass:[NSURL class]]){
                             NSURL *content = (NSURL *)item;
-                            if ([content isFileURL]) {
-                              // 本地文件路径
-                                ShareContent *model = [ShareContent new];
-                                model.shareType = shareContentTypeOther;
-                                model.fileUrl = content;
-                                [self.shareArray addObject:model];
-                            } else {
-                              // 网页链接
-                                self.isText = YES;
-                                ShareContent *model = [ShareContent new];
-                                model.shareType = shareContentTypeText;
-                                model.content = [content absoluteString];
-                                [self.shareArray addObject:model];
-                            }
-
-                        } else if ([(NSObject *)item isKindOfClass:[NSString class]]) {
-                            // 分享中含有文字
-                            self.isText = YES;
-                            NSString *content = (NSString *)item;
                             ShareContent *model = [ShareContent new];
-                            model.shareType = shareContentTypeText;
-                            model.content = content;
+                            model.shareType = shareContentTypeOther;
+                            model.fileUrl = content;
                             [self.shareArray addObject:model];
-                            
                         }
                         else if ([(NSObject *)item isKindOfClass:[UIImage class]]){
                             UIImage *content = (UIImage *)item;
@@ -358,9 +335,6 @@
             [SVProgressHUD dismissWithDelay:1.5 completion:^{
                 self.completionCallback(DootaskShareResultCancel);
             }];
-        } else {
-            //同步等待结果
-            [self getMainList];
         }
         
     });
@@ -381,10 +355,6 @@
     NSArray *tokenArray = [chatUrl componentsSeparatedByString:@"?token="];
     if (tokenArray.count == 2) {
         self.currentToken = tokenArray[1];
-    }
-    
-    if (self.isText) {
-        chatUrl = [chatUrl stringByAppendingFormat:@"&type=text"];
     }
     
     NSLog(@"chaturl:%@",chatUrl);
@@ -579,16 +549,8 @@
             
             NSProgress *progress = [[NSProgress alloc] init];
             [self.progressArray addObject:@{@"progress":progress,@"result":@0,@"muti":@0}];
-            __block NSDictionary *uploadParam = param;
-            if(model.shareType == shareContentTypeText) {
             
-                NSMutableDictionary *mutable = [NSMutableDictionary dictionaryWithDictionary:param];
-                
-                mutable[@"text"] = model.content;
-                uploadParam = mutable;
-            }
-            
-            [self uploadfilesWithParams:uploadParam upLoadURL:uploadUrl shareModel:model withCount:number];
+            [self uploadfilesWithParams:param upLoadURL:uploadUrl shareModel:model withCount:number];
             number ++;
         }
     });
@@ -611,7 +573,7 @@
             NSString *imageName = [NSString stringWithFormat:@"screenShot_%@%@.png",[self getRandomString],[self getNowTimeTimestamp]];
             
             [formData appendPartWithFileData:imageData name:@"files" fileName:imageName mimeType:@"image/png"];
-        }else if(model.shareType != shareContentTypeText){
+        }else{
             NSError * error = nil;
             [formData appendPartWithFileURL:model.fileUrl name:@"files" error:&error];
             if (error != nil) {
@@ -627,7 +589,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             CGFloat lastProgress = [self getTotalPercent];
             NSLog(@"总体进度:%f",lastProgress);
-            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f",NSLocalizedString(@"sendingTitle", @""),lastProgress*99] stringByAppendingString:@"%"]];
+            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f",NSLocalizedString(@"sendingTitle", @""),MIN(lastProgress*100,99)] stringByAppendingString:@"%"]];
             
         });
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
@@ -694,7 +656,7 @@
         result = DootaskShareResultSuccess;
     }
     
-    [SVProgressHUD dismissWithDelay:2 completion:^{
+    [SVProgressHUD dismissWithDelay:1 completion:^{
         self.completionCallback(result);
     }];
  
@@ -736,6 +698,7 @@
         param[@"dialog_ids"] = dialogStr;
         param[@"upLoadUrl"] = uploadUrl;
         param[@"token"] = self.currentToken;
+       
         [self upLoads:param isDir:NO];
     } else {
         //发送文件

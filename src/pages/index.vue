@@ -198,8 +198,8 @@ export default {
                 // 更新状态栏
                 case 'updateTheme':
                     eeui.setStatusBarStyle(message.themeName === 'dark')
-                    eeui.setStatusBarColor(message.themeName === 'dark' ? '#1a1a1a' : '#f8f8f8')
-                    eeui.setBackgroundColor(message.themeName === 'dark' ? '#1a1a1a' : '#f8f8f8')
+                    eeui.setStatusBarColor(message.themeName === 'dark' ? '#131313' : '#f8f8f8')
+                    eeui.setBackgroundColor(message.themeName === 'dark' ? '#131313' : '#f8f8f8')
                     eeui.setCachesString("themeName", message.themeName, 0)
                     break
             }

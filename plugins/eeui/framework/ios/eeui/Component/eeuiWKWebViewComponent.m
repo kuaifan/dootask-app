@@ -94,6 +94,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
 
 - (WKWebView*)loadView
 {
+    eeuiWKWebView *wv = nil;
     //设置userAgent
     __block NSString *originalUserAgent = nil;
     NSString *versionName = (NSString*)[[[NSBundle mainBundle] infoDictionary]  objectForKey:@"CFBundleShortVersionString"];
@@ -114,7 +115,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
         WKProcessPool *processPool = [[WKProcessPool alloc] init];
         [configuration setProcessPool:processPool];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWKProcessPoolDidCrashNotification:) name:WKProcessPoolDidCrashNotification object:processPool];
-        return [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
+        wv = [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     } else {
         eeuiStorageManager *storage = [eeuiStorageManager sharedIntstance];
         originalUserAgent = [storage getCachesString:@"__system:originalUserAgent" defaultVal:@""];
@@ -150,8 +151,17 @@ WX_EXPORT_METHOD(@selector(goForward:))
         WKProcessPool *processPool = [[WKProcessPool alloc] init];
         [configuration setProcessPool:processPool];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWKProcessPoolDidCrashNotification:) name:WKProcessPoolDidCrashNotification object:processPool];
-        return [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
+        wv = [[eeuiWKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     }
+    wv.scrollView.backgroundColor = [UIColor clearColor];
+#ifdef DEBUG
+    if (@available(iOS 16.4, *)) {
+        wv.inspectable = YES;
+    } else {
+        // Fallback on earlier versions
+    }
+#endif
+    return wv;
 }
 
 // 处理通知
