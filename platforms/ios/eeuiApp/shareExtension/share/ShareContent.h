@@ -19,6 +19,7 @@ typedef NS_ENUM(NSInteger, ShareContentType){
 @property (nonatomic, strong)NSURL *fileUrl;
 @property (nonatomic, assign)BOOL isDir;
 @property (nonatomic, strong)UIImage *image;
+@property (nonatomic, strong)NSString *content;
 
 @property (nonatomic, assign)ShareContentType shareType;
 
