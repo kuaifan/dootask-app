@@ -77,15 +77,11 @@ public class WebView extends WXVContainer<ViewGroup> {
     @Override
     public void onActivityResume() {
         super.onActivityResume();
-
-        setDefaultTheme();
     }
 
     private void initPagerView() {
         v_webview = mView.findViewById(R.id.v_webview);
         v_webview.setSupportMultipleWindows(true);
-
-        setDefaultTheme();
         //
         if (getEvents().contains(eeuiConstants.Event.STATE_CHANGED)) {
             v_webview.setOnStatusClient(new ExtendWebView.StatusCall() {
