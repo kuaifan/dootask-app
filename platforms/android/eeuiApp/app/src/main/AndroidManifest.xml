@@ -38,6 +38,9 @@
     <!-- 添加快捷方式 -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
+    <!-- 解决把targetsdk版本号升级到了31。然后适配12的时候，又出现安装失败  -->
+    <permission-group android:name="${applicationId}.andpermission"/>
+
     <application
         android:name=".MyApplication"
         android:allowBackup="false"
