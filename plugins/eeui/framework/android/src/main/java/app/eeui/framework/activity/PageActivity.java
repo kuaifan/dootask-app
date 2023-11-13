@@ -543,7 +543,9 @@ public class PageActivity extends AppCompatActivity {
             errorInfo.setText("抱歉！页面出现错误了");
         }
         //
-        mSwipeBackHelper.setSwipeBackEnable(mPageInfo.isSwipeBack());
+        if (mSwipeBackHelper != null) {
+            mSwipeBackHelper.setSwipeBackEnable(mPageInfo.isSwipeBack());
+        }
         mBody.setBackgroundColor(Color.parseColor(mPageInfo.getBackgroundColor()));
         //
         initStatusBar();
@@ -788,7 +790,7 @@ public class PageActivity extends AppCompatActivity {
              */
             @Override
             public boolean isSupportSwipeBack() {
-                return true;
+                return mPageInfo.isSwipeBack();
             }
 
             /**
