@@ -16,6 +16,8 @@
 
 package app.eeui.framework.extend.integration.swipebacklayout;
 
+import static android.view.View.NO_ID;
+
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -25,7 +27,10 @@ import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
 
 import java.lang.reflect.Method;
 
@@ -154,5 +159,21 @@ class UIUtil {
             display.getMetrics(displayMetrics);
         }
         return displayMetrics.widthPixels;
+    }
+
+    private static final String NAVIGATION = "navigationBarBackground";
+
+    // 该方法需要在View完全被绘制出来之后调用，否则判断不了
+    public static boolean isNavigationBarExist(@NonNull Activity activity) {
+        ViewGroup vp = (ViewGroup) activity.getWindow().getDecorView();
+        if (vp != null) {
+            for (int i = 0; i < vp.getChildCount(); i++) {
+                vp.getChildAt(i).getContext().getPackageName();
+                if (vp.getChildAt(i).getId() != NO_ID && NAVIGATION.equals(activity.getResources().getResourceEntryName(vp.getChildAt(i).getId()))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

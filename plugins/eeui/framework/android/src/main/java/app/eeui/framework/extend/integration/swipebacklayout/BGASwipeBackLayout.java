@@ -622,6 +622,12 @@ public class BGASwipeBackLayout extends ViewGroup {
         // ======================== 新加的 START ========================
         if (!mIsNavigationBarOverlap && UIUtil.isPortrait(mActivity)) {
             maxLayoutHeight -= UIUtil.getNavigationBarHeight(mActivity);
+            String manufacturer = Build.MANUFACTURER;
+            if ("HUAWEI".equalsIgnoreCase(manufacturer) || "HONOR".equalsIgnoreCase(manufacturer)) {
+                if (!UIUtil.isNavigationBarExist(mActivity)){
+                    maxLayoutHeight += UIUtil.getNavigationBarHeight(mActivity);
+                }
+            }
         }
 
         if (mIsNavigationBarOverlap && !UIUtil.isPortrait(mActivity)) {
