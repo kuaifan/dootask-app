@@ -7,7 +7,8 @@
             :progressbarVisibility="false"
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
-            @stateChanged="onStateChanged"/>
+            @stateChanged="onStateChanged"
+            @ready="readyStatus"/>
         <meetings ref="meeting" @meetingEvent="meetingEvent"></meetings>
     </div>
 </template>
@@ -32,6 +33,8 @@ export default {
     components: {Meetings},
     data() {
         return {
+            webReady:false,
+
             uniqueId: '',
             resumeNum: 0,
 
@@ -88,7 +91,15 @@ export default {
                 break;
             case "link":
                 console.log('link：', message.jumpUrl);
-                this.linkEvent(message.jumpUrl)
+
+                if (this.webReady) {
+                    this.linkEvent(message.jumpUrl)
+                } else {
+                    setTimeout(()=>{
+                        // 延迟执行
+                        this.linkEvent(message.jumpUrl)
+                    }, 2000)
+                }
 
         }
     },
@@ -120,6 +131,14 @@ export default {
         },
 
         /**
+         * webView准备好了
+         *
+         */
+        readyStatus(){
+            // this.webReady = true;
+        },
+
+        /**
          * 来自网页的消息
          * @param message
          */
@@ -134,6 +153,7 @@ export default {
 
                 case 'setUmengAlias':
                     this.umengMessage = message;
+                    this.webReady = true;
                     this.updateUmengAlias();
                     break;
 
