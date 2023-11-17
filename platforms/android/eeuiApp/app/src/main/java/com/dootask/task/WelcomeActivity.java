@@ -1,6 +1,8 @@
 package com.dootask.task;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +26,8 @@ import app.eeui.framework.ui.eeui;
 public class WelcomeActivity extends AppCompatActivity {
 
     private boolean isOpenNext = false;
-
+    private Intent intent = null;
+    private String jumpUrl = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,23 @@ public class WelcomeActivity extends AppCompatActivity {
                 openNext(var);
             }
         }));
+        intent = getIntent();
+        if (intent != null){
+            Uri data = intent.getData();
+            if (data != null) {
+                // 处理接收到的数据//dootask://manage/project/invite?code=LlcwpXbkVYSQVCzMGdk6vpL4JvAWGwFQxESxNdkbiClcUEbA7ooQoyuFlatHtvdk
+                String host = data.getHost();
+                int port = data.getPort();
+                String path = data.getPath();
+                String code = data.getQueryParameter("code");
+                if ( port > 0){
+                    jumpUrl = host+":"+port+path+"?code="+code;
+                }else{
+                    jumpUrl = host+path+"?code="+code;
+                }
+            }
+        }
+
     }
 
     @Override
@@ -94,6 +114,9 @@ public class WelcomeActivity extends AppCompatActivity {
             mPageBean.setSoftInputMode(eeuiBase.config.getHomeParams("softInputMode", "auto"));
             mPageBean.setBackgroundColor(eeuiBase.config.getHomeParams("backgroundColor", "#ffffff"));
             mPageBean.setFirstPage(true);
+            if (!jumpUrl.equals("")){
+                mPageBean.setProtocolOpenAppData(jumpUrl);
+            }
             mPageBean.setCallback(new JSCallback() {
                 @Override
                 public void invoke(Object data) {

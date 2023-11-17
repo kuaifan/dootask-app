@@ -104,6 +104,8 @@ public class PageBean {
     private JSONObject otherObject;
     private long loadTime = 0;
 
+    private String protocolOpenAppData = "";
+
     public String getPageName() {
         return pageName;
     }
@@ -334,5 +336,13 @@ public class PageBean {
 
     public void setLoadTime(long loadTime) {
         this.loadTime = loadTime;
+    }
+
+    public String getProtocolOpenAppData() {
+        return protocolOpenAppData;
+    }
+
+    public void setProtocolOpenAppData(String protocolOpenAppData) {
+        this.protocolOpenAppData = protocolOpenAppData;
     }
 }

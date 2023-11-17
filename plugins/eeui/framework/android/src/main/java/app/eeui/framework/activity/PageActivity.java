@@ -169,6 +169,7 @@ public class PageActivity extends AppCompatActivity {
     private String navigationBarBackgroundColor = null;
     private String lastNavigationTitle = "";
     private boolean titleBarLeftNull = true;
+    private String protocolOpenAppData = "";
 
     /****************************************************************************************************/
     /****************************************************************************************************/
@@ -222,7 +223,9 @@ public class PageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         identify = eeuiCommon.randomString(16);
         mPageInfo = eeuiPage.getPageBean(intent.getStringExtra("name"));
-
+        if (intent.hasExtra("jumpUrl")) {
+            protocolOpenAppData = intent.getStringExtra("jumpUrl");
+        }
         if (mPageInfo == null) {
             mPageInfo = new PageBean();
         } else {
@@ -894,6 +897,12 @@ public class PageActivity extends AppCompatActivity {
                 if (mWeexView != null) {
                     mWeexView.removeAllViews();
                     mWeexView.addView(view);
+                    if (!protocolOpenAppData.equals("")){
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("messageType","link");
+                        jsonObject.put("jumpUrl",protocolOpenAppData);
+                        eeuiPage.postMessage(jsonObject);
+                    }
                 }
                 invokeAndKeepAlive("viewCreated", null);
             }

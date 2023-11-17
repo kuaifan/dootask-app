@@ -108,6 +108,9 @@ public class eeuiPage {
         intent.setClass(context, mBean.isTranslucent() ? PageActivityTransparent.class : PageActivityNoTransparent.class);
         intent.putExtra("name", mBean.getPageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (mBean.getProtocolOpenAppData() != null){
+            intent.putExtra("jumpUrl",mBean.getProtocolOpenAppData());
+        }
         context.startActivity(intent);
         //
         if (!mBean.isAnimated()) {
