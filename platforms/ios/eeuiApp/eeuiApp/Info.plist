@@ -29,7 +29,11 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>eeuiAppName</string>
+			<string></string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>${APPLICATION_SCHEME}</string>
+			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeRole</key>

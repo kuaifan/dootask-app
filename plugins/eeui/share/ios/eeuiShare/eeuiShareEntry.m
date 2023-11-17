@@ -7,6 +7,7 @@
 #import "eeuiShareWebModule.h"
 #import "WeexInitManager.h"
 #import <WebKit/WKWebView.h>
+#import <eeui/eeuiNewPageManager.h>
 
 WEEX_PLUGIN_INIT(eeuiShareEntry)
 @implementation eeuiShareEntry
@@ -50,6 +51,17 @@ WEEX_PLUGIN_INIT(eeuiShareEntry)
 //捕捉回调
 - (void) openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
 {
+    NSString *absoulteString = url.absoluteString;
+    if ([absoulteString containsString:@"dootask://"]) {
+    
+        NSDictionary *params = @{
+            @"messageType":@"link",
+            @"jumpUrl": absoulteString
+        };
+        
+        [[eeuiNewPageManager sharedIntstance] postMessage:params];
+    }
+    
     
 }
 

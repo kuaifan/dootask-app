@@ -79,13 +79,17 @@ export default {
         switch (message.messageType) {
             case 'notificationClick':
                 // console.log('点击了通知栏消息：', message);
-                break;
 
+            break;
             case 'keyboardStatus':
                 const data = encodeURIComponent(this.jsonStringify(message));
                 const javascript = `if (typeof window.__onKeyboardStatus === "function"){window.__onKeyboardStatus("${data}")}`;
                 this.$refs.web.setJavaScript(javascript);
                 break;
+            case "link":
+                console.log('link：', message.jumpUrl);
+                this.linkEvent(message.jumpUrl)
+
         }
     },
 
@@ -276,7 +280,12 @@ export default {
         inventEvent(param) {
             const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent({"meetingid":"${param.meetingid}","act":"${param.act}"})}`;
             this.$refs.web.setJavaScript(javascript);
-        }
+        },
+
+        linkEvent(link) {
+            const javascript = `if (typeof window.__handleLink === "function"){window.__handleLink("${link}")}`;
+            this.$refs.web.setJavaScript(javascript);
+        },
     }
 }
 </script>
