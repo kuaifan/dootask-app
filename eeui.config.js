@@ -4,7 +4,7 @@
  */
 module.exports = {
 	"serviceUrl": "",
-	"homePage": "firstPage",
+	"homePage": "",
 	"homePageParams": {
 		statusBarColor: "#f8f8f8",
 		backgroundColor: "#f8f8f8",

@@ -901,7 +901,7 @@ public class PageActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("messageType","link");
                         jsonObject.put("jumpUrl",protocolOpenAppData);
-                        eeuiPage.postMessage(jsonObject);
+                        PageActivity.this.onAppStatusListener(new PageStatus("page", "message", null, jsonObject));
                     }
                 }
                 invokeAndKeepAlive("viewCreated", null);
