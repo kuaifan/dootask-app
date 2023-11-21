@@ -119,6 +119,20 @@ export default {
         // this.$refs.web.setUrl("http://192.168.0.111:2222");
         // this.$refs.web.setUrl("http://192.168.100.36:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
+        // 安卓拦截返回时间变成web返回事件
+        eeui.setPageBackPressed({
+            pageName: 'firstPage',
+        }, () =>{
+            //返回键触发事件
+
+            this.$refs.web.canGoBack(res=>{
+                if (res) {
+                    this.$refs.web.goBack();
+                } else {
+                    eeui.goDesktop();
+                }
+            })
+        });
     },
 
     methods: {
