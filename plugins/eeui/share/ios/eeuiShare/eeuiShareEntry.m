@@ -53,7 +53,7 @@ WEEX_PLUGIN_INIT(eeuiShareEntry)
 {
     NSString *absoulteString = url.absoluteString;
     if ([absoulteString containsString:@"dootask://"]) {
-    
+        absoulteString = [absoulteString stringByReplacingOccurrencesOfString:@"dootask://" withString:@""];
         NSDictionary *params = @{
             @"messageType":@"link",
             @"jumpUrl": absoulteString
@@ -61,7 +61,6 @@ WEEX_PLUGIN_INIT(eeuiShareEntry)
         
         [[eeuiNewPageManager sharedIntstance] postMessage:params];
     }
-    
     
 }
 
