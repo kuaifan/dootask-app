@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -223,9 +224,6 @@ public class PageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         identify = eeuiCommon.randomString(16);
         mPageInfo = eeuiPage.getPageBean(intent.getStringExtra("name"));
-        if (intent.hasExtra("jumpUrl")) {
-            protocolOpenAppData = intent.getStringExtra("jumpUrl");
-        }
         if (mPageInfo == null) {
             mPageInfo = new PageBean();
         } else {
@@ -454,6 +452,27 @@ public class PageActivity extends AppCompatActivity {
         }
         BGAKeyboardUtil.closeKeyboard(this);
         super.onBackPressed();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        SharedPreferences sp = this.getSharedPreferences("appScheme",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        protocolOpenAppData = sp.getString("appLinkUrl","");
+        if (!protocolOpenAppData.equals("")){
+            mHandler.postDelayed(()->{
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("messageType","link");
+                jsonObject.put("jumpUrl",protocolOpenAppData);
+                PageActivity.this.onAppStatusListener(new PageStatus("page", "message", null, jsonObject));
+
+                //最后清空数据
+                protocolOpenAppData="";
+                editor.putString("appLinkUrl","");
+                editor.commit();
+            },500);
+        }
     }
 
     /****************************************************************************************************/
@@ -897,12 +916,6 @@ public class PageActivity extends AppCompatActivity {
                 if (mWeexView != null) {
                     mWeexView.removeAllViews();
                     mWeexView.addView(view);
-                    if (!protocolOpenAppData.equals("")){
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("messageType","link");
-                        jsonObject.put("jumpUrl",protocolOpenAppData);
-                        PageActivity.this.onAppStatusListener(new PageStatus("page", "message", null, jsonObject));
-                    }
                 }
                 invokeAndKeepAlive("viewCreated", null);
             }
