@@ -381,7 +381,7 @@ export default {
         },
 
         /**
-         *
+         * 声网初始化
          * @param appid
          */
         initAgoro(appid) {
@@ -610,18 +610,6 @@ export default {
 
         switchClicked() {
             agoro.switchCamera()
-        },
-
-        remoteSlicent(item) {
-            agoro.muteRemoteAudioStream(item.uuids, !item.mute);
-        },
-
-        remoteVideo(item) {
-            agoro.muteRemoteVideoStream(item.uuids, !item.mute);
-        },
-
-        shutClicked() {
-            agoro.leaveChannel();
         },
 
         hideClicked() {
