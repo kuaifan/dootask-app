@@ -232,14 +232,9 @@ export default {
 
         updateUmengAlias() {
             const alias = `${WXEnvironment.platform}-${this.umengMessage.userid}-${this.uniqueId}`;
-            console.log("[UmengAlias] delete: " + alias);
-            umengPush.deleteAlias(alias, "userid", data => {
-                console.log("[UmengAlias] delete result: " + JSON.stringify(data));
-                console.log("[UmengAlias] add: " + alias);
+            umengPush.deleteAlias(alias, "userid", () => {
                 umengPush.addAlias(alias, "userid", data => {
-                    console.log("[UmengAlias] add result: " + JSON.stringify(data));
                     if (data.status === 'success') {
-                        console.log("[UmengAlias] add success");
                         // 别名保存到服务器
                         eeui.ajax({
                             url: this.umengMessage.url,
