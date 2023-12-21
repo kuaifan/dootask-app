@@ -31,7 +31,7 @@ export default {
     components: {Meetings},
     data() {
         return {
-            webReady:false,
+            webReady: false,
             uniqueId: '',
             resumeNum: 0,
             umengInit: false,
@@ -74,23 +74,23 @@ export default {
 
     // 接收到的信息
     pageMessage({message}) {
+        // noinspection JSUnreachableSwitchBranches
         switch (message.messageType) {
             case 'notificationClick':
                 // console.log('点击了通知栏消息：', message);
+                break;
 
-            break;
             case 'keyboardStatus':
                 const data = encodeURIComponent(this.jsonStringify(message));
                 const javascript = `if (typeof window.__onKeyboardStatus === "function"){window.__onKeyboardStatus("${data}")}`;
                 this.$refs.web.setJavaScript(javascript);
                 break;
-            case "link":
-                console.log('link：', message.jumpUrl);
 
+            case "link":
                 if (this.webReady) {
                     this.linkEvent(message.jumpUrl)
                 } else {
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         // 延迟执行
                         this.linkEvent(message.jumpUrl)
                     }, 2000)
