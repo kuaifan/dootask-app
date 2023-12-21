@@ -263,6 +263,10 @@ export default {
             this.$refs.web.setJavaScript(javascript);
         },
 
+        /**
+         * 邀请点击时与H5交互
+         * @param link
+         */
         inventEvent(param) {
             const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent({"meetingid":"${param.meetingid}","act":"${param.act}"})}`;
             this.$refs.web.setJavaScript(javascript);

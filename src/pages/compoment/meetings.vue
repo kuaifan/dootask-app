@@ -621,6 +621,10 @@ export default {
             this.$refs.alert.showWithParam(this.alertParams);
         },
 
+        /**
+         * 关键交互方法 自定义本地view load方法的回调
+         * @param param
+         */
         load(param) {
             let uuid = param.target.attr.uuid;
             if (uuid === this.uuid) {
