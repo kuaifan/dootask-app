@@ -218,6 +218,18 @@ public class WebView extends WXVContainer<ViewGroup> {
                 }
                 return true;
 
+            case "hapticBackEnabled":
+                if (v_webview != null) {
+                    v_webview.setHapticBackEnabled(eeuiParse.parseBool(val, false));
+                }
+                return true;
+
+            case "disabledUserLongClickSelect":
+                if (v_webview != null) {
+                    v_webview.setDisabledUserLongClickSelect(eeuiParse.parseBool(val, false));
+                }
+                return true;
+
             default:
                 return false;
         }
@@ -286,6 +298,28 @@ public class WebView extends WXVContainer<ViewGroup> {
     public void setProgressbarVisibility(boolean var) {
         if (v_webview != null) {
             v_webview.setProgressbarVisibility(var);
+        }
+    }
+
+    /**
+     * 长按网页内容震动（仅支持android，ios无效）
+     * @param var
+     */
+    @JSMethod
+    public void setHapticBackEnabled(boolean var) {
+        if (v_webview != null) {
+            v_webview.setHapticBackEnabled(var);
+        }
+    }
+
+    /**
+     * 允许用户长按选择内容
+     * @param var
+     */
+    @JSMethod
+    public void setDisabledUserLongClickSelect(boolean var) {
+        if (v_webview != null) {
+            v_webview.setDisabledUserLongClickSelect(var);
         }
     }
 

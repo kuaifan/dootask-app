@@ -46,6 +46,8 @@ NSString * const WKProcessPoolDidCrashNotification = @"WKProcessPoolDidCrashNoti
 @property (nonatomic, assign) BOOL isReceiveMessage;
 @property (nonatomic, assign) BOOL isTransparency;
 @property (nonatomic, assign) BOOL isHiddenDone;
+@property (nonatomic, assign) BOOL isHapticBackEnabled;
+@property (nonatomic, assign) BOOL isDisabledUserLongClickSelect;
 @property (nonatomic, strong) JSCallCommon* JSCall;
 @property (strong, nonatomic) YHWebViewProgressView *progressView;
 
@@ -59,6 +61,8 @@ WX_EXPORT_METHOD(@selector(setContent:))
 WX_EXPORT_METHOD(@selector(setUrl:))
 WX_EXPORT_METHOD(@selector(setJavaScript:))
 WX_EXPORT_METHOD(@selector(setProgressbarVisibility:))
+WX_EXPORT_METHOD(@selector(setHapticBackEnabled:))
+WX_EXPORT_METHOD(@selector(setDisabledUserLongClickSelect:))
 WX_EXPORT_METHOD(@selector(setScrollEnabled:))
 WX_EXPORT_METHOD(@selector(canGoBack:))
 WX_EXPORT_METHOD(@selector(goBack:))
@@ -79,6 +83,8 @@ WX_EXPORT_METHOD(@selector(goForward:))
         _isEnableApi = YES;
         _isTransparency = NO;
         _isHiddenDone = NO;
+        _isHapticBackEnabled = NO;
+        _isDisabledUserLongClickSelect = NO;
         _isHeightChanged = [events containsObject:@"heightChanged"];
         _isReceiveMessage = [events containsObject:@"receiveMessage"];
 
@@ -367,6 +373,16 @@ WX_EXPORT_METHOD(@selector(goForward:))
         if (isUpdate) {
             [self setHiddenDone:_isHiddenDone];
         }
+    } else if ([key isEqualToString:@"hapticBackEnabled"]) {
+        _isHapticBackEnabled = [WXConvert BOOL:value];
+        if (isUpdate) {
+            [self setHapticBackEnabled:_isHapticBackEnabled];
+        }
+    } else if ([key isEqualToString:@"disabledUserLongClickSelect"]) {
+        _isDisabledUserLongClickSelect = [WXConvert BOOL:value];
+        if (isUpdate) {
+            [self setDisabledUserLongClickSelect:_isDisabledUserLongClickSelect];
+        }
     }
 }
 
@@ -533,6 +549,18 @@ WX_EXPORT_METHOD(@selector(goForward:))
     }else{
         //不支持恢复
     }
+}
+
+//长按网页内容震动（仅支持android，ios无效）
+- (void)setHapticBackEnabled:(BOOL)var
+{
+    _isHapticBackEnabled = var;
+}
+
+//允许用户长按选择内容（仅支持android，ios无效）
+- (void)setDisabledUserLongClickSelect:(BOOL)var
+{
+    _isDisabledUserLongClickSelect = var;
 }
 
 //设置是否允许滚动

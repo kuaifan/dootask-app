@@ -57,6 +57,26 @@ public class WebviewModule {
     }
 
     /**
+     * 长按网页内容震动（仅支持android，ios无效）
+     * @param var
+     */
+    public static void setHapticBackEnabled(ExtendWebView webView, boolean var) {
+        if (webView != null) {
+            ((ExtendWebView) webView).setHapticBackEnabled(var);
+        }
+    }
+
+    /**
+     * 允许用户长按选择内容
+     * @param var
+     */
+    public static void setDisabledUserLongClickSelect(ExtendWebView webView, boolean var) {
+        if (webView != null) {
+            ((ExtendWebView) webView).setDisabledUserLongClickSelect(var);
+        }
+    }
+
+    /**
      * 设置是否允许滚动
      * @param var
      */

@@ -155,6 +155,8 @@
                   [fname isEqualToString:@"canGoForward"] ||
                   [fname isEqualToString:@"goForward"] ||
                   [fname isEqualToString:@"setProgressbarVisibility"] ||
+                  [fname isEqualToString:@"setHapticBackEnabled"] ||
+                  [fname isEqualToString:@"setDisabledUserLongClickSelect"] ||
                   [fname isEqualToString:@"setScrollEnabled"] ||
                   [fname isEqualToString:@"sendMessage"])) {
                 continue;

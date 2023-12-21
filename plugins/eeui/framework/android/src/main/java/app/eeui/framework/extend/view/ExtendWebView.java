@@ -20,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import android.util.AttributeSet;
+import android.view.HapticFeedbackConstants;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
@@ -71,6 +73,7 @@ public class ExtendWebView extends WebView {
     private String userAgent;
 
     private boolean pageListener;
+    private boolean disabledUserLongClickSelect;
     private static final int REQUEST_CAMERA = 1;
     private static final int REQUEST_CHOOSE = 2;
     private ValueCallback<Uri> mUploadMessage;
@@ -79,6 +82,8 @@ public class ExtendWebView extends WebView {
     private Uri cameraUri;
 
     private WebChromeClient mWebChromeClient;
+
+    private View.OnLongClickListener mOnLongClickListener;
 
     @SuppressLint("AddJavascriptInterface")
     public ExtendWebView(Context context, AttributeSet attrs) {
@@ -93,6 +98,7 @@ public class ExtendWebView extends WebView {
         WebCallBean.addClassData("navigator", WebNavigatorModule.class);
         WebCallBean.addClassData("navigationBar", WebNavigationBarModule.class);
         mWebChromeClient = new WebChromeClient(WebCallBean.getClassData());
+        mOnLongClickListener = v -> disabledUserLongClickSelect;
         //
         Drawable drawable = context.getResources().getDrawable(R.drawable.progress_bar_states);
         progressbar.setProgressDrawable(drawable);
@@ -100,6 +106,7 @@ public class ExtendWebView extends WebView {
         setWebViewClient(new WebViewClient());
         setDownloadListener(new DownloadListener());
         setWebChromeClient(mWebChromeClient);
+        setOnLongClickListener(mOnLongClickListener);
         initSetting();
     }
 
@@ -676,6 +683,22 @@ public class ExtendWebView extends WebView {
      */
     public void setHiddenDone(boolean hiddenDone) {
         //
+    }
+
+    /**
+     * 长按网页内容震动（仅支持android，ios无效）
+     * @param hapticBackEnabled
+     */
+    public void setHapticBackEnabled(boolean hapticBackEnabled) {
+        setHapticFeedbackEnabled(hapticBackEnabled);
+    }
+
+    /**
+     * 允许用户长按选择内容
+     * @param disabledUserLongClickSelect
+     */
+    public void setDisabledUserLongClickSelect(boolean disabledUserLongClickSelect) {
+        this.disabledUserLongClickSelect = disabledUserLongClickSelect;
     }
 
     /**
