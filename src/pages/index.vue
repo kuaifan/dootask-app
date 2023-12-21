@@ -7,8 +7,7 @@
             :progressbarVisibility="false"
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
-            @stateChanged="onStateChanged"
-            @ready="readyStatus"/>
+            @stateChanged="onStateChanged"/>
         <meetings ref="meeting" @meetingEvent="meetingEvent"></meetings>
     </div>
 </template>
@@ -20,7 +19,6 @@
 </style>
 <script>
 import Meetings from "./compoment/meetings.vue";
-
 const eeui = app.requireModule('eeui');
 const deviceInfo = app.requireModule("eeui/deviceInfo");
 const umengPush = app.requireModule("eeui/umengPush");
@@ -34,14 +32,11 @@ export default {
     data() {
         return {
             webReady:false,
-
             uniqueId: '',
             resumeNum: 0,
-
             umengInit: false,
             umengMessage: {},
             umengError: false,
-
             appGroupID: "group.im.dootask", // iOS共享储存的应用唯一标识符
             appSubPath: "share", //iOS 储存下一级目录
         }
@@ -77,33 +72,6 @@ export default {
         this.$refs.web.setJavaScript(javascript);
     },
 
-    // 接收到的信息
-    pageMessage({message}) {
-        switch (message.messageType) {
-            case 'notificationClick':
-                // console.log('点击了通知栏消息：', message);
-
-            break;
-            case 'keyboardStatus':
-                const data = encodeURIComponent(this.jsonStringify(message));
-                const javascript = `if (typeof window.__onKeyboardStatus === "function"){window.__onKeyboardStatus("${data}")}`;
-                this.$refs.web.setJavaScript(javascript);
-                break;
-            case "link":
-                console.log('link：', message.jumpUrl);
-
-                if (this.webReady) {
-                    this.linkEvent(message.jumpUrl)
-                } else {
-                    setTimeout(()=>{
-                        // 延迟执行
-                        this.linkEvent(message.jumpUrl)
-                    }, 2000)
-                }
-
-        }
-    },
-
     mounted() {
         // iOS初始化共享内存
         if (WXEnvironment.platform.toLowerCase() === "ios") {
@@ -116,15 +84,12 @@ export default {
             eeui.setCachesString("appUniqueId", this.uniqueId, 0);
         }
 
-        // this.$refs.web.setUrl("http://192.168.0.111:2222");
-        // this.$refs.web.setUrl("http://192.168.100.36:2222");
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
-        // 安卓拦截返回时间变成web返回事件
+        // 安卓拦截返回事件变成web返回事件
         eeui.setPageBackPressed({
             pageName: 'firstPage',
         }, () =>{
             //返回键触发事件
-
             this.$refs.web.canGoBack(res=>{
                 if (res) {
                     this.$refs.web.goBack();
@@ -142,14 +107,6 @@ export default {
          */
         time() {
             return Math.round(new Date().getTime() / 1000)
-        },
-
-        /**
-         * webView准备好了
-         *
-         */
-        readyStatus(){
-            // this.webReady = true;
         },
 
         /**
@@ -211,7 +168,6 @@ export default {
                     } else {
                         eeui.setCaches('chatList', message.url, 0)
                     }
-
                     break;
 
                 // iOS 储存本地上传地址
@@ -255,20 +211,16 @@ export default {
                             browser: true,
                             showProgress: true,
                         },
-                    }, function (result) {
-                        //......
-                    });
+                    }, function (result) {});
                     break;
             }
         },
 
         updateUmengAlias() {
             const alias = `${WXEnvironment.platform}-${this.umengMessage.userid}-${this.uniqueId}`;
-            //
             console.log("[UmengAlias] delete: " + alias);
             umengPush.deleteAlias(alias, "userid", data => {
                 console.log("[UmengAlias] delete result: " + JSON.stringify(data));
-                //
                 console.log("[UmengAlias] add: " + alias);
                 umengPush.addAlias(alias, "userid", data => {
                     console.log("[UmengAlias] add result: " + JSON.stringify(data));

@@ -37,16 +37,16 @@ const CGFloat kKSPhotoViewMaxScale = 5;
         if (@available(iOS 11.0, *)) {
             self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
-        
+
         _imageView = [[KSPhotoBrowser.imageViewClass  alloc] init];
         _imageView.backgroundColor = [UIColor darkGrayColor];
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         _imageView.clipsToBounds = YES;
         [self addSubview:_imageView];
         [self resizeImageView];
-        
+
         _progressLayer = [[KSProgressLayer alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-        
+
         _progressLayer.hidden = YES;
         [self.layer addSublayer:_progressLayer];
     }
@@ -83,7 +83,7 @@ const CGFloat kKSPhotoViewMaxScale = 5;
             [_progressLayer startSpin];
         }
         _progressLayer.hidden = NO;
-        
+
         _imageView.image = item.thumbImage;
         [KSPhotoBrowser.imageManagerClass setImageForImageView:_imageView withURL:item.imageUrl placeholder:item.thumbImage progress:progressBlock completion:^(UIImage *image, NSURL *url, BOOL finished, NSError *error) {
             __strong typeof(wself) sself = wself;
@@ -108,32 +108,25 @@ const CGFloat kKSPhotoViewMaxScale = 5;
         CGRect rect;
         CGFloat width;
         CGFloat height;
-        
+
         CGFloat wDistance = imageSize.width - self.frame.size.width - 2 * kKSPhotoViewPadding;
         CGFloat hDistance = (imageSize.height - self.frame.size.height - 2 * kKSPhotoViewPadding)*(self.frame.size.width/self.frame.size.height);
-        
+
         if (hDistance < wDistance) {
             //宽度基准
             width = self.frame.size.width - 2 * kKSPhotoViewPadding;
             height = width * (imageSize.height / imageSize.width);
             rect = CGRectMake(0, 0, width, height);
-            
+
         } else {
             height = self.frame.size.height - 2 * kKSPhotoViewPadding;
             width = height * (imageSize.width / imageSize.height);
             rect = CGRectMake(0, 0, width, height);
         }
-        
+
         _imageView.frame = rect;
         _imageView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
-        
-        // If image is very high, show top content.
-//        if (height <= self.bounds.size.height) {
-//            _imageView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
-//        } else {
-//            _imageView.center = CGPointMake(self.bounds.size.width/2, height/2);
-//        }
-        
+
         // If image is very wide, make sure user can zoom to fullscreen.
         if (width / height > 2) {
             self.maximumZoomScale = self.bounds.size.height / height;
@@ -173,10 +166,10 @@ const CGFloat kKSPhotoViewMaxScale = 5;
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
     CGFloat offsetX = (scrollView.bounds.size.width > scrollView.contentSize.width)?
     (scrollView.bounds.size.width - scrollView.contentSize.width) * 0.5 : 0.0;
-    
+
     CGFloat offsetY = (scrollView.bounds.size.height > scrollView.contentSize.height)?
     (scrollView.bounds.size.height - scrollView.contentSize.height) * 0.5 : 0.0;
-    
+
     _imageView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX,
                                  scrollView.contentSize.height * 0.5 + offsetY);
 }

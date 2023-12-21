@@ -1,22 +1,22 @@
 <template>
     <div class="g-cover" v-if="show" @overlay="cancelClick">
         <div class="container flex-d-c" :style="posStyle">
-            <div style="flex-direction: row;">
+            <div class="flex-d-r">
                 <image :style="iconStyle" src="root://pages/assets/images/alert-icon.png"></image>
-                <div :style="HStyle" >
-                    <text :style="titleStyle" style="font-weight: 300; color: black; ">{{title}}</text>
-                    <text :style="subTitleStyle" style="font-size: 26px; font-weight: 300; color: black; ">{{message}}</text>
+                <div :style="hStyle" >
+                    <text :style="titleStyle" class="font-weight-300 color-black">{{title}}</text>
+                    <text :style="subTitleStyle" class="font-size-26 font-weight-300 color-black">{{message}}</text>
                 </div>
             </div>
 
-            <div style="flex-direction: row;">
-                <div style="flex: 1"></div>
-                <div style="flex-direction: row; justify-content: space-between; " :style="buttonGroupStyle">
-                    <div class="cancelTitle" @click="cancelClick" style="justify-content: center;" :style="buttonBGStyle">
-                        <text :style="buttonTextStyle" style="font-weight: 300; color: black;" >{{cancel}}</text>
+            <div class="flex-d-r">
+                <div class="flex"></div>
+                <div class="flex-d-r justify-content-sb" :style="buttonGroupStyle">
+                    <div @click="cancelClick" class="justify-content-c" :style="buttonBGStyle">
+                        <text :style="buttonTextStyle" class="font-weight-300 color-black">{{cancel}}</text>
                     </div>
                     <div class="confirmTitle" :style="confirmButtonStyle" @click="confirmClick">
-                        <text :style="buttonTextStyle" style="font-weight: 300; color: white;" >{{confirm}}</text>
+                        <text :style="buttonTextStyle" class="font-weight-300 color-white">{{confirm}}</text>
                     </div>
                 </div>
             </div>
@@ -43,8 +43,8 @@ export default {
         miniRate: {
             default: 1.0
         }
-
     },
+
     data() {
         return {
             back: false,
@@ -55,13 +55,12 @@ export default {
             confirm: "",
         }
     },
+
     computed: {
         posStyle() {
             const style = {};
-
             const pos = this.pos ? this.pos : "center";
             style.position = "absolute";
-
             style.width = this.scaleSize(718)
             style.padding = this.scaleSize(48)
             switch (pos) {
@@ -79,40 +78,47 @@ export default {
             }
             return style
         },
+
         iconStyle() {
             return {
                 width: this.scaleSize(50),
                 height: this.scaleSize(50)
             };
         },
-        HStyle() {
+
+        hStyle() {
             return {
                 justifyContent: 'left',
                 marginLeft: this.scaleSize(32)
             }
         },
+
         titleStyle() {
             return {
                 fontSize: this.scaleSize(30),
                 marginTop: this.scaleSize(4)
             }
         },
+
         subTitleStyle() {
             return {
                 fontSize: this.scaleSize(26),
                 marginTop: this.scaleSize(32)
             }
         },
+
         buttonGroupStyle() {
             return {
                 marginTop: this.scaleSize(64)
             }
         },
+
         buttonBGStyle() {
             return {
                 marginRight: this.scaleSize(64)
             }
         },
+
         confirmButtonStyle() {
             return {
                 paddingLeft: this.scaleSize(32),
@@ -121,15 +127,18 @@ export default {
                 paddingBottom: this.scaleSize(12)
             }
         },
+
         buttonTextStyle() {
             return {
                 fontSize: this.scaleSize(26)
             }
         },
     },
+
     mounted() {
         this.show = false;
     },
+
     methods: {
         scaleSize(current) {
             return this.miniRate * current + 'px';
@@ -138,27 +147,29 @@ export default {
         hide() {
             this.show = false;
         },
+
         cancelClick() {
             this.hide();
 
         },
+
         confirmClick() {
             this.hide();
             this.$emit('exitConfirm');
         },
+
         showWithParam(param) {
             this.title = param.title;
             this.message = param.message;
             this.cancel = param.cancel;
             this.confirm = param.confirm;
-
             this.show = true;
         }
     }
 }
 </script>
 
-<style>
+<style scoped>
 .g-cover {
     position: absolute;
     top: 0;
@@ -174,12 +185,41 @@ export default {
     align-self: center;
 }
 
-.cancelTitle {
-}
-
 .confirmTitle {
     padding: 16px 32px;
     background-color: #84c56a;
     border-radius: 8px;
+}
+
+.flex-d-r{
+    flex-direction: row;
+}
+
+.flex{
+    flex: 1;
+}
+
+.justify-content-sb{
+    justify-content: space-between;
+}
+
+.justify-content-c{
+    justify-content: center;
+}
+
+.font-weight-300{
+    font-weight: 300;
+}
+
+.color-black{
+    color: black;
+}
+
+.color-white{
+    color: white;
+}
+
+.font-size-26{
+    font-size: 26px;
 }
 </style>

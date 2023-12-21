@@ -23,7 +23,7 @@
             </div>
         </scroller>
         <div class="menu">
-            <div v-if="miniRate< 1" style="flex: 1;"></div>
+            <div v-if="miniRate< 1" class="flex"></div>
             <div class="menu-buttons" :style="subButtonStyle">
                 <div class="button" :style="buttonPadding" @click="audioEnable">
                     <image :style="buttonSize" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
@@ -59,6 +59,10 @@
 </template>
 
 <style scoped>
+.flex {
+    flex: 1;
+}
+
 .mask {
     position: fixed;
     overflow: hidden;
@@ -205,6 +209,7 @@ export default {
                 height: this.scaleSize(350)
             }
         },
+
         localStyle() {
             return {
                 width: this.scaleSize(320),
@@ -214,6 +219,7 @@ export default {
                 borderRadius: '16px'
             }
         },
+
         camaraStyle() {
             return {
                 width: this.scaleSize(320),
@@ -221,6 +227,7 @@ export default {
                 borderRadius: '16px'
             }
         },
+
         avatarStyle() {
             return {
                 position: 'absolute',
@@ -242,6 +249,7 @@ export default {
                 flexDirection: 'row'
             }
         },
+
         videoSubStyle() {
             return {
                 width: this.scaleSize(40),
@@ -249,6 +257,7 @@ export default {
                 marginRight: this.scaleSize(12)
             };
         },
+
         subAvatarContainerStyle() {
             return {
                 position: 'absolute',
@@ -261,6 +270,7 @@ export default {
                 overflow: 'hidden'
             };
         },
+
         subAvatarStyle() {
             return {
                 width: this.scaleSize(70),
@@ -271,6 +281,7 @@ export default {
                 backgroundColor: 'greenyellow'
             };
         },
+
         indicatorStyle() {
             return {
                 width: this.scaleSize(20),
@@ -280,21 +291,21 @@ export default {
                 right: this.scaleSize(6)
             };
         },
-        subIndicatorStyle() {
 
-        },
         subButtonStyle() {
             return {
                 marginLeft: this.scaleSize(16),
                 marginRight: this.scaleSize(18)
             }
         },
+
         popVideoContainerStyle() {
             return {
                 padding: this.scaleSize(12),
                 marginLeft: this.scaleSize(22)
             }
         },
+
         popAudioContainerStyle() {
             return {
                 padding: this.scaleSize(12),
@@ -302,12 +313,14 @@ export default {
                 alignSelf: 'center'
             }
         },
+
         popVideoStyle() {
             return {
                 width: this.scaleSize(40),
                 height: this.scaleSize(40)
             }
         },
+
         videoStyle() {
             let style = {}
             if (this.mini) {
@@ -326,6 +339,7 @@ export default {
             }
             return style;
         },
+
         buttonPadding() {
             return {
                 marginLeft: this.scaleSize(15),
@@ -335,40 +349,34 @@ export default {
                 paddingRight: this.scaleSize(32),
             }
         },
+
         buttonSize() {
             return {
                 width: this.scaleSize(40),
                 height: this.scaleSize(40)
             }
         }
-
     },
 
     mounted() {
         this.isAndroid = WXEnvironment.platform.toLowerCase() == 'android'
-
         let height = WXEnvironment.deviceHeight
         let width = WXEnvironment.deviceWidth
-
         let currentScale = width / 750.0
-
         if (width > height) {
             //横屏
             let realScale = height / 750.0
             this.screenW = width / realScale;
         }
-
         let maxScale = 1.92;
-
         let minScale = maxScale / currentScale;
         if (minScale < 1) {
             this.miniRate = minScale
         }
     },
+
     methods: {
-
         scaleSize(current) {
-
             return this.miniRate * current + 'px';
         },
 
@@ -382,8 +390,6 @@ export default {
             }, (jointData) => {
                 let uuid = jointData.uuid;
                 if (jointData.action == "joint") {
-                    // console.info("joint:"+ uuid);
-                    // console.info("jointData:"+ uuid);
                     var shouldAdd = true;
                     let avatar = ""
                     for (let index = 0; index < this.uuids.length; index++) {
@@ -407,27 +413,18 @@ export default {
                             audioStatus: 0,
                             avatar: avatar
                         });
-
                         if (this.uuid !== uuid) {
                             this.infoParam(uuid);
                         }
-
                     }
-
                 } else if (jointData.action == "leave") {
-                    // console.info("leave:"+ uuid);
-                    // console.info(this.uuids);
                     this.uuids = this.uuids.filter(item => {
                         return item.uuid != uuid;
                     })
-                    // console.info(this.uuids);
                 }
             });
             agoro.statusCallback((statsParam) => {
-                // console.info("statsParam:", statsParam);
-                // console.info(statsParam);
                 if (statsParam.uuid === "me") {
-
                     // 本地状态回调
                     if (statsParam.type === "video") {
                         if (this.uuids[0]) this.uuids[0].video = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3);
@@ -439,7 +436,6 @@ export default {
                 } else {
                     // 其他状态回调
                     let uuid = statsParam.uuid
-                    // console.info("beforeStatus:",this.uuids)
                     this.uuids = this.uuids.map(item => {
                         if (item.uuid == uuid) {
                             if (statsParam.type === "video") {
@@ -451,18 +447,13 @@ export default {
                                 item.audio = (statsParam.status == 1 || statsParam.status == 2 || statsParam.status == 3)
                                 return item;
                             }
-
                         } else {
                             return item
                         }
                     })
-                    // console.info("afterStatus:",this.uuids)
                 }
-
             });
             agoro.localStatusCallback((stats) => {
-                // console.info("leaveRoom");
-
                 if (stats == -1) {
                     this.destroyed();
                     this.uuids = [];
@@ -508,19 +499,12 @@ export default {
          * @param param
          */
         joint(param) {
-            // console.info("joint:")
-            // console.info(param)
-
             let appid = param.appid;
-
             this.initAgoro(appid)
-
             this.video = param.video;
             this.audio = param.audio;
-
             setTimeout(() => {
                 agoro.jointChanel(param, (info) => {
-
                     this.uuid = info.uuid;
                     this.meetingid = param.meetingid
                     this.title = param.name
@@ -530,10 +514,8 @@ export default {
                         if (item.uuid == this.uuid) {
                             avatar = item.avatar;
                         }
-
                         return item
                     })
-
                     this.uuids.push({
                         uuid: this.uuid,
                         audio: param.audio,
@@ -542,9 +524,6 @@ export default {
                         audioStatus: 0,
                         avatar: param.avatar
                     })
-                    // console.info("afterjoint:")
-                    // console.info(this.uuids)
-
                     this.showShow = true;
                     this.mini = false;
                     //开启屏幕常亮
@@ -553,27 +532,23 @@ export default {
                     this.$nextTick(() => {
                         this.successParam(this.uuid);
                     })
-
                     if (!param.video) {
                         agoro.enableVideo(param.video)
                     }
                     agoro.enableAudio(param.audio)
                 })
             }, 500)
-
         },
+
         zoomClick() {
             if (this.isTouch === true) {
                 return;
             }
-
             this.mini = false;
             this.bottomShow = false;
             this.$nextTick(() => {
-
                 this.bottomShow = true;
             })
-
         },
 
         miniClick() {
@@ -581,7 +556,6 @@ export default {
             if (this.bottomPos < 0) {
                 this.bottomPos = 100;
             }
-
             if (this.rightPos < 0) {
                 this.rightPos = 0;
             }
@@ -605,14 +579,15 @@ export default {
             }
             this.callbackParam(param);
         },
+
         infoParam(uuid) {
             let param = {
                 act: 'getInfo',
                 uuid: uuid + ""
             }
-
             this.callbackParam(param);
         },
+
         successParam(uuid) {
             let param = {
                 act: 'success',
@@ -620,6 +595,7 @@ export default {
             }
             this.callbackParam(param);
         },
+
         errorParam(uuid) {
             let param = {
                 act: 'error',
@@ -627,6 +603,7 @@ export default {
             }
             this.callbackParam(param);
         },
+
         callbackParam(param) {
             this.$emit("meetingEvent", param);
         },
@@ -635,10 +612,6 @@ export default {
             agoro.switchCamera()
         },
 
-        silenceClicked(uids) {
-            // agoro.
-            // agoro.silence(true);
-        },
         remoteSlicent(item) {
             agoro.muteRemoteAudioStream(item.uuids, !item.mute);
         },
@@ -647,34 +620,27 @@ export default {
             agoro.muteRemoteVideoStream(item.uuids, !item.mute);
         },
 
-        loudlyClicked() {
-
-        },
-
         shutClicked() {
             agoro.leaveChannel();
         },
+
         hideClicked() {
             this.miniClick();
         },
+
         exitClick() {
             this.$refs.alert.showWithParam(this.alertParams);
         },
 
         load(param) {
-            // return;
             let uuid = param.target.attr.uuid;
-            // console.info("load:"+uuid);
             if (uuid === this.uuid) {
-                // console.info("blindLocal");
                 this.$nextTick(() => {
                     agoro.blindLocal(this.uuid);
                 })
                 return;
             }
-            // console.info("blindRemote");
             agoro.blindRemote(uuid);
-
         },
 
         getStatus(videoStatus, audioStatus) {
@@ -710,7 +676,6 @@ export default {
                 return;
             }
             this.uuids = this.uuids.map(item => {
-
                 for (let i = 0; i < this.infos.length; i++) {
                     const element = this.infos[i];
                     if (element.uuid == item.uuid) {
@@ -718,34 +683,32 @@ export default {
                         item.avatar = element.avatar;
                     }
                 }
-
                 return item;
             })
-
         },
+
         /**
          * 拖拽开始
          */
         touchstart(touch) {
-
             this.isTouch = true
             if (this.mini == true) {
                 this.startPosX = this.screenW - touch.changedTouches[0].screenX - this.rightPos;
                 this.startPosY = this.screenH - touch.changedTouches[0].screenY - this.bottomPos;
             }
-
         },
+
         /**
          * 拖拽中
          */
         touchAction(touch) {
             if (this.mini == true) {
-
                 this.isTouch = true
                 this.rightPos = this.screenW - touch.changedTouches[0].screenX - this.startPosX;
                 this.bottomPos = this.screenH - touch.changedTouches[0].screenY - this.startPosY;
             }
         },
+
         /**
          * 拖拽结束
          * (安卓的触碰结束时间出现比较晚，稍微有延迟)
@@ -758,11 +721,10 @@ export default {
                 this.stickyMoving()
             }
         },
-        stickyMoving() {
 
+        stickyMoving() {
             let move = 0
             let center = 284
-
             if (this.miniRate < 1) {
                 let des = (this.screenW - 750) / 2.0
                 center = center + des
@@ -770,8 +732,6 @@ export default {
             if (this.rightPos > center) {
                 move = this.screenW - 182 * this.miniRate;
             }
-            // console.info(this.screenW)
-
             animation.transition(this.$refs.root, {
                 styles: {
                     translateX: move + "px",
@@ -785,6 +745,5 @@ export default {
             })
         }
     },
-
 }
 </script>
