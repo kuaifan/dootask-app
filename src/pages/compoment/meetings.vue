@@ -376,6 +376,9 @@ export default {
     },
 
     methods: {
+        /**
+         * 计算放大倍数
+         */
         scaleSize(current) {
             return this.miniRate * current + 'px';
         },
@@ -484,18 +487,7 @@ export default {
         },
 
         /**
-         *
-         * param = {
-         *                 token: "007eJxSYBDWMQtcavZkw8++a6sKXpQ6nrhdsm/O+y1nDzlzm18ImXRegcHYxCjZzMDE1MTIxMIkySDF0szU0tTIPM3cMjE1LTklKVlnUUqDERPD1w9XWBgZGBlYGBgZQHwmMMkMJlnAJCtDSWpxiSEDAyAAAP//gmokgQ==",
-         *                 channel:"test1",
-         *                 uuid: "0",
-         *                 appid:"342c604542484b0d9659527f79aefcdb",
-         *                 avatar:"",
-         *                 username:"",
-         *                 video:true,
-         *                 audio:true,
-         *             }
-         *
+         * 加入会议
          * @param param
          */
         joint(param) {
@@ -608,14 +600,23 @@ export default {
             this.$emit("meetingEvent", param);
         },
 
+        /**
+         * 切换摄像头
+         */
         switchClicked() {
             agoro.switchCamera()
         },
 
+        /**
+         * 隐藏视频语音
+         */
         hideClicked() {
             this.miniClick();
         },
 
+        /**
+         * 退出视频语音
+         */
         exitClick() {
             this.$refs.alert.showWithParam(this.alertParams);
         },
