@@ -72,6 +72,33 @@ export default {
         this.$refs.web.setJavaScript(javascript);
     },
 
+    // 接收到的信息
+    pageMessage({message}) {
+        switch (message.messageType) {
+            case 'notificationClick':
+                // console.log('点击了通知栏消息：', message);
+
+            break;
+            case 'keyboardStatus':
+                const data = encodeURIComponent(this.jsonStringify(message));
+                const javascript = `if (typeof window.__onKeyboardStatus === "function"){window.__onKeyboardStatus("${data}")}`;
+                this.$refs.web.setJavaScript(javascript);
+                break;
+            case "link":
+                console.log('link：', message.jumpUrl);
+
+                if (this.webReady) {
+                    this.linkEvent(message.jumpUrl)
+                } else {
+                    setTimeout(()=>{
+                        // 延迟执行
+                        this.linkEvent(message.jumpUrl)
+                    }, 2000)
+                }
+
+        }
+    },
+
     mounted() {
         // iOS初始化共享内存
         if (WXEnvironment.platform.toLowerCase() === "ios") {
@@ -85,19 +112,6 @@ export default {
         }
 
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
-        // 安卓拦截返回事件变成web返回事件
-        eeui.setPageBackPressed({
-            pageName: 'firstPage',
-        }, () =>{
-            //返回键触发事件
-            this.$refs.web.canGoBack(res=>{
-                if (res) {
-                    this.$refs.web.goBack();
-                } else {
-                    eeui.goDesktop();
-                }
-            })
-        });
     },
 
     methods: {
