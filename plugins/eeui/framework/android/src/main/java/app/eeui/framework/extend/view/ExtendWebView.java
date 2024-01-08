@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import android.util.AttributeSet;
-import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.PermissionRequest;
@@ -42,6 +41,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+import app.eeui.framework.BuildConfig;
 import app.eeui.framework.R;
 import app.eeui.framework.activity.PageActivity;
 import app.eeui.framework.extend.bean.WebCallBean;
@@ -108,6 +108,10 @@ public class ExtendWebView extends WebView {
         setWebChromeClient(mWebChromeClient);
         setOnLongClickListener(mOnLongClickListener);
         initSetting();
+        //
+        if (BuildConfig.DEBUG) {
+            setWebContentsDebuggingEnabled(true);
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
