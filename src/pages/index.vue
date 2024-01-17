@@ -1,14 +1,15 @@
 <template>
-    <div class="flex">
+    <div class="flex" :style="warpStyle">
         <web-view
             ref="web"
             class="flex"
             :hiddenDone="true"
+            :transparency="true"
             :progressbarVisibility="false"
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
-        <meetings ref="meeting" @meetingEvent="meetingEvent"></meetings>
+        <meetings ref="meeting" @meetingEvent="meetingEvent"/>
     </div>
 </template>
 
@@ -34,11 +35,17 @@ export default {
             webReady: false,
             uniqueId: '',
             resumeNum: 0,
+
             umengInit: false,
             umengMessage: {},
             umengError: false,
-            appGroupID: "group.im.dootask", // iOS共享储存的应用唯一标识符
-            appSubPath: "share", //iOS 储存下一级目录
+
+            navColor: null,                     // 导航栏颜色
+            themeColor: null,                   // 主题颜色
+            systemTheme: eeui.getThemeName(),   // 主题名称
+
+            appGroupID: "group.im.dootask",     // iOS共享储存的应用唯一标识符
+            appSubPath: "share",                //iOS 储存下一级目录
         }
     },
 
@@ -100,6 +107,8 @@ export default {
     },
 
     mounted() {
+        this.initTheme(null);
+
         // iOS初始化共享内存
         if (WXEnvironment.platform.toLowerCase() === "ios") {
             shareFile.shareFileWithGroupID(this.appGroupID, this.appSubPath);
@@ -114,7 +123,38 @@ export default {
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
     },
 
+    computed: {
+        warpStyle() {
+            if (this.themeColor) {
+                return {
+                    backgroundColor: this.themeColor,
+                }
+            }
+            return {}
+        }
+    },
+
     methods: {
+        /**
+         * 初始化主题
+         * @param themeName
+         */
+        initTheme(themeName) {
+            if (themeName) {
+                eeui.setCachesString("themeName", themeName, 0)
+            } else {
+                themeName = eeui.getCachesString("themeName", "")
+            }
+            if (!['light', 'dark'].includes(themeName)) {
+                themeName = this.systemTheme
+            }
+            this.themeColor = themeName === 'dark' ? '#131313' : '#f8f8f8'
+            this.navColor = themeName === 'dark' ? '#cdcdcd' : '#232323'
+            eeui.setStatusBarStyle(themeName === 'dark')
+            eeui.setStatusBarColor(this.themeColor)
+            eeui.setBackgroundColor(this.themeColor)
+        },
+
         /**
          * 获取时间戳
          * @returns {number}
@@ -205,10 +245,7 @@ export default {
 
                 // 更新状态栏
                 case 'updateTheme':
-                    eeui.setStatusBarStyle(message.themeName === 'dark')
-                    eeui.setStatusBarColor(message.themeName === 'dark' ? '#131313' : '#f8f8f8')
-                    eeui.setBackgroundColor(message.themeName === 'dark' ? '#131313' : '#f8f8f8')
-                    eeui.setCachesString("themeName", message.themeName, 0)
+                    this.initTheme(message.themeName)
                     break
             }
         },
@@ -274,7 +311,7 @@ export default {
 
         /**
          * 邀请点击时与H5交互
-         * @param link
+         * @param param
          */
         inventEvent(param) {
             const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent({"meetingid":"${param.meetingid}","act":"${param.act}"})}`;

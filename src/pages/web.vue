@@ -1,11 +1,14 @@
 <template>
-    <web-view
-        ref="web"
-        class="flex"
-        :allowFileAccessFromFileURLs="allowAccess"
-        :progressbarVisibility="showProgress"
-        @receiveMessage="onReceiveMessage"
-        @stateChanged="onStateChanged"/>
+    <div class="flex" :style="warpStyle">
+        <web-view
+            ref="web"
+            class="flex"
+            :transparency="true"
+            :allowFileAccessFromFileURLs="allowAccess"
+            :progressbarVisibility="showProgress"
+            @receiveMessage="onReceiveMessage"
+            @stateChanged="onStateChanged"/>
+    </div>
 </template>
 
 <style scoped>
@@ -27,27 +30,54 @@ export default {
             showProgress: !!app.config.params.showProgress,
             allowAccess: !!app.config.params.allowAccess,
 
-            navColor: "",
-            themeName: "", // 主题名称
+            navColor: null,                     // 导航栏颜色
+            themeColor: null,                   // 主题颜色
+            systemTheme: eeui.getThemeName(),   // 系统主题
         }
     },
 
     mounted() {
-        this.initTheme();
+        this.initTheme(null);
+        this.initNav();
         this.$refs.web.setUrl(this.url);
+    },
+
+    computed: {
+        warpStyle() {
+            if (this.themeColor) {
+                return {
+                    backgroundColor: this.themeColor,
+                }
+            }
+            return {}
+        }
     },
 
     methods: {
         /**
          * 初始化主题
+         * @param themeName
          */
-        initTheme() {
-            const themeName = eeui.getCachesString("themeName", "")
-            eeui.setStatusBarStyle(themeName === 'dark')
-            eeui.setStatusBarColor(themeName === 'dark' ? '#1a1a1a' : '#f8f8f8')
-            eeui.setBackgroundColor(themeName === 'dark' ? '#1a1a1a' : '#f8f8f8')
-            //
+        initTheme(themeName) {
+            if (themeName) {
+                eeui.setCachesString("themeName", themeName, 0)
+            } else {
+                themeName = eeui.getCachesString("themeName", "")
+            }
+            if (!['light', 'dark'].includes(themeName)) {
+                themeName = this.systemTheme
+            }
+            this.themeColor = themeName === 'dark' ? '#131313' : '#f8f8f8'
             this.navColor = themeName === 'dark' ? '#cdcdcd' : '#232323'
+            eeui.setStatusBarStyle(themeName === 'dark')
+            eeui.setStatusBarColor(this.themeColor)
+            eeui.setBackgroundColor(this.themeColor)
+        },
+
+        /**
+         * 初始化导航栏
+         */
+        initNav() {
             navigationBar.setLeftItem({
                 icon: 'tb-back',
                 iconSize: 36,
