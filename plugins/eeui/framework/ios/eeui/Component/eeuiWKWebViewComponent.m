@@ -37,6 +37,7 @@ NSString * const WKProcessPoolDidCrashNotification = @"WKProcessPoolDidCrashNoti
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *userAgent;
 @property (nonatomic, assign) CGFloat webContentHeight;
+@property (nonatomic, strong) WXSDKInstance *webInstance;
 @property (nonatomic, assign) BOOL isShowProgress;
 @property (nonatomic, assign) BOOL isAllowsInlineMediaPlayback;
 @property (nonatomic, assign) BOOL isAllowFileAccess;
@@ -73,6 +74,8 @@ WX_EXPORT_METHOD(@selector(goForward:))
 {
     self = [super initWithRef:ref type:type styles:styles attributes:attributes events:events weexInstance:weexInstance];
     if (self) {
+        _webInstance = weexInstance;
+        
         _url = @"";
         _content = @"";
         _userAgent = @"";
@@ -104,8 +107,9 @@ WX_EXPORT_METHOD(@selector(goForward:))
     //设置userAgent
     __block NSString *originalUserAgent = nil;
     NSString *versionName = (NSString*)[[[NSBundle mainBundle] infoDictionary]  objectForKey:@"CFBundleShortVersionString"];
+    NSString *systemTheme = [[eeuiNewPageManager sharedIntstance] getThemeName:_webInstance];
     if (@available(iOS 9.0, *)) {
-        originalUserAgent = [NSString stringWithFormat:@";ios_kuaifan_eeui/%@", versionName];
+        originalUserAgent = [NSString stringWithFormat:@";system_theme/%@;ios_kuaifan_eeui/%@", systemTheme, versionName];
         if (_userAgent.length > 0) {
             originalUserAgent = [NSString stringWithFormat:@"%@/%@", originalUserAgent, self->_userAgent];
         }
@@ -131,7 +135,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
                 wkWebView = nil;
                 if (!error) {
                     NSString *versionName = (NSString*)[[[NSBundle mainBundle] infoDictionary]  objectForKey:@"CFBundleShortVersionString"];
-                    originalUserAgent = [NSString stringWithFormat:@"%@;ios_kuaifan_eeui/%@", result, versionName];
+                    originalUserAgent = [NSString stringWithFormat:@"%@;system_theme/%@;ios_kuaifan_eeui/%@", result, systemTheme, versionName];
                     if (self->_userAgent.length > 0) {
                         originalUserAgent = [NSString stringWithFormat:@"%@/%@", originalUserAgent, self->_userAgent];
                     }

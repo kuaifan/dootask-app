@@ -138,7 +138,7 @@ public class ExtendWebView extends WebView {
         //允许用户不需要手势就播放音乐
         webSettings.setMediaPlaybackRequiresUserGesture(false);
         //设置UA
-        this.userAgent = webSettings.getUserAgentString() + ";android_kuaifan_eeui/" + eeuiCommon.getLocalVersionName(getContext());
+        this.userAgent = webSettings.getUserAgentString() + ";system_theme/" + eeuiCommon.getThemeName(getContext()) + ";android_kuaifan_eeui/" + eeuiCommon.getLocalVersionName(getContext());
         setUserAgent("");
     }
 

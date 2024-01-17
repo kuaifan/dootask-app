@@ -2,7 +2,6 @@ package app.eeui.framework.ui;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.UiModeManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -749,15 +748,12 @@ public class eeui {
     }
 
     /**
-     *  获取主题名字
+     * 获取主题名字
+     * @param context
      * @return
      */
     public String getThemeName(Context context) {
-        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
-        if (uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES) {
-            return "dark";
-        }
-        return "light";
+        return eeuiCommon.getThemeName(context);
     }
 
     /**

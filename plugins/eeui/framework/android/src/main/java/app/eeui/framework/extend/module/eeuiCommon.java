@@ -2,6 +2,7 @@ package app.eeui.framework.extend.module;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -1075,5 +1076,18 @@ public class eeuiCommon {
             return WXFileUtils.loadFileOrAsset(uri.getPath().replaceFirst("/", ""), context);
         }
         return "";
+    }
+
+    /**
+     * 获取主题名字
+     * @param context
+     * @return
+     */
+    public static String getThemeName(Context context) {
+        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
+        if (uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES) {
+            return "dark";
+        }
+        return "light";
     }
 }
