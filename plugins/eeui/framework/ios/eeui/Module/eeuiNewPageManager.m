@@ -267,6 +267,7 @@
         return;
     }
     vc.statusBarStyleCustom = isLight ? @"1" : @"0";
+    [self setPageDataValue:vc.pageName key:@"statusBarStyle" value:vc.statusBarStyleCustom];
     if (@available(iOS 13.0, *)) {
         [[UIApplication sharedApplication] setStatusBarStyle:isLight ? UIStatusBarStyleLightContent : UIStatusBarStyleDarkContent];
     } else {
@@ -281,6 +282,7 @@
         return;
     }
     [vc resetStatusBarColor:colorString];
+    [self setPageDataValue:vc.pageName key:@"statusBarColor" value:vc.statusBarColor];
 }
 
 - (void)setBackgroundColor:(NSString *)backgroundColor weexInstance:(WXSDKInstance*)weexInstance
@@ -290,6 +292,7 @@
         return;
     }
     [vc resetBackgroundColor:backgroundColor];
+    [self setPageDataValue:vc.pageName key:@"backgroundColor" value:vc.backgroundColor];
 }
 
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback
