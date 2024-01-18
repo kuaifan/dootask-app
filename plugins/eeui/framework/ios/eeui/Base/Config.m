@@ -170,6 +170,15 @@ static NSMutableArray *verifyDir;
     if (!str.length) {
         return defaultVal;
     }
+    if ([key isEqual:@"statusBarColor"] || [key isEqual:@"backgroundColor"]) {
+        if ([str isEqual:@"systemBackgroundColor"]) {
+            if (@available(iOS 13.0, *)) {
+                str = [WXConvert HexWithColor:[UIColor systemBackgroundColor]];
+            } else {
+                str = defaultVal;
+            }
+        }
+    }
     return str;
 }
 

@@ -34,7 +34,11 @@ eeuiViewController *homeController;
     [super viewDidLoad];
 
     [self setFd_prefersNavigationBarHidden:YES];
-    [self.view setBackgroundColor:[UIColor whiteColor]];
+    if (@available(iOS 13.0, *)) {
+        [self.view setBackgroundColor:[UIColor systemBackgroundColor]];
+    } else {
+        [self.view setBackgroundColor:[UIColor whiteColor]];
+    }
 
     self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     self.activityIndicatorView.center = self.view.center;
