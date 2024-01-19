@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="eeui_splash_background">#FFFFFF</color>
+    <color name="eeui_splash_text_color">#757575</color>
+
     <color name="eeui_white">#FFFFFF</color>
     <color name="eeui_black">#000000</color>
     <color name="eeui_transparent">#00000000</color>

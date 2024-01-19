@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -222,6 +224,14 @@ public class eeuiBase {
             JSONObject params = getObject("homePageParams");
             if (params == null) {
                 return defaultVal;
+            }
+            String value = eeuiJson.getString(params, key, defaultVal);
+            if (key.contentEquals("statusBarColor") || key.contentEquals("backgroundColor")) {
+                if (value.contentEquals("systemBackgroundColor")) {
+                    int colorRes = R.color.eeui_splash_background;
+                    int colorValue = ContextCompat.getColor(eeui.getApplication(), colorRes);
+                    return String.format("#%06X", (0xFFFFFF & colorValue));
+                }
             }
             return eeuiJson.getString(params, key, defaultVal);
         }
