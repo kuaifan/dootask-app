@@ -64,7 +64,7 @@ ext {
     applicationId = "com.dootask.task"
 
     versionCode = 112
-    versionName = "0.34.59"
+    versionName = "0.34.62"
 
     eeuiVersionCode = 66
     eeuiVersionName = "2.5.1"

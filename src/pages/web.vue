@@ -91,7 +91,7 @@ export default {
             })
             if (this.browser) {
                 navigationBar.setRightItem({
-                    icon: WXEnvironment.platform === 'iOS' ? 'ios-share-alt' : 'md-share-alt',
+                    icon: WXEnvironment.platform === 'iOS' ? 'ios-globe' : 'md-globe',
                     iconSize: 40,
                     iconColor: this.navColor,
                     width: 120,

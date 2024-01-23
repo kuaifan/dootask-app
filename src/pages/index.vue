@@ -1,6 +1,13 @@
 <template>
     <div class="flex" :style="warpStyle">
         <web-view
+            ref="subWeb"
+            class="sub-web"
+            :transparency="true"
+            :enableApi="false"
+            :scrollEnabled="false"
+            :progressbarVisibility="false"/>
+        <web-view
             ref="web"
             class="flex"
             :hiddenDone="true"
@@ -16,6 +23,13 @@
 <style scoped>
 .flex {
     flex: 1;
+}
+.sub-web {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
 }
 </style>
 <script>
@@ -45,7 +59,7 @@ export default {
             systemTheme: eeui.getThemeName(),   // 主题名称
 
             appGroupID: "group.im.dootask",     // iOS共享储存的应用唯一标识符
-            appSubPath: "share",                //iOS 储存下一级目录
+            appSubPath: "share",                // iOS 储存下一级目录
         }
     },
 
@@ -246,6 +260,10 @@ export default {
                 // 更新状态栏
                 case 'updateTheme':
                     this.initTheme(message.themeName)
+                    break
+
+                case 'subWeb':
+                    this.$refs.subWeb.setUrl(message.url)
                     break
             }
         },
