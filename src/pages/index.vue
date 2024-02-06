@@ -1,8 +1,8 @@
 <template>
     <div class="flex" :style="warpStyle">
         <web-view
-            ref="subWeb"
-            class="sub-web"
+            ref="storageBrowser"
+            class="storage-browser"
             :transparency="true"
             :enableApi="false"
             :scrollEnabled="false"
@@ -24,7 +24,7 @@
 .flex {
     flex: 1;
 }
-.sub-web {
+.storage-browser {
     position: absolute;
     top: 0;
     left: 0;
@@ -262,8 +262,9 @@ export default {
                     this.initTheme(message.themeName)
                     break
 
-                case 'subWeb':
-                    this.$refs.subWeb.setUrl(message.url)
+                // 存储浏览器
+                case 'storageBrowser':
+                    this.$refs.storageBrowser.setUrl(message.url)
                     break
             }
         },
