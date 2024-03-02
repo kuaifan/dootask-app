@@ -49,6 +49,7 @@ export default {
             webReady: false,
             uniqueId: '',
             resumeNum: 0,
+            storageUrl: null,
 
             umengInit: false,
             umengMessage: {},
@@ -67,6 +68,10 @@ export default {
     appActive() {
         const javascript = `if (typeof window.__onAppActive === "function"){window.__onAppActive()}`;
         this.$refs.web.setJavaScript(javascript);
+        //
+        if (this.storageUrl) {
+            this.$refs.storageBrowser.setUrl(this.storageUrl)
+        }
     },
 
     // APP进入后台：App从【前台】切换至【后台】时触发
@@ -264,7 +269,8 @@ export default {
 
                 // 存储浏览器
                 case 'storageBrowser':
-                    this.$refs.storageBrowser.setUrl(message.url)
+                    this.storageUrl = message.url
+                    this.$refs.storageBrowser.setUrl(this.storageUrl)
                     break
             }
         },
