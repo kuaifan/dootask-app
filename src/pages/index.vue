@@ -1,13 +1,6 @@
 <template>
     <div class="flex" :style="warpStyle">
         <web-view
-            ref="storageBrowser"
-            class="storage-browser"
-            :transparency="true"
-            :enableApi="false"
-            :scrollEnabled="false"
-            :progressbarVisibility="false"/>
-        <web-view
             ref="web"
             class="flex"
             :hiddenDone="true"
@@ -23,13 +16,6 @@
 <style scoped>
 .flex {
     flex: 1;
-}
-.storage-browser {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
 }
 </style>
 <script>
@@ -49,7 +35,6 @@ export default {
             webReady: false,
             uniqueId: '',
             resumeNum: 0,
-            storageUrl: null,
 
             umengInit: false,
             umengMessage: {},
@@ -68,10 +53,6 @@ export default {
     appActive() {
         const javascript = `if (typeof window.__onAppActive === "function"){window.__onAppActive()}`;
         this.$refs.web.setJavaScript(javascript);
-        //
-        if (this.storageUrl) {
-            this.$refs.storageBrowser.setUrl(this.storageUrl)
-        }
     },
 
     // APP进入后台：App从【前台】切换至【后台】时触发
@@ -265,12 +246,6 @@ export default {
                 // 更新状态栏
                 case 'updateTheme':
                     this.initTheme(message.themeName)
-                    break
-
-                // 存储浏览器
-                case 'storageBrowser':
-                    this.storageUrl = message.url
-                    this.$refs.storageBrowser.setUrl(this.storageUrl)
                     break
             }
         },
