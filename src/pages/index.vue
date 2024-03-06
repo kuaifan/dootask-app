@@ -253,16 +253,8 @@ export default {
         onStateChanged({status, url}) {
             switch (status) {
                 case 'createTarget':
-                    eeui.openPage({
-                        pageType: 'app',
-                        pageTitle: ' ',
-                        url: 'web.js',
-                        params: {
-                            url,
-                            browser: true,
-                            showProgress: true,
-                        },
-                    }, function (result) {});
+                    const javascript = `if (typeof window.__onCreateTarget === "function"){window.__onCreateTarget("${url}")}`;
+                    this.$refs.web.setJavaScript(javascript);
                     break;
             }
         },
@@ -295,7 +287,7 @@ export default {
 
         refreshNotificationPermission() {
             notifications.getPermissionStatus(ret => {
-                const javascript = `if (typeof window.__onPagePause === "function"){window.__onNotificationPermissionStatus(${ret})}`;
+                const javascript = `if (typeof window.__onNotificationPermissionStatus === "function"){window.__onNotificationPermissionStatus(${ret})}`;
                 this.$refs.web.setJavaScript(javascript);
             });
         },
