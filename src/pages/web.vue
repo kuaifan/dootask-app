@@ -9,13 +9,13 @@
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
         <div v-if="moreShow===true" class="more" @click="moreShow=false">
-            <icon class="more-top" content="tb-triangle-up-fill"/>
-            <div class="more-box">
+            <icon class="more-top" :style="moreTopStyle" content="tb-triangle-up-fill"/>
+            <div class="more-box" :style="moreBoxStyle">
                 <template v-if="browser">
-                    <text class="more-item" @click="itemClick('browser')">{{moreBrowserText}}</text>
-                    <div class="more-line"></div>
+                    <text class="more-item" :style="moreItemStyle" @click="itemClick('browser')">{{moreBrowserText}}</text>
+                    <div class="more-line" :style="moreLineStyle"></div>
                 </template>
-                <text class="more-item" @click="itemClick('refresh')">{{moreRefreshText}}</text>
+                <text class="more-item" :style="moreItemStyle" @click="itemClick('refresh')">{{moreRefreshText}}</text>
             </div>
         </div>
     </div>
@@ -35,31 +35,17 @@
     background-color: rgba(0, 0, 0, 0);
 }
 .more-top {
-    width: 40px;
-    height: 40px;
-    margin-top: 2px;
-    margin-right: 30px;
     color: #464646;
-    font-size: 30px;
 }
 .more-box {
     position: absolute;
-    top: 26px;
-    right: 16px;
-    width: 264px;
-    border-radius: 12px;
     background-color: #464646;
 }
 .more-item {
-    height: 76px;
-    font-size: 26px;
-    line-height: 76px;
     text-align: center;
     color: #ffffff;
 }
 .more-line {
-    width: 264px;
-    height: 1px;
     background-color: #333333;
 }
 </style>
@@ -74,6 +60,7 @@ export default {
             url: app.config.params.url,
             browser: !!app.config.params.browser,
             titleFixed: !!app.config.params.titleFixed,
+            urlFixed: !!app.config.params.urlFixed,
             showProgress: !!app.config.params.showProgress,
             allowAccess: !!app.config.params.allowAccess,
 
@@ -81,6 +68,9 @@ export default {
             moreBrowserText: eeui.getVariate("languageWebBrowser", "浏览器打开"),
             moreRefreshText: eeui.getVariate("languageWebRefresh", "刷新"),
 
+            allowedUrls: /^(?:https?|mailto|tel|callto):/i,
+
+            miniRate: 1.0,                      // 缩放比例
             navColor: null,                     // 导航栏颜色
             themeColor: null,                   // 主题颜色
             systemTheme: eeui.getThemeName(),   // 系统主题
@@ -88,6 +78,10 @@ export default {
     },
 
     mounted() {
+        const currentScale = WXEnvironment.deviceWidth / 750.0
+        const maxScale = 1.92;
+        this.miniRate = Math.min(maxScale / currentScale, 1);
+        //
         this.initTheme(null);
         this.initNav();
         this.$refs.web.setUrl(this.url);
@@ -101,10 +95,48 @@ export default {
                 }
             }
             return {}
+        },
+
+        moreTopStyle() {
+            return {
+                width: this.scaleSize(40),
+                height: this.scaleSize(40),
+                marginTop: this.scaleSize(2),
+                marginRight: this.scaleSize(30),
+                fontSize: this.scaleSize(30),
+            }
+        },
+
+        moreBoxStyle() {
+            return {
+                top: this.scaleSize(26),
+                right: this.scaleSize(16),
+                width: this.scaleSize(264),
+                borderRadius: this.scaleSize(12),
+            }
+        },
+
+        moreLineStyle() {
+            return {
+                width: this.scaleSize(264),
+                height: this.scaleSize(1),
+            }
+        },
+
+        moreItemStyle() {
+            return {
+                height: this.scaleSize(76),
+                fontSize: this.scaleSize(26),
+                lineHeight: this.scaleSize(76),
+            }
         }
     },
 
     methods: {
+        scaleSize(current) {
+            return (this.miniRate * current) + 'px';
+        },
+
         /**
          * 初始化主题
          * @param themeName
@@ -182,6 +214,19 @@ export default {
                 case 'videoPreview':
                     picture.videoPreview(message.path)
                     break;
+
+                case 'setPageData':
+                    for (let key in message.data) {
+                        this[key] = message.data[key];
+                    }
+                    break;
+
+                case 'createTarget':
+                    if (!this.allowedUrls.test(message.url)) {
+                        return;
+                    }
+                    this.$refs.web.setUrl(message.url);
+                    break;
             }
         },
 
@@ -200,10 +245,15 @@ export default {
                     break;
 
                 case 'url':
-                    this.url = info.url;
+                    if (!this.urlFixed) {
+                        this.url = info.url;
+                    }
                     break;
 
                 case 'createTarget':
+                    if (!this.allowedUrls.test(info.url)) {
+                        return;
+                    }
                     this.$refs.web.setUrl(info.url);
                     break;
             }
