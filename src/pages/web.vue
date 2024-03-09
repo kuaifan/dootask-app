@@ -68,20 +68,16 @@ export default {
             moreBrowserText: eeui.getVariate("languageWebBrowser", "浏览器打开"),
             moreRefreshText: eeui.getVariate("languageWebRefresh", "刷新"),
 
-            allowedUrls: /^(?:https?|mailto|tel|callto):/i,
-
-            miniRate: 1.0,                      // 缩放比例
             navColor: null,                     // 导航栏颜色
             themeColor: null,                   // 主题颜色
             systemTheme: eeui.getThemeName(),   // 系统主题
+
+            allowedUrls: /^(?:https?|mailto|tel|callto):/i,
+            miniRate: Math.min(2, eeui.weexPx2dp(750) / 430),
         }
     },
 
     mounted() {
-        const currentScale = WXEnvironment.deviceWidth / 750.0
-        const maxScale = 1.92;
-        this.miniRate = Math.min(maxScale / currentScale, 1);
-        //
         this.initTheme(null);
         this.initNav();
         this.$refs.web.setUrl(this.url);
@@ -134,7 +130,7 @@ export default {
 
     methods: {
         scaleSize(current) {
-            return (this.miniRate * current) + 'px';
+            return (current / this.miniRate) + 'px';
         },
 
         /**

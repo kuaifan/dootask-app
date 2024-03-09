@@ -1,29 +1,29 @@
 <template>
-    <div ref="root" class="mask" v-if="showShow" :style="videoStyle" >
+    <div ref="root" class="mask" v-if="showShow" :style="videoStyle">
         <scroller class="scroller">
             <text :style="titleStyle">{{title}}</text>
-            <div class="render-views" :style="{justifyContent:miniRate<1?'start':'space-between'}">
+            <div class="render-views">
                 <div :style="gridItemStyle" v-for="item in uuids">
                     <div class="local hidden" :style="localStyle">
-                        <eeuiAgoro-com class="local" :style="camaraStyle" ref="local" :uuid="item.uuid" @load="load"></eeuiAgoro-com>
+                        <eeuiAgoro-com class="local" :style="camaraStyle" ref="local" :uuid="item.uuid" @load="load"/>
                     </div>
-                    <image v-if="item.videoStatus == 0"  :src="item.avatar" :style="avatarStyle"></image>
+                    <image v-if="item.videoStatus == 0" :src="item.avatar" :style="avatarStyle"></image>
                     <div :style="videoButtonStyle" >
-                        <image v-if="!item.video"  :style="videoSubStyle" :src="'root://pages/assets/images/meeting_video_err.png'"></image>
-                        <image v-if="!item.audio"  :style="videoSubStyle" :src="'root://pages/assets/images/meeting_audio_err.png'"></image>
+                        <image v-if="!item.video" :style="videoSubStyle" src="root://pages/assets/images/meeting_video_err.png"></image>
+                        <image v-if="!item.audio" :style="videoSubStyle" src="root://pages/assets/images/meeting_audio_err.png"></image>
                     </div>
 
                     <div :style="subAvatarContainerStyle">
                         <image :style="subAvatarStyle" :src="item.avatar"></image>
                     </div>
                     <div class="status-indicator" :style="indicatorStyle">
-                        <div class="sub-status-indicator" :style="getStatus(item.audioStatus,item.videoStatus)"></div>
+                        <div :style="getStatus(item.audioStatus, item.videoStatus)"></div>
                     </div>
                 </div>
             </div>
         </scroller>
         <div class="menu">
-            <div v-if="miniRate< 1" class="flex"></div>
+            <div class="flex"></div>
             <div class="menu-buttons" :style="subButtonStyle">
                 <div class="button" :style="buttonPadding" @click="audioEnable">
                     <image :style="buttonSize" :src="audio? 'root://pages/assets/images/meeting_audio_on.png':'root://pages/assets/images/meeting_audio_off.png'"></image>
@@ -34,23 +34,23 @@
                 <div class="button" :style="buttonPadding" @click="switchClicked">
                     <image :style="buttonSize" src="root://pages/assets/images/meeting_camera_reverse.png"></image>
                 </div>
-                <div class="button" :style="buttonPadding" @click="invent">
+                <div class="button" :style="buttonPadding" @click="inventClick">
                     <image :style="buttonSize" src="root://pages/assets/images/meeting_invent.png"></image>
                 </div>
                 <div class="button" :style="buttonPadding" @click="hideClicked">
                     <image :style="buttonSize" src="root://pages/assets/images/meeting_mini.png"></image>
                 </div>
 
-                <div class="exit" :style="buttonPadding"  @click="exitClick">
+                <div class="exit" :style="buttonPadding" @click="exitClick">
                     <image :style="buttonSize" src="root://pages/assets/images/meeting_exit.png"></image>
                 </div>
             </div>
         </div>
-        <div class="mini-box" v-if="mini" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
-            <div class="mini-video" :style="popVideoContainerStyle">
+        <div class="mini-box" v-if="mini" :style="popMiniBoxStyle" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
+            <div :style="popContainerStyle">
                 <image :style="popVideoStyle" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
             </div>
-            <div :style="popAudioContainerStyle">
+            <div :style="popContainerStyle">
                 <image :style="popVideoStyle":src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
             </div>
         </div>
@@ -71,10 +71,10 @@
 
 .scroller {
     position: absolute;
-    top: 0px;
-    left: 0px;
-    bottom: 0px;
-    right: 0px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
     padding: 16px;
     background-color: white;
 }
@@ -83,8 +83,8 @@
     position: absolute;
     flex-direction: row;
     bottom: 16px;
-    right: 0px;
-    left: 0px;
+    right: 0;
+    left: 0;
 }
 
 .menu-buttons {
@@ -93,41 +93,24 @@
 }
 
 .mini-box {
-    flex-direction: row;
     position: absolute;
-    justify-content: right;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    flex-direction: row;
     background-color: white;
-    border-color: #D9E2E9;
-    border-width: 2px;
-    top: -4px;
-    left: -4px;
-    right: -4px;;
-    bottom: -4px;
-    overflow: hidden;
-}
-
-.mini-video {
-    align-self: center;
-    margin-left: 22px;
 }
 
 .render-views {
     flex-wrap: wrap;
     flex-direction: row;
+    justify-content: start;
 }
 
 .status-indicator {
     position: absolute;
-
     background-color: white;
-}
-
-.sub-status-indicator {
-    width: 16px;
-    height: 16px;
-    border-radius: 8px;
-    margin-top: 2px;
-    margin-left: 2px;
 }
 
 .local {
@@ -136,27 +119,24 @@
 }
 
 .hidden {
-    margin-top: 15px;
-    margin-left: 15px;
     overflow: hidden;
 }
 
 .button {
     background-color: rgb(20, 172, 78);
-    border-radius: 8px;
 }
 
 .exit {
     background-color: #f28500;
-    border-radius: 8px;
 }
 </style>
 
 <script>
 import CustomAlert from "./customAlert.vue";
 
-const agoro = app.requireModule("eeuiAgoro");
+const dom = app.requireModule('dom')
 const eeui = app.requireModule("eeui")
+const agoro = app.requireModule("eeuiAgoro");
 const animation = app.requireModule("animation")
 const deviceInfo = app.requireModule("eeui/deviceInfo");
 
@@ -169,18 +149,22 @@ export default {
             uuids: [],
             uuid: 0,
             meetingid: 0,
+
             mini: false,
             showShow: false,
             video: false,
             audio: false,
             infos: [],
-            screenH: WXEnvironment.deviceHeight / WXEnvironment.deviceWidth * 750,
-            screenW: 750,
+
+            isTouch: false,
             bottomPos: 100,
             rightPos: 0,
-            isTouch: false,
             startPosX: 0,
             startPosY: 0,
+
+            screenW: 0,
+            screenH: 0,
+
             bottomShow: true,
             bottomColor: 'white',
             alertParams: {
@@ -189,16 +173,14 @@ export default {
                 cancel: "",
                 confirm: ""
             },
-            miniRate: 1,
-            exitAlert: false,
-            isAndroid: false //android bug 只有一项无法显示
+            miniRate: Math.min(2, eeui.weexPx2dp(750) / 430),
         };
     },
 
     computed: {
         titleStyle() {
             return {
-                fontSize: this.miniRate < 1 ? '28px' : '36px',
+                fontSize: this.scaleSize(32),
                 padding: this.scaleSize(16)
             }
         },
@@ -216,7 +198,7 @@ export default {
                 height: this.scaleSize(320),
                 marginTop: this.scaleSize(15),
                 marginLeft: this.scaleSize(15),
-                borderRadius: '16px'
+                borderRadius: this.scaleSize(16),
             }
         },
 
@@ -224,7 +206,7 @@ export default {
             return {
                 width: this.scaleSize(320),
                 height: this.scaleSize(320),
-                borderRadius: '16px'
+                borderRadius: this.scaleSize(16),
             }
         },
 
@@ -235,7 +217,7 @@ export default {
                 left: this.scaleSize(15),
                 right: this.scaleSize(15),
                 bottom: this.scaleSize(15),
-                borderRadius: '16px',
+                borderRadius: this.scaleSize(16),
                 flexDirection: 'row',
                 backgroundColor: 'white'
             };
@@ -244,7 +226,7 @@ export default {
         videoButtonStyle() {
             return {
                 position: 'absolute',
-                top: this.scaleSize(16),
+                top: this.scaleSize(24),
                 right: this.scaleSize(10),
                 flexDirection: 'row'
             }
@@ -261,8 +243,8 @@ export default {
         subAvatarContainerStyle() {
             return {
                 position: 'absolute',
-                bottom: '0px',
-                right: '0px',
+                bottom: '0',
+                right: '0',
                 width: this.scaleSize(80),
                 height: this.scaleSize(80),
                 borderRadius: this.scaleSize(40),
@@ -299,18 +281,18 @@ export default {
             }
         },
 
-        popVideoContainerStyle() {
+        popMiniBoxStyle() {
             return {
-                padding: this.scaleSize(12),
-                marginLeft: this.scaleSize(22)
+                paddingLeft: this.scaleSize(12),
             }
         },
 
-        popAudioContainerStyle() {
+        popContainerStyle() {
             return {
-                padding: this.scaleSize(12),
-                marginLeft: this.scaleSize(4),
-                alignSelf: 'center'
+                width: this.scaleSize(68),
+                height: this.scaleSize(72),
+                alignItems: "center",
+                justifyContent: "center",
             }
         },
 
@@ -324,18 +306,18 @@ export default {
         videoStyle() {
             let style = {}
             if (this.mini) {
-                style.width = this.scaleSize(182);
-                style.height = this.scaleSize(80);
+                style.width = this.scaleSize(160);
+                style.height = this.scaleSize(72);
                 style.right = this.rightPos + "px";
                 style.bottom = this.bottomPos + "px";
-                style.borderRadius = this.scaleSize(8);
                 style.borderWidth = "1px";
                 style.borderColor = "#D9E2E9";
+                style.borderRadius = this.scaleSize(8);
             } else {
-                style.top = "0px";
-                style.bottom = "0px";
-                style.right = "0px";
-                style.left = "0px";
+                style.top = "0";
+                style.bottom = "0";
+                style.right = "0";
+                style.left = "0";
             }
             return style;
         },
@@ -347,6 +329,7 @@ export default {
                 paddingBottom: this.scaleSize(12),
                 paddingLeft: this.scaleSize(32),
                 paddingRight: this.scaleSize(32),
+                borderRadius: this.scaleSize(8),
             }
         },
 
@@ -359,20 +342,7 @@ export default {
     },
 
     mounted() {
-        this.isAndroid = WXEnvironment.platform.toLowerCase() == 'android'
-        let height = WXEnvironment.deviceHeight
-        let width = WXEnvironment.deviceWidth
-        let currentScale = width / 750.0
-        if (width > height) {
-            //横屏
-            let realScale = height / 750.0
-            this.screenW = width / realScale;
-        }
-        let maxScale = 1.92;
-        let minScale = maxScale / currentScale;
-        if (minScale < 1) {
-            this.miniRate = minScale
-        }
+        //
     },
 
     methods: {
@@ -380,7 +350,7 @@ export default {
          * 计算放大倍数
          */
         scaleSize(current) {
-            return this.miniRate * current + 'px';
+            return (current / this.miniRate) + 'px';
         },
 
         /**
@@ -516,6 +486,7 @@ export default {
                         audioStatus: 0,
                         avatar: param.avatar
                     })
+                    this.miniRate = Math.min(2, eeui.weexPx2dp(750) / 430);
                     this.showShow = true;
                     this.mini = false;
                     //开启屏幕常亮
@@ -544,13 +515,16 @@ export default {
         },
 
         miniClick() {
-            this.mini = true
-            if (this.bottomPos < 0) {
-                this.bottomPos = 100;
-            }
-            if (this.rightPos < 0) {
-                this.rightPos = 0;
-            }
+            dom.getComponentRect(this.$refs.root, (res) => {
+                this.screenW = res.size.width;
+                this.screenH = WXEnvironment.deviceHeight / WXEnvironment.deviceWidth * this.screenW;
+
+                this.mini = true
+                if (this.bottomPos < 0) {
+                    this.bottomPos = 100;
+                }
+                this.stickyMoving()
+            });
         },
 
         videoEnable() {
@@ -563,13 +537,12 @@ export default {
             agoro.enableAudio(this.audio)
         },
 
-        invent() {
-            this.mini = true;
-            let param = {
+        inventClick() {
+            this.miniClick()
+            this.callbackParam({
                 act: 'invent',
-                meetingid: this.meetingid + ""
-            }
-            this.callbackParam(param);
+                meetingid: `${this.meetingid}`
+            });
         },
 
         infoParam(uuid) {
@@ -644,9 +617,9 @@ export default {
             style.marginTop = this.scaleSize(2)
             style.marginLeft = this.scaleSize(2)
             if (videoStatus > 2 || audioStatus > 2) {
-                style.backgroundColor = "#f28500"
+                style.backgroundColor = "#ff9900"
             } else {
-                style.backgroundColor = "#00ff00"
+                style.backgroundColor = "#84C56A"
             }
             return style
         },
@@ -717,25 +690,12 @@ export default {
 
         stickyMoving() {
             let move = 0
-            let center = 284
-            if (this.miniRate < 1) {
-                let des = (this.screenW - 750) / 2.0
-                center = center + des
-            }
+            let size = 160 / this.miniRate
+            let center = (this.screenW - size) / 2
             if (this.rightPos > center) {
-                move = this.screenW - 182 * this.miniRate;
+                move = this.screenW - size;
             }
-            animation.transition(this.$refs.root, {
-                styles: {
-                    translateX: move + "px",
-                },
-                duration: 400, //ms
-                timingFunction: 'linear',
-                needLayout: false,
-                delay: 0 //ms
-            }, () => {
-                this.rightPos = move
-            })
+            this.rightPos = move
         }
     },
 }

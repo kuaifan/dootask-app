@@ -3,9 +3,9 @@
         <div class="container flex-d-c" :style="posStyle">
             <div class="flex-d-r">
                 <image :style="iconStyle" src="root://pages/assets/images/alert-icon.png"></image>
-                <div :style="hStyle" >
-                    <text :style="titleStyle" class="font-weight-300 color-black">{{title}}</text>
-                    <text :style="subTitleStyle" class="font-size-26 font-weight-300 color-black">{{message}}</text>
+                <div :style="hStyle">
+                    <text :style="titleStyle" class="font-weight-300 color-black">{{ title }}</text>
+                    <text :style="subTitleStyle" class="font-size-26 font-weight-300 color-black">{{ message }}</text>
                 </div>
             </div>
 
@@ -13,10 +13,10 @@
                 <div class="flex"></div>
                 <div class="flex-d-r justify-content-sb" :style="buttonGroupStyle">
                     <div @click="cancelClick" class="justify-content-c" :style="buttonBGStyle">
-                        <text :style="buttonTextStyle" class="font-weight-300 color-black">{{cancel}}</text>
+                        <text :style="buttonTextStyle" class="font-weight-300 color-black">{{ cancel }}</text>
                     </div>
                     <div class="confirmTitle" :style="confirmButtonStyle" @click="confirmClick">
-                        <text :style="buttonTextStyle" class="font-weight-300 color-white">{{confirm}}</text>
+                        <text :style="buttonTextStyle" class="font-weight-300 color-white">{{ confirm }}</text>
                     </div>
                 </div>
             </div>
@@ -61,17 +61,18 @@ export default {
             const style = {};
             const pos = this.pos ? this.pos : "center";
             style.position = "absolute";
-            style.width = this.scaleSize(718)
+            style.width = this.scaleSize(700)
             style.padding = this.scaleSize(48)
+            style.borderRadius = this.scaleSize(24)
             switch (pos) {
                 case "center":
                     style.alignSelf = "center";
                     break;
                 case "bottom":
-                    style.bottom = this.offset + "px";
+                    style.bottom = this.scaleSize(this.offset);
                     break;
                 case "top":
-                    style.top = (this.offset * this.miniRate) + "px";
+                    style.top = this.scaleSize(this.offset);
                     break;
                 default:
                     break;
@@ -124,7 +125,8 @@ export default {
                 paddingLeft: this.scaleSize(32),
                 paddingRight: this.scaleSize(32),
                 paddingTop: this.scaleSize(12),
-                paddingBottom: this.scaleSize(12)
+                paddingBottom: this.scaleSize(12),
+                borderRadius: this.scaleSize(8)
             }
         },
 
@@ -141,7 +143,7 @@ export default {
 
     methods: {
         scaleSize(current) {
-            return this.miniRate * current + 'px';
+            return (current / this.miniRate) + 'px';
         },
 
         hide() {
@@ -181,45 +183,42 @@ export default {
 
 .container {
     background-color: white;
-    border-radius: 16px;
     align-self: center;
 }
 
 .confirmTitle {
-    padding: 16px 32px;
     background-color: #84c56a;
-    border-radius: 8px;
 }
 
-.flex-d-r{
+.flex-d-r {
     flex-direction: row;
 }
 
-.flex{
+.flex {
     flex: 1;
 }
 
-.justify-content-sb{
+.justify-content-sb {
     justify-content: space-between;
 }
 
-.justify-content-c{
+.justify-content-c {
     justify-content: center;
 }
 
-.font-weight-300{
+.font-weight-300 {
     font-weight: 300;
 }
 
-.color-black{
+.color-black {
     color: black;
 }
 
-.color-white{
+.color-white {
     color: white;
 }
 
-.font-size-26{
+.font-size-26 {
     font-size: 26px;
 }
 </style>
