@@ -73,11 +73,12 @@ export default {
             systemTheme: eeui.getThemeName(),   // 系统主题
 
             allowedUrls: /^(?:https?|mailto|tel|callto):/i,
-            miniRate: Math.min(2, eeui.weexPx2dp(750) / 430),
+            miniRate: 1.0,
         }
     },
 
     mounted() {
+        this.miniRate = Math.min(2, Math.max(1, this.runNum(eeui.getVariate("outerWidth", "430")) / 430));
         this.initTheme(null);
         this.initNav();
         this.$refs.web.setUrl(this.url);

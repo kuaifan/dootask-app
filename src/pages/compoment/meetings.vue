@@ -173,7 +173,7 @@ export default {
                 cancel: "",
                 confirm: ""
             },
-            miniRate: Math.min(2, eeui.weexPx2dp(750) / 430),
+            miniRate: 1.0,
         };
     },
 
@@ -486,7 +486,7 @@ export default {
                         audioStatus: 0,
                         avatar: param.avatar
                     })
-                    this.miniRate = Math.min(2, eeui.weexPx2dp(750) / 430);
+                    this.miniRate = Math.min(2, Math.max(1, this.runNum(eeui.getVariate("outerWidth", "430")) / 430));
                     this.showShow = true;
                     this.mini = false;
                     //开启屏幕常亮

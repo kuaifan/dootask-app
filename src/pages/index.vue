@@ -247,6 +247,10 @@ export default {
                 case 'updateTheme':
                     this.initTheme(message.themeName)
                     break
+
+                case 'outerSize':
+                    eeui.setVariate("outerWidth", message.outerWidth)
+                    break
             }
         },
 
