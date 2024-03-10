@@ -64,6 +64,8 @@ export default {
             showProgress: !!app.config.params.showProgress,
             allowAccess: !!app.config.params.allowAccess,
 
+            windowWidth: this.runNum(eeui.getVariate("windowWidth", "430")),
+
             moreShow: false,
             moreBrowserText: eeui.getVariate("languageWebBrowser", "浏览器打开"),
             moreRefreshText: eeui.getVariate("languageWebRefresh", "刷新"),
@@ -73,7 +75,6 @@ export default {
             systemTheme: eeui.getThemeName(),   // 系统主题
 
             allowedUrls: /^(?:https?|mailto|tel|callto):/i,
-            miniRate: Math.min(2, eeui.weexPx2dp(750) / 430),
         }
     },
 
@@ -84,6 +85,10 @@ export default {
     },
 
     computed: {
+        miniRate() {
+            return Math.min(2, Math.max(1, this.windowWidth / 430));
+        },
+
         warpStyle() {
             if (this.themeColor) {
                 return {
@@ -222,6 +227,11 @@ export default {
                         return;
                     }
                     this.$refs.web.setUrl(message.url);
+                    break;
+
+                case 'windowSize':
+                    this.windowWidth = this.runNum(message.width)
+                    eeui.setVariate("windowWidth", this.windowWidth)
                     break;
             }
         },

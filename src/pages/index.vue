@@ -9,7 +9,7 @@
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
-        <meetings ref="meeting" @meetingEvent="meetingEvent"/>
+        <meetings ref="meeting" :windowWidth="windowWidth" @meetingEvent="meetingEvent"/>
     </div>
 </template>
 
@@ -35,6 +35,8 @@ export default {
             webReady: false,
             uniqueId: '',
             resumeNum: 0,
+
+            windowWidth: this.runNum(eeui.getVariate("windowWidth", "430")),
 
             umengInit: false,
             umengMessage: {},
@@ -246,6 +248,12 @@ export default {
                 // 更新状态栏
                 case 'updateTheme':
                     this.initTheme(message.themeName)
+                    break
+
+                // 更新网页尺寸
+                case 'windowSize':
+                    this.windowWidth = this.runNum(message.width)
+                    eeui.setVariate("windowWidth", this.windowWidth)
                     break
             }
         },

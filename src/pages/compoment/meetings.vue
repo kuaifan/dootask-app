@@ -143,6 +143,12 @@ const deviceInfo = app.requireModule("eeui/deviceInfo");
 export default {
     name: "meetings",
     components: {CustomAlert},
+    props: {
+        windowWidth: {
+            type: Number,
+            default: 0
+        },
+    },
     data() {
         return {
             title: "",
@@ -173,11 +179,14 @@ export default {
                 cancel: "",
                 confirm: ""
             },
-            miniRate: Math.min(2, eeui.weexPx2dp(750) / 430),
         };
     },
 
     computed: {
+        miniRate() {
+            return Math.min(2, Math.max(1, this.windowWidth / 430));
+        },
+
         titleStyle() {
             return {
                 fontSize: this.scaleSize(32),
@@ -345,6 +354,12 @@ export default {
         //
     },
 
+    watch: {
+        showShow(val) {
+            deviceInfo.keepScreenOn(val);   // 开启/关闭 屏幕常亮
+        }
+    },
+
     methods: {
         /**
          * 计算放大倍数
@@ -438,8 +453,6 @@ export default {
 
         destroyed() {
             agoro.destroy()
-            //关闭屏幕常亮
-            deviceInfo.keepScreenOn(false);
             this.showShow = false
             this.infos = []
             this.uuids = []
@@ -486,11 +499,8 @@ export default {
                         audioStatus: 0,
                         avatar: param.avatar
                     })
-                    this.miniRate = Math.min(2, eeui.weexPx2dp(750) / 430);
                     this.showShow = true;
                     this.mini = false;
-                    //开启屏幕常亮
-                    deviceInfo.keepScreenOn(true);
                     // 延迟一秒发送
                     this.$nextTick(() => {
                         this.successParam(this.uuid);
