@@ -68,6 +68,7 @@
 @property (nonatomic, assign)BOOL completeFlag;
 @property (nonatomic, copy  )NSString *currentToken;
 @property (nonatomic, strong)dispatch_group_t currenGruop;
+@property (nonatomic, assign)BOOL isFile;
 @end
 
 @implementation ShareListViewController
@@ -308,11 +309,18 @@
                         if([(NSObject *)item isKindOfClass:[NSURL class]]){
                             NSURL *content = (NSURL *)item;
                             ShareContent *model = [ShareContent new];
-                            model.shareType = shareContentTypeOther;
-                            model.fileUrl = content;
+                            if (content.isFileURL || content.isFileReferenceURL) {
+                                model.shareType = shareContentTypeOther;
+                                model.fileUrl = content;
+                                self.isFile = YES;
+                                
+                            } else {
+                                model.content = content.absoluteString;
+                                model.shareType = shareContentTypeText;
+                                self.isFile = NO;
+                            }
                             [self.shareArray addObject:model];
-                        }
-                        else if ([(NSObject *)item isKindOfClass:[UIImage class]]){
+                        } else if ([(NSObject *)item isKindOfClass:[UIImage class]]){
                             UIImage *content = (UIImage *)item;
                             ShareContent *model = [ShareContent new];
                             model.shareType = shareContentTypeImage;
@@ -362,7 +370,7 @@
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     
     [SVProgressHUD show];
-    [manager GET_EEUI:chatUrl parameters:nil headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+    [manager GET_EEUI:chatUrl parameters:@{@"type": self.isFile? @"file" :@"text"} headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
         
@@ -573,9 +581,15 @@
             NSString *imageName = [NSString stringWithFormat:@"screenShot_%@%@.png",[self getRandomString],[self getNowTimeTimestamp]];
             
             [formData appendPartWithFileData:imageData name:@"files" fileName:imageName mimeType:@"image/png"];
-        }else{
+        } else if (model.shareType == shareContentTypeOther){
             NSError * error = nil;
             [formData appendPartWithFileURL:model.fileUrl name:@"files" error:&error];
+            if (error != nil) {
+                
+            }
+        } else if (model.shareType == shareContentTypeText) {
+            NSError * error = nil;
+            [formData appendPartWithFormData:[model.content dataUsingEncoding:NSUTF8StringEncoding] name:@"text"];
             if (error != nil) {
                 
             }
