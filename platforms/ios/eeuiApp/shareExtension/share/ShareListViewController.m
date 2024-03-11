@@ -247,58 +247,7 @@
     dispatch_group_async(group, queue, ^{
         [self.extensionContext.inputItems enumerateObjectsUsingBlock:^(NSExtensionItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [obj.attachments enumerateObjectsUsingBlock:^(NSItemProvider *  _Nonnull itemProvider, NSUInteger idx, BOOL * _Nonnull stop) {
-    //            UTTypeImage;
-    //            NSString *urlUtiStr = (NSString *)kUTTypeURL;
-    //            NSString *imageUtiStr = (NSString *)kUTTypeImage;
-    //            NSString *videoUtiStr = (NSString *)kUTTypeMovie;
-    //            if ([itemProvider hasItemConformingToTypeIdentifier:urlUtiStr])
-    //            {
-    //                [itemProvider loadItemForTypeIdentifier:urlUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-    //                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-    //                        NSURL *content = (NSURL *)item;
-    //                        ShareContent *model = [ShareContent new];
-    //                        model.shareType = shareContentTypeText;
-    //                        model.fileUrl = content;
-    //                        [self.shareArray addObject:model];
-    //                        return;
-    //                    }
-    //
-    //                }];
-    //            }
-                
-    //            if ([itemProvider hasItemConformingToTypeIdentifier:imageUtiStr])
-    //            {
-    //                [itemProvider loadItemForTypeIdentifier:imageUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-    //                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-    //                        NSURL *content = (NSURL *)item;
-    //                        ShareContent *model = [ShareContent new];
-    //                        model.shareType = shareContentTypeImage;
-    //                        model.fileUrl = content;
-    //                        [self.shareArray addObject:model];
-    //                        return;
-    //                    }
-    //
-    //                }];
-    //            }
-    //
-    //            if ([itemProvider hasItemConformingToTypeIdentifier:videoUtiStr])
-    //            {
-    //                [itemProvider loadItemForTypeIdentifier:videoUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-    //                    NSLog(@"%@",item);
-    //
-    //                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-    //                        NSURL *content = (NSURL *)item;
-    //                        ShareContent *model = [ShareContent new];
-    //                        model.shareType = shareContentTypeVideo;
-    //                        model.fileUrl = content;
-    //                        [self.shareArray addObject:model];
-    //                        return;
-    //                    }
-    //
-    //                }];
-    //            }
-                
-                
+
                 NSString *registered = itemProvider.registeredTypeIdentifiers.firstObject;
 
                 if ([itemProvider hasItemConformingToTypeIdentifier:registered])
@@ -341,9 +290,7 @@
             }];
         }];
     });
-    
-    
-    
+
     // 当所有队列执行完成之后
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         if (self.shareArray.count == 0) {
@@ -354,7 +301,6 @@
         }
         
     });
-
 
 }
 
@@ -399,9 +345,6 @@
                 }];
             }];
         }
-        NSLog(@"responseObject:%@",responseObject);
-        NSLog(@"resCode:%ld",resCode);
-        
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismissWithCompletion:^{
@@ -561,7 +504,6 @@
                 }];
                 return;
             }
-            
             
             NSProgress *progress = [[NSProgress alloc] init];
             [self.progressArray addObject:@{@"progress":progress,@"result":@0,@"muti":@0}];
