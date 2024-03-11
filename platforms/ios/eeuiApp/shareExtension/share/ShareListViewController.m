@@ -548,12 +548,12 @@
             
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
-        [self.progressArray replaceObjectAtIndex:number withObject:@{@"progress":uploadProgress,@"result":@0,@"muti":@1}];
+        [self.progressArray replaceObjectAtIndex:number withObject:@{@"progress": uploadProgress, @"result": @0, @"muti": @1}];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             CGFloat lastProgress = [self getTotalPercent];
             NSLog(@"总体进度:%f",lastProgress);
-            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f",NSLocalizedString(@"sendingTitle", @""),MIN(lastProgress*100,99)] stringByAppendingString:@"%"]];
+            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f", NSLocalizedString(@"sendingTitle", @""), MIN(lastProgress*100, 99)] stringByAppendingString: @"%"]];
             
         });
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
@@ -615,7 +615,7 @@
         result = DootaskShareResultFail;
     }else  {
         
-        msg = [NSString stringWithFormat:@"%d%@,%d%@",success,NSLocalizedString(@"successTotal", @""),fail,NSLocalizedString(@"failTotal", @"")];
+        msg = [NSString stringWithFormat:@"%d%@,%d%@", success, NSLocalizedString(@"successTotal", @""), fail, NSLocalizedString(@"failTotal", @"")];
         [SVProgressHUD showInfoWithStatus:msg];
         result = DootaskShareResultSuccess;
     }
@@ -666,10 +666,14 @@
         [self upLoads:param isDir:NO];
     } else {
         //发送文件
-        ChatModelData * model = self.IDArray.lastObject;
+        ChatModelData *model = self.IDArray.lastObject;
         int folderID = self.IDArray.lastObject.extend.upload_file_id;
         NSString *uploadUrl = model.url;
-        [self upLoads:@{@"upload_file_id": @(folderID),@"upLoadUrl":uploadUrl,@"token":self.currentToken} isDir:YES];
+        [self upLoads:@{
+            @"upload_file_id": @(folderID),
+            @"upLoadUrl": uploadUrl,
+            @"token": self.currentToken
+        } isDir:YES];
     }
     //self.completionCallback?self.completionCallback(DootaskShareResultSuccess):nil;
 }
@@ -751,8 +755,6 @@
     [self checkEnable];
 }
 
-
-
 #pragma mark - getter
 
 - (NSMutableArray *)IDArray{
@@ -782,7 +784,7 @@
     return source;
 }
 
-#pragma mark  -
+#pragma mark  - 暗黑模式适配
 
 - (BOOL)inDarkAppearance{
   BOOL res = NO;
@@ -803,6 +805,7 @@
   return res;
 }
 
+// 获取当前时间戳
 -(NSString *)getNowTimeTimestamp{
 
     NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
@@ -813,6 +816,7 @@
 
 }
 
+// 获取随机字符串
 -(NSString *)getRandomString{
     NSString *alphabet = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     NSMutableString *randomString = [NSMutableString stringWithCapacity:4];
