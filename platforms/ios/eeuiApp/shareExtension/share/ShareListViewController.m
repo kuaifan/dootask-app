@@ -320,12 +320,20 @@
                                 self.isFile = NO;
                             }
                             [self.shareArray addObject:model];
-                        } else if ([(NSObject *)item isKindOfClass:[UIImage class]]){
+                        } else if ([(NSObject *)item isKindOfClass:[UIImage class]]) {
                             UIImage *content = (UIImage *)item;
                             ShareContent *model = [ShareContent new];
                             model.shareType = shareContentTypeImage;
                             model.image = content;
+                            self.isFile = YES;
                             [self.shareArray addObject:model];
+                        } else if ([(NSObject *)item isKindOfClass:[NSString class]]) {
+                            NSString *content = (NSString *)item;
+                            ShareContent *model = [ShareContent new];
+                            model.shareType = shareContentTypeText;
+                            model.content = content;
+                            [self.shareArray addObject:model];
+                            self.isFile = NO;
                         }
                         dispatch_group_leave(group);
                     }];
