@@ -68,6 +68,7 @@
 @property (nonatomic, assign)BOOL completeFlag;
 @property (nonatomic, copy  )NSString *currentToken;
 @property (nonatomic, strong)dispatch_group_t currenGruop;
+@property (nonatomic, assign)BOOL isFile;
 @end
 
 @implementation ShareListViewController
@@ -246,58 +247,7 @@
     dispatch_group_async(group, queue, ^{
         [self.extensionContext.inputItems enumerateObjectsUsingBlock:^(NSExtensionItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [obj.attachments enumerateObjectsUsingBlock:^(NSItemProvider *  _Nonnull itemProvider, NSUInteger idx, BOOL * _Nonnull stop) {
-    //            UTTypeImage;
-    //            NSString *urlUtiStr = (NSString *)kUTTypeURL;
-    //            NSString *imageUtiStr = (NSString *)kUTTypeImage;
-    //            NSString *videoUtiStr = (NSString *)kUTTypeMovie;
-    //            if ([itemProvider hasItemConformingToTypeIdentifier:urlUtiStr])
-    //            {
-    //                [itemProvider loadItemForTypeIdentifier:urlUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-    //                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-    //                        NSURL *content = (NSURL *)item;
-    //                        ShareContent *model = [ShareContent new];
-    //                        model.shareType = shareContentTypeText;
-    //                        model.fileUrl = content;
-    //                        [self.shareArray addObject:model];
-    //                        return;
-    //                    }
-    //
-    //                }];
-    //            }
-                
-    //            if ([itemProvider hasItemConformingToTypeIdentifier:imageUtiStr])
-    //            {
-    //                [itemProvider loadItemForTypeIdentifier:imageUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-    //                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-    //                        NSURL *content = (NSURL *)item;
-    //                        ShareContent *model = [ShareContent new];
-    //                        model.shareType = shareContentTypeImage;
-    //                        model.fileUrl = content;
-    //                        [self.shareArray addObject:model];
-    //                        return;
-    //                    }
-    //
-    //                }];
-    //            }
-    //
-    //            if ([itemProvider hasItemConformingToTypeIdentifier:videoUtiStr])
-    //            {
-    //                [itemProvider loadItemForTypeIdentifier:videoUtiStr options:nil completionHandler:^(id<NSSecureCoding>  _Nullable item, NSError * _Null_unspecified error) {//在这里保存获取到的分享数据
-    //                    NSLog(@"%@",item);
-    //
-    //                    if([(NSObject *)item isKindOfClass:[NSURL class]]){
-    //                        NSURL *content = (NSURL *)item;
-    //                        ShareContent *model = [ShareContent new];
-    //                        model.shareType = shareContentTypeVideo;
-    //                        model.fileUrl = content;
-    //                        [self.shareArray addObject:model];
-    //                        return;
-    //                    }
-    //
-    //                }];
-    //            }
-                
-                
+
                 NSString *registered = itemProvider.registeredTypeIdentifiers.firstObject;
 
                 if ([itemProvider hasItemConformingToTypeIdentifier:registered])
@@ -308,16 +258,31 @@
                         if([(NSObject *)item isKindOfClass:[NSURL class]]){
                             NSURL *content = (NSURL *)item;
                             ShareContent *model = [ShareContent new];
-                            model.shareType = shareContentTypeOther;
-                            model.fileUrl = content;
+                            if (content.isFileURL || content.isFileReferenceURL) {
+                                model.shareType = shareContentTypeOther;
+                                model.fileUrl = content;
+                                self.isFile = YES;
+                                
+                            } else {
+                                model.content = content.absoluteString;
+                                model.shareType = shareContentTypeText;
+                                self.isFile = NO;
+                            }
                             [self.shareArray addObject:model];
-                        }
-                        else if ([(NSObject *)item isKindOfClass:[UIImage class]]){
+                        } else if ([(NSObject *)item isKindOfClass:[UIImage class]]) {
                             UIImage *content = (UIImage *)item;
                             ShareContent *model = [ShareContent new];
                             model.shareType = shareContentTypeImage;
                             model.image = content;
+                            self.isFile = YES;
                             [self.shareArray addObject:model];
+                        } else if ([(NSObject *)item isKindOfClass:[NSString class]]) {
+                            NSString *content = (NSString *)item;
+                            ShareContent *model = [ShareContent new];
+                            model.shareType = shareContentTypeText;
+                            model.content = content;
+                            [self.shareArray addObject:model];
+                            self.isFile = NO;
                         }
                         dispatch_group_leave(group);
                     }];
@@ -325,9 +290,7 @@
             }];
         }];
     });
-    
-    
-    
+
     // 当所有队列执行完成之后
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         if (self.shareArray.count == 0) {
@@ -338,7 +301,6 @@
         }
         
     });
-
 
 }
 
@@ -362,7 +324,7 @@
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     
     [SVProgressHUD show];
-    [manager GET_EEUI:chatUrl parameters:nil headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+    [manager GET_EEUI:chatUrl parameters:@{@"type": self.isFile? @"file" :@"text"} headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
         
@@ -383,9 +345,6 @@
                 }];
             }];
         }
-        NSLog(@"responseObject:%@",responseObject);
-        NSLog(@"resCode:%ld",resCode);
-        
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismissWithCompletion:^{
@@ -546,7 +505,6 @@
                 return;
             }
             
-            
             NSProgress *progress = [[NSProgress alloc] init];
             [self.progressArray addObject:@{@"progress":progress,@"result":@0,@"muti":@0}];
             
@@ -573,9 +531,15 @@
             NSString *imageName = [NSString stringWithFormat:@"screenShot_%@%@.png",[self getRandomString],[self getNowTimeTimestamp]];
             
             [formData appendPartWithFileData:imageData name:@"files" fileName:imageName mimeType:@"image/png"];
-        }else{
+        } else if (model.shareType == shareContentTypeOther){
             NSError * error = nil;
             [formData appendPartWithFileURL:model.fileUrl name:@"files" error:&error];
+            if (error != nil) {
+                
+            }
+        } else if (model.shareType == shareContentTypeText) {
+            NSError * error = nil;
+            [formData appendPartWithFormData:[model.content dataUsingEncoding:NSUTF8StringEncoding] name:@"text"];
             if (error != nil) {
                 
             }
@@ -584,12 +548,12 @@
             
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
-        [self.progressArray replaceObjectAtIndex:number withObject:@{@"progress":uploadProgress,@"result":@0,@"muti":@1}];
+        [self.progressArray replaceObjectAtIndex:number withObject:@{@"progress": uploadProgress, @"result": @0, @"muti": @1}];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             CGFloat lastProgress = [self getTotalPercent];
             NSLog(@"总体进度:%f",lastProgress);
-            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f",NSLocalizedString(@"sendingTitle", @""),MIN(lastProgress*100,99)] stringByAppendingString:@"%"]];
+            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f", NSLocalizedString(@"sendingTitle", @""), MIN(lastProgress*100, 99)] stringByAppendingString: @"%"]];
             
         });
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
@@ -651,7 +615,7 @@
         result = DootaskShareResultFail;
     }else  {
         
-        msg = [NSString stringWithFormat:@"%d%@,%d%@",success,NSLocalizedString(@"successTotal", @""),fail,NSLocalizedString(@"failTotal", @"")];
+        msg = [NSString stringWithFormat:@"%d%@,%d%@", success, NSLocalizedString(@"successTotal", @""), fail, NSLocalizedString(@"failTotal", @"")];
         [SVProgressHUD showInfoWithStatus:msg];
         result = DootaskShareResultSuccess;
     }
@@ -702,10 +666,14 @@
         [self upLoads:param isDir:NO];
     } else {
         //发送文件
-        ChatModelData * model = self.IDArray.lastObject;
+        ChatModelData *model = self.IDArray.lastObject;
         int folderID = self.IDArray.lastObject.extend.upload_file_id;
         NSString *uploadUrl = model.url;
-        [self upLoads:@{@"upload_file_id": @(folderID),@"upLoadUrl":uploadUrl,@"token":self.currentToken} isDir:YES];
+        [self upLoads:@{
+            @"upload_file_id": @(folderID),
+            @"upLoadUrl": uploadUrl,
+            @"token": self.currentToken
+        } isDir:YES];
     }
     //self.completionCallback?self.completionCallback(DootaskShareResultSuccess):nil;
 }
@@ -787,8 +755,6 @@
     [self checkEnable];
 }
 
-
-
 #pragma mark - getter
 
 - (NSMutableArray *)IDArray{
@@ -818,7 +784,7 @@
     return source;
 }
 
-#pragma mark  -
+#pragma mark  - 暗黑模式适配
 
 - (BOOL)inDarkAppearance{
   BOOL res = NO;
@@ -839,6 +805,7 @@
   return res;
 }
 
+// 获取当前时间戳
 -(NSString *)getNowTimeTimestamp{
 
     NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
@@ -849,6 +816,7 @@
 
 }
 
+// 获取随机字符串
 -(NSString *)getRandomString{
     NSString *alphabet = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     NSMutableString *randomString = [NSMutableString stringWithCapacity:4];
