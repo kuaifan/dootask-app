@@ -36,7 +36,7 @@ export default {
             uniqueId: '',
             resumeNum: 0,
 
-            windowWidth: this.runNum(eeui.getVariate("windowWidth", "430")),
+            windowWidth: parseInt(eeui.getVariate("windowWidth", "0")) || 430,
 
             umengInit: false,
             umengMessage: {},
@@ -185,7 +185,7 @@ export default {
                     break;
 
                 case 'setVibrate':
-                    const time = this.runNum(message.time);
+                    const time = parseInt(message.time) || 0;
                     if (time > 0) {
                         deviceInfo.setVibrate(time);
                     } else {
@@ -198,7 +198,7 @@ export default {
                     break;
 
                 case 'setBdageNotify':
-                    notifications.setBadge(this.runNum(message.bdage));
+                    notifications.setBadge(parseInt(message.bdage) || 0);
                     break;
 
                 case 'gotoSetting':
@@ -252,7 +252,7 @@ export default {
 
                 // 更新网页尺寸
                 case 'windowSize':
-                    this.windowWidth = this.runNum(message.width)
+                    this.windowWidth = parseInt(message.width) || 0
                     eeui.setVariate("windowWidth", this.windowWidth)
                     break
             }

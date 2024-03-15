@@ -64,7 +64,7 @@ export default {
             showProgress: !!app.config.params.showProgress,
             allowAccess: !!app.config.params.allowAccess,
 
-            windowWidth: this.runNum(eeui.getVariate("windowWidth", "430")),
+            windowWidth: parseInt(eeui.getVariate("windowWidth", "0")) || 430,
 
             moreShow: false,
             moreBrowserText: eeui.getVariate("languageWebBrowser", "浏览器打开"),
@@ -230,7 +230,7 @@ export default {
                     break;
 
                 case 'windowSize':
-                    this.windowWidth = this.runNum(message.width)
+                    this.windowWidth = parseInt(message.width) || 0
                     eeui.setVariate("windowWidth", this.windowWidth)
                     break;
             }
