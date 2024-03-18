@@ -49,6 +49,12 @@ android {
                 signingConfig signingConfigs.release
             }
         }
+        android.applicationVariants.all {
+            variant ->
+                variant.outputs.all {
+                    outputFileName = "DooTask-v${variant.versionName}-android.apk"
+                }
+        }
     }
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
