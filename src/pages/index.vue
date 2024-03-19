@@ -35,11 +35,12 @@ export default {
             webReady: false,
             uniqueId: '',
             resumeNum: 0,
+            appMessage: {},
 
             windowWidth: parseInt(eeui.getVariate("windowWidth", "0")) || 430,
 
             umengInit: false,
-            umengMessage: {},
+            umengApiUrl: null,
             umengError: false,
 
             navColor: null,                     // 导航栏颜色
@@ -171,7 +172,8 @@ export default {
          */
         onReceiveMessage({message}) {
             switch (message.action) {
-                case 'intiUmeng':
+                case 'initApp':
+                    this.appMessage = message;
                     if (!this.umengInit) {
                         this.umengInit = true;
                         umengPush.initialize();
@@ -179,7 +181,7 @@ export default {
                     break;
 
                 case 'setUmengAlias':
-                    this.umengMessage = message;
+                    this.umengApiUrl = message.url;
                     this.webReady = true;
                     this.updateUmengAlias();
                     break;
@@ -268,19 +270,23 @@ export default {
         },
 
         updateUmengAlias() {
-            const alias = `${WXEnvironment.platform}-${this.umengMessage.userid}-${this.uniqueId}`;
+            const alias = `${WXEnvironment.platform}-${this.appMessage.userid}-${this.uniqueId}`;
             umengPush.deleteAlias(alias, "userid", () => {
                 umengPush.addAlias(alias, "userid", data => {
                     if (data.status === 'success') {
                         // 别名保存到服务器
                         eeui.ajax({
-                            url: this.umengMessage.url,
+                            url: this.umengApiUrl,
                             method: 'get',
                             data: {
                                 alias,
+                                osName: WXEnvironment.osName,
+                                osVersion: WXEnvironment.osVersion,
+                                deviceModel: WXEnvironment.deviceModel,
+                                userAgent: this.appMessage.userAgent,
                             },
                             headers: {
-                                token: this.umengMessage.token,
+                                token: this.appMessage.token,
                             }
                         }, result => {
                             console.log(result);
