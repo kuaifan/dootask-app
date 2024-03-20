@@ -67,11 +67,16 @@ dependencies {
     implementation 'com.umeng.umsdk:agoo_tnet4android:3.1.14.10'
 
     implementation 'com.umeng.umsdk:asms:1.8.2'
-   // implementation 'com.umeng.umsdk:crash:0.0.4'
-    //
+    // implementation 'com.umeng.umsdk:crash:0.0.4'
+
+    implementation 'com.umeng.umsdk:fcm-umengaccs:2.1.0'
+    implementation platform('com.google.firebase:firebase-bom:32.4.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging'
+
     compileOnly "androidx.appcompat:appcompat:${project.appcompatVersion}"
     compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
     compileOnly "org.apache.weex:sdk_legacy:${project.weex_sdkLibVersion}"
-    //
+
     compileOnly project(":eeui")
 }

@@ -122,7 +122,7 @@ public class ExtendWebView extends WebView {
         //开启 localStorage
         webSettings.setDomStorageEnabled(true);
         //启动缓存
-        webSettings.setAppCacheEnabled(true);
+        //webSettings.setAppCacheEnabled(true);
         //设置缓存模式
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         //将图片调整到适合webview的大小

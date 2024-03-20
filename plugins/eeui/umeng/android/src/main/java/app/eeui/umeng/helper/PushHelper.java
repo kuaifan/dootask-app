@@ -3,7 +3,6 @@ package app.eeui.umeng.helper;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,6 +16,7 @@ import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.api.UPushRegisterCallback;
 import com.umeng.message.entity.UMessage;
 
+import org.android.agoo.fcm.FCMRegister;
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.mezu.MeizuRegister;
 import org.android.agoo.oppo.OppoRegister;
@@ -27,7 +27,6 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import app.eeui.framework.BuildConfig;
 import app.eeui.framework.activity.PageActivity;
@@ -37,7 +36,6 @@ import app.eeui.framework.extend.module.eeuiJson;
 import app.eeui.framework.extend.module.eeuiMap;
 import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.ui.eeui;
-import app.eeui.umeng.ui.entry.eeuiUmengEntry;
 
 /**
  * PushSDK集成帮助类
@@ -145,6 +143,8 @@ public class PushHelper {
         if (!TextUtils.isEmpty(vivoAppId)) {
             VivoRegister.register(context);
         }
+
+        FCMRegister.register(context);
 
         //注册统计
         ((Application) context).registerActivityLifecycleCallbacks(mCallbacks);

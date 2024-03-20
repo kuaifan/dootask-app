@@ -5,7 +5,6 @@ import android.content.Context;
 import com.taobao.weex.WXSDKEngine;
 import com.taobao.weex.common.WXException;
 import app.eeui.framework.extend.annotation.ModuleEntry;
-import app.eeui.framework.extend.module.eeuiBase;
 import app.eeui.framework.extend.module.eeuiJson;
 import app.eeui.umeng.helper.PushHelper;
 import app.eeui.umeng.ui.module.eeuiUmengAnalyticsModule;

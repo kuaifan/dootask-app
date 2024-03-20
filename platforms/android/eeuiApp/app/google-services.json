@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "214904188346",
+    "project_id": "dootask-4c1cc",
+    "storage_bucket": "dootask-4c1cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214904188346:android:5dbe149d06afb2fc950183",
+        "android_client_info": {
+          "package_name": "com.dootask.task"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjKrSw6959IBoYWkQnt133pcpGpiI7pXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
