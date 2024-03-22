@@ -7,15 +7,15 @@
 
 // Configuration settings file format documentation can be found at:
 
-BASE_DISPLAY_NAME = DooTask
+BASE_DISPLAY_NAME = Tongxin
 
-BASE_BUNDLE_ID = com.dootask.task
+BASE_BUNDLE_ID = com.tongxin.doo
 
 BASE_SHARE_BUNDLE_ID = com.dootask.task.shareExtension
 
 BASE_SHORT_VERSON = 0.35.48
 
-BASE_CODE_VERSON = 117
+BASE_CODE_VERSON = 118
 
 APPLICATION_SCHEME = dootask
 

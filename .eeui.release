@@ -1,12 +1,12 @@
 {
 	"name": "dootaskApp",
-	"appName": "DooTask",
-	"applicationID": "com.dootask.task",
-	"bundleIdentifier": "com.dootask.task",
+	"appName": "Tongxin",
+	"applicationID": "com.tongxin.doo",
+	"bundleIdentifier": "com.tongxin.doo",
 	"release": "2.5.1",
 	"location": "github",
-	"versionCode": "117",
+	"versionCode": "118",
 	"versionName": "0.35.48",
-	"CFBundleVersion": "117",
+	"CFBundleVersion": "118",
 	"CFBundleShortVersionString": "0.35.48"
 }

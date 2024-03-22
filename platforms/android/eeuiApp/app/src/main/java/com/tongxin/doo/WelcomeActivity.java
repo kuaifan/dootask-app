@@ -1,4 +1,4 @@
-package com.dootask.task;
+package com.tongxin.doo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

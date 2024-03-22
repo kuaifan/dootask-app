@@ -53,8 +53,8 @@ module.exports = {
 		"android": {
 			"enabled": true,
 			"automatic": false,
-			"appKey": "627cde1317ae9915343b26b1",
-			"messageSecret": "563f50eb8d93a25a06978e17dd1f2512",
+			"appKey": "65eec0d0349b1b716d50b2ee",
+			"messageSecret": "bbcac886a5a45c78db3922bb71dcbef6",
 			"channel": "dootask",
 			"xiaomiAppId": "2882303761520159644",
 			"xiaomiAppKey": "5502015936644",

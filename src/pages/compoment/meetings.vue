@@ -529,12 +529,14 @@ export default {
 
         videoEnable() {
             this.video = !this.video
-            agoro.enableVideo(this.video)
+            let ret = agoro.enableVideo(this.video)
+            console.log("meetingVideoRet:", ret);
         },
 
         audioEnable() {
             this.audio = !this.audio
-            agoro.enableAudio(this.audio)
+            let ret = agoro.enableAudio(this.audio)
+            console.log("meetingAudioRet:", ret);
         },
 
         inventClick() {
