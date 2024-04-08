@@ -9,7 +9,7 @@
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
-        <meetings ref="meeting" :windowWidth="windowWidth" @meetingEvent="meetingEvent"/>
+        <meetings ref="meeting" :theme-color="themeColor" :windowWidth="windowWidth" @meetingEvent="meetingEvent"/>
     </div>
 </template>
 

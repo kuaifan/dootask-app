@@ -1,7 +1,10 @@
 package eeui.android.eeuiAgoro.module;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.media.AudioManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -91,10 +94,15 @@ public class eeuiAgoroAppModule extends WXModuleBase {
 
     @JSMethod
     public int enableAudio(boolean enable){
-
         if (enable) {
+            AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 1);
             return AgoraRtcPresenter.getInstance().enableAudio();
         } else {
+            AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 1);
             return AgoraRtcPresenter.getInstance().disableAudio();
         }
     }

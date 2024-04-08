@@ -1,6 +1,6 @@
 <template>
     <div ref="root" class="mask" v-if="showShow" :style="videoStyle">
-        <scroller class="scroller">
+        <scroller class="scroller" >
             <text :style="titleStyle">{{title}}</text>
             <div class="render-views">
                 <div :style="gridItemStyle" v-for="item in uuids">
@@ -32,7 +32,7 @@
                     <image :style="buttonSize" :src="video? 'root://pages/assets/images/meeting_video_on.png':'root://pages/assets/images/meeting_video_off.png'"></image>
                 </div>
                 <div class="button" :style="buttonPadding" @click="switchClicked">
-                    <image :style="buttonSize" src="root://pages/assets/images/meeting_camera_reverse.png"></image>
+                    <image :style="buttonSize" :src="video? 'root://pages/assets/images/meeting_camera_reverse.png':'root://pages/assets/images/meeting_camera_reverse_off.png'"></image>
                 </div>
                 <div class="button" :style="buttonPadding" @click="inventClick">
                     <image :style="buttonSize" src="root://pages/assets/images/meeting_invent.png"></image>
@@ -51,7 +51,7 @@
                 <image :style="popVideoStyle" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
             </div>
             <div :style="popContainerStyle">
-                <image :style="popVideoStyle":src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
+                <image :style="popVideoStyle" :src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
             </div>
         </div>
         <custom-alert ref="alert" :mini-rate="miniRate" pos="top" :offset="100" @exitConfirm="exitAction"></custom-alert>
@@ -66,17 +66,17 @@
 .mask {
     position: fixed;
     overflow: hidden;
-    background-color: white;
+    //background-color: white;
 }
 
 .scroller {
     position: absolute;
     top: 0;
     left: 0;
-    bottom: 0;
+    bottom: 80px;
     right: 0;
     padding: 16px;
-    background-color: white;
+    background-color: v-bind(themeColor);
 }
 
 .menu {
@@ -94,18 +94,20 @@
 
 .mini-box {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 0px;
+    left: -0px;
+    right: 0px;
+    bottom: 0px;
     flex-direction: row;
-    background-color: white;
+    border-width: 1px;
+    border-color: #D9E2E9;
 }
 
 .render-views {
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: start;
+    background-color: v-bind(themeColor);
 }
 
 .status-indicator {
@@ -148,6 +150,10 @@ export default {
             type: Number,
             default: 0
         },
+        themeColor: {
+            type: String,
+            default: "#f8f8f8",
+        },
     },
     data() {
         return {
@@ -170,9 +176,6 @@ export default {
 
             screenW: 0,
             screenH: 0,
-
-            bottomShow: true,
-            bottomColor: 'white',
             alertParams: {
                 title: "",
                 message: "",
@@ -190,7 +193,8 @@ export default {
         titleStyle() {
             return {
                 fontSize: this.scaleSize(32),
-                padding: this.scaleSize(16)
+                padding: this.scaleSize(16),
+                color: this.themeColor == "#f8f8f8" ? "black": "white"
             }
         },
 
@@ -228,7 +232,7 @@ export default {
                 bottom: this.scaleSize(15),
                 borderRadius: this.scaleSize(16),
                 flexDirection: 'row',
-                backgroundColor: 'white'
+                backgroundColor: this.themeColor
             };
         },
 
@@ -257,7 +261,7 @@ export default {
                 width: this.scaleSize(80),
                 height: this.scaleSize(80),
                 borderRadius: this.scaleSize(40),
-                backgroundColor: 'white',
+                backgroundColor: this.themeColor,
                 overflow: 'hidden'
             };
         },
@@ -293,6 +297,7 @@ export default {
         popMiniBoxStyle() {
             return {
                 paddingLeft: this.scaleSize(12),
+                backgroundColor: this.themeColor
             }
         },
 
@@ -319,14 +324,15 @@ export default {
                 style.height = this.scaleSize(72);
                 style.right = this.rightPos + "px";
                 style.bottom = this.bottomPos + "px";
-                style.borderWidth = "1px";
-                style.borderColor = "#D9E2E9";
                 style.borderRadius = this.scaleSize(8);
+                style.backgroundColor = this.themeColor;
+                style.overflow = "hidden";
             } else {
                 style.top = "0";
                 style.bottom = "0";
                 style.right = "0";
                 style.left = "0";
+                style.backgroundColor = this.themeColor;
             }
             return style;
         },
@@ -514,14 +520,12 @@ export default {
         },
 
         zoomClick() {
+
             if (this.isTouch === true) {
                 return;
             }
             this.mini = false;
-            this.bottomShow = false;
-            this.$nextTick(() => {
-                this.bottomShow = true;
-            })
+            eeui.keyboardHide()
         },
 
         miniClick() {
