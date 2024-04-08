@@ -137,7 +137,6 @@ import CustomAlert from "./customAlert.vue";
 const dom = app.requireModule('dom')
 const eeui = app.requireModule("eeui")
 const agoro = app.requireModule("eeuiAgoro");
-const animation = app.requireModule("animation")
 const deviceInfo = app.requireModule("eeui/deviceInfo");
 
 export default {
@@ -484,13 +483,6 @@ export default {
                     this.meetingid = param.meetingid
                     this.title = param.name
                     this.alertParams = param.alert
-                    let avatar = ""
-                    this.infos.map((item) => {
-                        if (item.uuid == this.uuid) {
-                            avatar = item.avatar;
-                        }
-                        return item
-                    })
                     this.uuids.push({
                         uuid: this.uuid,
                         audio: param.audio,
@@ -518,10 +510,7 @@ export default {
                 return;
             }
             this.mini = false;
-            this.bottomShow = false;
-            this.$nextTick(() => {
-                this.bottomShow = true;
-            })
+            eeui.keyboardHide();
         },
 
         miniClick() {
