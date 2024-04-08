@@ -6,7 +6,7 @@
 		"backgroundColor": "systemBackgroundColor",
 		"softInputMode": "resize"
 	},
-	"appKey": "8mNBgptMSQFe5BXf1TQhlh6WUOEcjefP",
+	"appKey": "",
 	"android": {
 		"imageEngine": "picasso"
 	},
