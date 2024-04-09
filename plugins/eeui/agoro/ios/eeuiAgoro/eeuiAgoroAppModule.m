@@ -36,8 +36,8 @@ WX_EXPORT_METHOD(@selector(statusCallback:))
 WX_EXPORT_METHOD(@selector(localStatusCallback:))
 // 其他操作
 WX_EXPORT_METHOD_SYNC(@selector(switchCamera))
-WX_EXPORT_METHOD(@selector(enableVideo:))
-WX_EXPORT_METHOD(@selector(enableAudio:))
+WX_EXPORT_METHOD_SYNC(@selector(enableVideo:))
+WX_EXPORT_METHOD_SYNC(@selector(enableAudio:))
 WX_EXPORT_METHOD_SYNC(@selector(adjustRecording:))
 WX_EXPORT_METHOD_SYNC(@selector(localVideo:))
 WX_EXPORT_METHOD_SYNC(@selector(localAudio:))
@@ -169,21 +169,18 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
     return [self.engkit switchCamera];
 }
 
-- (void)enableVideo:(BOOL)enable {
+- (int)enableVideo:(BOOL)enable {
     if (enable) {
         [self.engkit startPreview];
-        [self.engkit enableLocalVideo:enable];
-        
+        return [self.engkit enableLocalVideo:enable];
     } else {
         [self.engkit stopPreview];
-        [self.engkit enableLocalVideo:enable];
-        
+        return [self.engkit enableLocalVideo:enable];
     }
-
 }
 
-- (void)enableAudio:(BOOL)enable {
-    [self.engkit enableLocalAudio:enable];
+- (int)enableAudio:(BOOL)enable {
+    return [self.engkit enableLocalAudio:enable];
 }
 
 - (int)adjustRecording:(int)volume{
