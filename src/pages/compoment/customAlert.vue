@@ -4,8 +4,8 @@
             <div class="flex-d-r">
                 <image :style="iconStyle" src="root://pages/assets/images/alert-icon.png"></image>
                 <div :style="hStyle">
-                    <text :style="titleStyle" class="font-weight-300 color-black">{{ title }}</text>
-                    <text :style="subTitleStyle" class="font-size-26 font-weight-300 color-black">{{ message }}</text>
+                    <text :style="titleStyle" class="font-weight-300">{{ title }}</text>
+                    <text :style="subTitleStyle" class="font-size-26 font-weight-300">{{ message }}</text>
                 </div>
             </div>
 
@@ -13,14 +13,13 @@
                 <div class="flex"></div>
                 <div class="flex-d-r justify-content-sb" :style="buttonGroupStyle">
                     <div @click="cancelClick" class="justify-content-c" :style="buttonBGStyle">
-                        <text :style="buttonTextStyle" class="font-weight-300 color-black">{{ cancel }}</text>
+                        <text :style="buttonTextStyle" class="font-weight-300">{{ cancel }}</text>
                     </div>
                     <div class="confirmTitle" :style="confirmButtonStyle" @click="confirmClick">
-                        <text :style="buttonTextStyle" class="font-weight-300 color-white">{{ confirm }}</text>
+                        <text :style="confirmTextStyle" class="font-weight-300 color-white">{{ confirm }}</text>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -39,6 +38,10 @@ export default {
         canOverlayClick: {
             type: Boolean,
             default: true,
+        },
+        themeName: {
+            type: String,
+            default: "",
         },
         miniRate: {
             default: 1.0
@@ -64,6 +67,7 @@ export default {
             style.width = this.scaleSize(700)
             style.padding = this.scaleSize(48)
             style.borderRadius = this.scaleSize(24)
+            style.backgroundColor = this.themeName == "dark" ? "#2c2c32" : "#f8f8f8";
             switch (pos) {
                 case "center":
                     style.alignSelf = "center";
@@ -97,14 +101,16 @@ export default {
         titleStyle() {
             return {
                 fontSize: this.scaleSize(30),
-                marginTop: this.scaleSize(4)
+                marginTop: this.scaleSize(4),
+                color: this.themeName == "dark" ? "white" : "black"
             }
         },
 
         subTitleStyle() {
             return {
                 fontSize: this.scaleSize(26),
-                marginTop: this.scaleSize(32)
+                marginTop: this.scaleSize(32),
+                color: this.themeName == "dark" ? "rgba(255, 255, 255, 0.8)" : "rgba(0, 0, 0, 0.8)"
             }
         },
 
@@ -132,7 +138,14 @@ export default {
 
         buttonTextStyle() {
             return {
-                fontSize: this.scaleSize(26)
+                fontSize: this.scaleSize(26),
+                color: this.themeName == "dark" ? "rgba(255, 255, 255, 0.8)" : "rgba(0, 0, 0, 0.8)"
+            }
+        },
+
+        confirmTextStyle() {
+            return {
+                fontSize: this.scaleSize(26),
             }
         },
     },
@@ -182,7 +195,6 @@ export default {
 }
 
 .container {
-    background-color: white;
     align-self: center;
 }
 

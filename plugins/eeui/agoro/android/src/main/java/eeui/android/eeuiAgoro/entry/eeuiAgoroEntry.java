@@ -23,7 +23,7 @@ public class eeuiAgoroEntry {
         //1、注册weex模块
         try {
             WXSDKEngine.registerModule("eeuiAgoro", eeuiAgoroAppModule.class);
-            WXSDKEngine.registerComponent("eeuiAgoro-com", eeuiAgoroComponent.class);
+            WXSDKEngine.registerComponent("eeuiAgoroCom", eeuiAgoroComponent.class);
         } catch (WXException e) {
             e.printStackTrace();
         }

@@ -1,16 +1,16 @@
 <template>
     <div ref="root" class="mask" v-if="showShow" :style="videoStyle">
-        <scroller class="scroller" >
+        <scroller class="scroller">
             <text :style="titleStyle">{{title}}</text>
             <div class="render-views">
                 <div :style="gridItemStyle" v-for="item in uuids">
                     <div class="local hidden" :style="localStyle">
-                        <eeuiAgoro-com class="local" :style="camaraStyle" ref="local" :uuid="item.uuid" @load="load"/>
+                        <eeuiAgoroCom class="local" :style="camaraStyle" ref="local" :uuid="item.uuid" @load="load"/>
                     </div>
                     <image v-if="item.videoStatus == 0" :src="item.avatar" :style="avatarStyle"></image>
                     <div :style="videoButtonStyle" >
-                        <image v-if="!item.video" :style="videoSubStyle" src="root://pages/assets/images/meeting_video_err.png"></image>
                         <image v-if="!item.audio" :style="videoSubStyle" src="root://pages/assets/images/meeting_audio_err.png"></image>
+                        <image v-if="!item.video" :style="videoSubStyle" src="root://pages/assets/images/meeting_video_err.png"></image>
                     </div>
 
                     <div :style="subAvatarContainerStyle">
@@ -40,21 +40,20 @@
                 <div class="button" :style="buttonPadding" @click="hideClicked">
                     <image :style="buttonSize" src="root://pages/assets/images/meeting_mini.png"></image>
                 </div>
-
                 <div class="exit" :style="buttonPadding" @click="exitClick">
                     <image :style="buttonSize" src="root://pages/assets/images/meeting_exit.png"></image>
                 </div>
             </div>
         </div>
-        <div class="mini-box" v-if="mini" :style="popMiniBoxStyle" @click="zoomClick(false)" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
+        <div class="mini-box" v-if="mini" :style="popMiniBoxStyle" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
             <div :style="popContainerStyle">
-                <image :style="popVideoStyle" :src="video? 'root://pages/assets/images/meeting_black_video_on.png':'root://pages/assets/images/meeting_black_video_off.png'"></image>
+                <image :style="popVideoStyle" :src="audio? 'root://pages/assets/images/meeting_white_audio_on.png':'root://pages/assets/images/meeting_white_audio_off.png'"></image>
             </div>
             <div :style="popContainerStyle">
-                <image :style="popVideoStyle" :src="audio? 'root://pages/assets/images/meeting_black_audio_on.png':'root://pages/assets/images/meeting_black_audio_off.png'"></image>
+                <image :style="popVideoStyle" :src="video? 'root://pages/assets/images/meeting_white_video_on.png':'root://pages/assets/images/meeting_white_video_off.png'"></image>
             </div>
         </div>
-        <custom-alert ref="alert" :mini-rate="miniRate" pos="top" :offset="100" @exitConfirm="exitAction"></custom-alert>
+        <custom-alert ref="alert" :mini-rate="miniRate" :theme-name="themeName" pos="top" :offset="80" @exitConfirm="exitAction"></custom-alert>
     </div>
 </template>
 
@@ -66,7 +65,6 @@
 .mask {
     position: fixed;
     overflow: hidden;
-    //background-color: white;
 }
 
 .scroller {
@@ -95,12 +93,10 @@
 .mini-box {
     position: absolute;
     top: 0px;
-    left: -0px;
+    left: 0px;
     right: 0px;
     bottom: 0px;
     flex-direction: row;
-    border-width: 1px;
-    border-color: #D9E2E9;
 }
 
 .render-views {
@@ -139,7 +135,6 @@ import CustomAlert from "./customAlert.vue";
 const dom = app.requireModule('dom')
 const eeui = app.requireModule("eeui")
 const agoro = app.requireModule("eeuiAgoro");
-const animation = app.requireModule("animation")
 const deviceInfo = app.requireModule("eeui/deviceInfo");
 
 export default {
@@ -149,6 +144,10 @@ export default {
         windowWidth: {
             type: Number,
             default: 0
+        },
+        themeName: {
+            type: String,
+            default: "",
         },
         themeColor: {
             type: String,
@@ -168,9 +167,8 @@ export default {
             audio: false,
             infos: [],
 
-            isTouch: false,
-            bottomPos: 100,
             rightPos: 0,
+            bottomPos: -1,
             startPosX: 0,
             startPosY: 0,
 
@@ -182,6 +180,11 @@ export default {
                 cancel: "",
                 confirm: ""
             },
+            touchInfo: {
+                move: false,
+                x: 0,
+                y: 0
+            }
         };
     },
 
@@ -297,7 +300,7 @@ export default {
         popMiniBoxStyle() {
             return {
                 paddingLeft: this.scaleSize(12),
-                backgroundColor: this.themeColor
+                backgroundColor: this.themeColor == "#f8f8f8" ? "#A1A1A1" : "#404040"
             }
         },
 
@@ -324,16 +327,15 @@ export default {
                 style.height = this.scaleSize(72);
                 style.right = this.rightPos + "px";
                 style.bottom = this.bottomPos + "px";
-                style.borderRadius = this.scaleSize(8);
-                style.backgroundColor = this.themeColor;
+                style.borderRadius = this.scaleSize(12);
                 style.overflow = "hidden";
             } else {
                 style.top = "0";
                 style.bottom = "0";
                 style.right = "0";
                 style.left = "0";
-                style.backgroundColor = this.themeColor;
             }
+            style.backgroundColor = this.themeColor;
             return style;
         },
 
@@ -512,15 +514,6 @@ export default {
             }, 500)
         },
 
-        zoomClick() {
-
-            if (this.isTouch === true) {
-                return;
-            }
-            this.mini = false;
-            eeui.keyboardHide()
-        },
-
         miniClick() {
             dom.getComponentRect(this.$refs.root, (res) => {
                 this.screenW = res.size.width;
@@ -528,7 +521,7 @@ export default {
 
                 this.mini = true
                 if (this.bottomPos < 0) {
-                    this.bottomPos = 100;
+                    this.bottomPos = Math.round(this.screenH / 1.5);
                 }
                 this.stickyMoving()
             });
@@ -664,7 +657,11 @@ export default {
          * 拖拽开始
          */
         touchstart(touch) {
-            this.isTouch = true
+            this.touchInfo = {
+                move: false,
+                x: touch.changedTouches[0].screenX,
+                y: touch.changedTouches[0].screenY,
+            }
             if (this.mini == true) {
                 this.startPosX = this.screenW - touch.changedTouches[0].screenX - this.rightPos;
                 this.startPosY = this.screenH - touch.changedTouches[0].screenY - this.bottomPos;
@@ -676,9 +673,11 @@ export default {
          */
         touchAction(touch) {
             if (this.mini == true) {
-                this.isTouch = true
                 this.rightPos = this.screenW - touch.changedTouches[0].screenX - this.startPosX;
                 this.bottomPos = this.screenH - touch.changedTouches[0].screenY - this.startPosY;
+                if (Math.abs(this.touchInfo.x - touch.changedTouches[0].screenX) > 10 || Math.abs(this.touchInfo.y - touch.changedTouches[0].screenY) > 10) {
+                    this.touchInfo.move = true
+                }
             }
         },
 
@@ -687,11 +686,15 @@ export default {
          * (安卓的触碰结束时间出现比较晚，稍微有延迟)
          */
         touchend() {
-            this.isTouch = false;
             if (this.mini == true) {
                 this.startPosX = 0;
                 this.startPosY = 0;
                 this.stickyMoving()
+                //
+                if (this.touchInfo.move == false) {
+                    this.mini = false;
+                    eeui.keyboardHide()
+                }
             }
         },
 

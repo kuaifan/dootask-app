@@ -23,7 +23,7 @@
 @implementation eeuiAgoroComponent
 
 //Tips: 不能导出同步方法，因为主线程线程会等待
-WX_PlUGIN_EXPORT_COMPONENT(eeuiAgoro-com, eeuiAgoroComponent)
+WX_PlUGIN_EXPORT_COMPONENT(eeuiAgoroCom, eeuiAgoroComponent)
 WX_EXPORT_METHOD(@selector(animate))//导出方法
 
 -(instancetype)initWithRef:(NSString *)ref type:(NSString *)type styles:(NSDictionary *)styles attributes:(NSDictionary *)attributes events:(NSArray *)events weexInstance:(WXSDKInstance *)weexInstance{

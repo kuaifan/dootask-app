@@ -9,7 +9,7 @@
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
-        <meetings ref="meeting" :theme-color="themeColor" :windowWidth="windowWidth" @meetingEvent="meetingEvent"/>
+        <meetings ref="meeting" :theme-color="themeColor" :theme-name="themeName" :windowWidth="windowWidth" @meetingEvent="meetingEvent"/>
     </div>
 </template>
 
@@ -44,6 +44,7 @@ export default {
             umengError: false,
 
             navColor: null,                     // 导航栏颜色
+            themeName: '',                      // 主题颜色
             themeColor: null,                   // 主题颜色
             systemTheme: eeui.getThemeName(),   // 主题名称
 
@@ -151,6 +152,7 @@ export default {
             if (!['light', 'dark'].includes(themeName)) {
                 themeName = this.systemTheme
             }
+            this.themeName = themeName
             this.themeColor = themeName === 'dark' ? '#131313' : '#f8f8f8'
             this.navColor = themeName === 'dark' ? '#cdcdcd' : '#232323'
             eeui.setStatusBarStyle(themeName === 'dark')
