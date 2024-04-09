@@ -490,13 +490,6 @@ export default {
                     this.meetingid = param.meetingid
                     this.title = param.name
                     this.alertParams = param.alert
-                    let avatar = ""
-                    this.infos.map((item) => {
-                        if (item.uuid == this.uuid) {
-                            avatar = item.avatar;
-                        }
-                        return item
-                    })
                     this.uuids.push({
                         uuid: this.uuid,
                         audio: param.audio,
