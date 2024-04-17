@@ -65,8 +65,8 @@ subprojects {
 ext {
     applicationId = "com.dootask.task"
 
-    versionCode = 121
-    versionName = "0.36.60"
+    versionCode = 122
+    versionName = "0.36.75"
 
     eeuiVersionCode = 66
     eeuiVersionName = "2.5.1"

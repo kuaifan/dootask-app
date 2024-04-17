@@ -229,6 +229,10 @@ export default {
                     this.$refs.web.setUrl(message.url);
                     break;
 
+                case 'openUrl':
+                    eeui.openWeb(message.url);
+                    break;
+
                 case 'windowSize':
                     this.windowWidth = parseInt(message.width) || 0
                     eeui.setVariate("windowWidth", this.windowWidth)
