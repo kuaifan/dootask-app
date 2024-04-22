@@ -73,8 +73,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.4.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging'
+    implementation "androidx.appcompat:appcompat:${project.appcompatVersion}"
 
-    compileOnly "androidx.appcompat:appcompat:${project.appcompatVersion}"
     compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
     compileOnly "org.apache.weex:sdk_legacy:${project.weex_sdkLibVersion}"
 

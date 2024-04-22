@@ -1,0 +1,7 @@
+<resources>
+    <!-- 透明主题 -->
+    <style name="transparentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+</resources>
