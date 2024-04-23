@@ -56,6 +56,7 @@ static int easyNavigationButtonTag = 8000;
 
 @property (nonatomic, strong) UIView *versionUpdateView;
 @property (nonatomic, strong) UIView *versionUpdateWeexView;
+@property (nonatomic, strong) NSString *versionUpdateTemplateId;
 
 @property (nonatomic, assign) CGFloat lastKeyboardHeight;
 @property (nonatomic, strong) NSString *lastNavigationTitle;
@@ -95,6 +96,7 @@ static int easyNavigationButtonTag = 8000;
     [center addObserver:self selector:@selector(keyboardWillHideNotification:) name:UIKeyboardWillHideNotification object:nil];
     [center addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [center addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [center addObserver:self selector:@selector(screenSizeDidChange:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
     [center addObserver:self selector:@selector(postMessage:) name:@"VCPostMessage" object:nil];
     _keyBoardlsVisible = NO;
 
@@ -404,6 +406,14 @@ static int easyNavigationButtonTag = 8000;
                 @"pageName": _pageName,
                 @"pageUrl": _url,
         }];
+    }
+}
+
+// 屏幕尺寸发生变化
+- (void)screenSizeDidChange:(NSNotification *)notification {
+    if (self.versionUpdateView != nil) {
+        [self hideFixedVersionUpdate];
+        [self showFixedVersionUpdate:self.versionUpdateTemplateId];
     }
 }
 
@@ -962,6 +972,7 @@ static int easyNavigationButtonTag = 8000;
 
 - (void)showFixedVersionUpdate:(NSString *)templateId
 {
+    self.versionUpdateTemplateId = templateId;
     if (self.versionUpdateView == nil) {
         UIEdgeInsets safeArea = UIEdgeInsetsZero;
         self.versionUpdateView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
