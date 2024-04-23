@@ -13,9 +13,9 @@ BASE_BUNDLE_ID = com.dootask.task
 
 BASE_SHARE_BUNDLE_ID = com.dootask.task.shareExtension
 
-BASE_SHORT_VERSON = 0.36.91
+BASE_SHORT_VERSON = 0.36.97
 
-BASE_CODE_VERSON = 125
+BASE_CODE_VERSON = 128
 
 APPLICATION_SCHEME = dootask
 
