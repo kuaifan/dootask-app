@@ -106,7 +106,6 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self getMainList];
 }
 
 - (void)creatMonitorData{
@@ -298,6 +297,8 @@
             [SVProgressHUD dismissWithDelay:1.5 completion:^{
                 self.completionCallback(DootaskShareResultCancel);
             }];
+        } else {
+            [self getMainList];
         }
         
     });
