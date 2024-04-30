@@ -244,7 +244,7 @@ export default {
             switch (info.status) {
                 case 'title':
                     if (!this.titleFixed) {
-                        if (["HitoseaTask", "DooTask", "about:blank"].includes(info.title)) {
+                        if (["HitoseaTask", "DooTask", "about:blank", "App"].includes(info.title)) {
                             return
                         }
                         navigationBar.setTitle({
