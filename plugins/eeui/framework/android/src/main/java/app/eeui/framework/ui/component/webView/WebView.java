@@ -26,7 +26,6 @@ import app.eeui.framework.extend.module.eeuiJson;
 import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.extend.module.eeuiScreenUtils;
 import app.eeui.framework.extend.view.ExtendWebView;
-import app.eeui.framework.ui.eeui;
 
 /**
  * Created by WDM on 2018/4/13.

@@ -4,6 +4,7 @@ package app.eeui.framework.extend.view;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -78,6 +79,7 @@ public class ExtendWebView extends WebView {
     private static final int REQUEST_CHOOSE = 2;
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessagesAboveL;
+    private android.webkit.WebChromeClient.FileChooserParams mUploadChooserParams;
     private ValueCallback<Object> mSendMessage;
     private Uri cameraUri;
 
@@ -257,6 +259,7 @@ public class ExtendWebView extends WebView {
                 mUploadMessagesAboveL.onReceiveValue(null);
             } else {
                 mUploadMessagesAboveL = filePathCallback;
+                mUploadChooserParams = fileChooserParams;
                 selectImage();
             }
             return true;
@@ -547,10 +550,14 @@ public class ExtendWebView extends WebView {
      */
     @SuppressLint("IntentReset")
     private void chosePicture() {
-        Intent innerIntent = new Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        innerIntent.setType("image/*");
-        Intent wrapperIntent = Intent.createChooser(innerIntent, null);
-        ((Activity) getContext()).startActivityForResult(wrapperIntent, REQUEST_CHOOSE);
+        Intent innerIntent = new Intent(Intent.ACTION_PICK);
+        innerIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (mUploadChooserParams != null && mUploadChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
+                innerIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            }
+        }
+        ((Activity) getContext()).startActivityForResult(innerIntent, REQUEST_CHOOSE);
     }
 
     /**
@@ -585,6 +592,14 @@ public class ExtendWebView extends WebView {
         if (requestCode == REQUEST_CHOOSE && resultCode == RESULT_OK) {
             if (data != null) {
                 String dataString = data.getDataString();
+                ClipData clipData = data.getClipData();
+                if (clipData != null) {
+                    results = new Uri[clipData.getItemCount()];
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        ClipData.Item item = clipData.getItemAt(i);
+                        results[i] = item.getUri();
+                    }
+                }
                 if (dataString != null) {
                     results = new Uri[]{Uri.parse(dataString)};
                 }
