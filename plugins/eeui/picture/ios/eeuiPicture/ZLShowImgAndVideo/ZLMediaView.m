@@ -57,7 +57,12 @@
         [playBut setImage:[UIImage imageNamed:@"PlayButtonOverlayLarge"] forState:UIControlStateNormal];
         [playBut addTarget:self action:@selector(onPlayBut) forControlEvents:UIControlEventTouchUpInside];
         
-        tabBarView = [[UIView alloc] initWithFrame:CGRectMake(0, frame.size.height-90, frame.size.width, 40)];
+        UIWindow *window = [UIApplication.sharedApplication.delegate window];
+        CGFloat safeBottom = 0;
+        if (@available(iOS 11.0, *)) {
+            safeBottom = window.safeAreaInsets.bottom - window.safeAreaInsets.top;
+        }
+        tabBarView = [[UIView alloc] initWithFrame:CGRectMake(0, frame.size.height-90-safeBottom, frame.size.width, 40)];
         tabBarView.backgroundColor=[UIColor clearColor];
         
         UILabel *lab1=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 40, 40)];

@@ -58,9 +58,13 @@
     [self.view addSubview:_scrollView];
     _scrollView.contentOffset = CGPointMake(_currentIndex * frame.size.width, 0);
     
-    
+    UIWindow *window = [UIApplication.sharedApplication.delegate window];
+    CGFloat safeBottom = 0;
+    if (@available(iOS 11.0, *)) {
+        safeBottom = window.safeAreaInsets.bottom;
+    }
     CGFloat barHeight = 94;
-    CGFloat barY = self.view.frame.size.height - barHeight;
+    CGFloat barY = self.view.frame.size.height - barHeight - safeBottom;
     _pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, barY, self.view.frame.size.width, barHeight)];
     _pageLabel.textColor = [UIColor whiteColor];
     _pageLabel.textAlignment = NSTextAlignmentCenter;
@@ -76,6 +80,10 @@
         CGRect mediaViewFrame = bounds;
         mediaViewFrame.size.width -= (2 * zlKSpacing);
         mediaViewFrame.origin.x = (bounds.size.width * i) + zlKSpacing;
+        if (@available(iOS 11.0, *)) {
+            UIWindow *window = [UIApplication.sharedApplication.delegate window];
+            mediaViewFrame.origin.y -= window.safeAreaInsets.top;
+        }
         
         ZLMediaView *mediaView = [[ZLMediaView alloc]initWithFrame:mediaViewFrame];
         mediaView.tag = 1000 + i;
