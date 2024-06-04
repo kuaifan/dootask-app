@@ -440,7 +440,7 @@ public class ExtendWebView extends WebView {
                 }
             });
         }
-        String[] selectPicTypeStr = {"拍照", "浏览图库"};
+        String[] selectPicTypeStr = {"拍照", "浏览图库", "浏览文件"};
         new AlertDialog.Builder(getContext()).setOnCancelListener(new ReOnCancelListener()).setItems(selectPicTypeStr, (dialog, which) -> {
             switch (which) {
                 case 0:
@@ -448,6 +448,9 @@ public class ExtendWebView extends WebView {
                     break;
                 case 1:
                     chosePicture();
+                    break;
+                case 2:
+                    choseFile();
                     break;
             }
         }).show();
@@ -552,6 +555,21 @@ public class ExtendWebView extends WebView {
     private void chosePicture() {
         Intent innerIntent = new Intent(Intent.ACTION_PICK);
         innerIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (mUploadChooserParams != null && mUploadChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
+                innerIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            }
+        }
+        ((Activity) getContext()).startActivityForResult(innerIntent, REQUEST_CHOOSE);
+    }
+
+    /**
+     * 【图片上传部分】本地文件选择
+     */
+    private void choseFile() {
+        Intent innerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        innerIntent.setType("*/*");
+        innerIntent.addCategory(Intent.CATEGORY_OPENABLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (mUploadChooserParams != null && mUploadChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
                 innerIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
