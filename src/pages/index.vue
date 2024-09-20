@@ -161,14 +161,6 @@ export default {
         },
 
         /**
-         * 获取时间戳
-         * @returns {number}
-         */
-        time() {
-            return Math.round(new Date().getTime() / 1000)
-        },
-
-        /**
          * 来自网页的消息
          * @param message
          */
