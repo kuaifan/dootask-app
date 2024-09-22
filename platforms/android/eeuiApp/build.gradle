@@ -3,18 +3,20 @@
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
         mavenCentral()
+        jcenter()
+        google()
         maven {
             url 'https://maven.google.com/'
-            name 'Google'
         }
-        google()
         maven {
             url 'https://developer.huawei.com/repo/'
         }
         maven() {
             url 'https://maven.aliyun.com/repository/public/'
+        }
+        maven {
+            url 'https://jitpack.io'
         }
     }
     dependencies {
@@ -30,23 +32,21 @@ allprojects {
         mavenLocal()
         mavenCentral()
         jcenter()
+        google()
         maven {
             url 'https://maven.google.com/'
-            name 'Google'
-        }
-        maven {
-            url "https://jitpack.io"
-            name 'Jjitpack'
         }
         maven() {
             url 'http://oss.jfrog.org/oss-snapshot-local/'
         }
-        google()
         maven() {
             url 'https://developer.huawei.com/repo/'
         }
         maven() {
             url 'https://maven.aliyun.com/repository/public/'
+        }
+        maven {
+            url 'https://jitpack.io'
         }
     }
 }
@@ -62,8 +62,12 @@ subprojects {
             classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         }
         repositories {
-            google()
+            mavenCentral()
             jcenter()
+            google()
+            maven {
+                url "https://repo.grails.org/grails/core/"
+            }
         }
     }
 }
