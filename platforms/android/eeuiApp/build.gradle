@@ -13,6 +13,9 @@ buildscript {
         maven {
             url 'https://developer.huawei.com/repo/'
         }
+        maven() {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
     }
     dependencies {
         classpath 'com.google.gms:google-services:4.3.15'
@@ -74,8 +77,8 @@ ext {
     eeuiVersionCode = 66
     eeuiVersionName = "2.5.1"
 
-    minSdkVersion = 19
-    appMinSdkVersion = 19
+    minSdkVersion = 21
+    appMinSdkVersion = 21
     compileSdkVersion = 33
     supportLibVersion = "28.0.0"
     targetSdkVersion = 31

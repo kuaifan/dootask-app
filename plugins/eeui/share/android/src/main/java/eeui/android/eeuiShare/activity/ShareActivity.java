@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,6 +36,7 @@ import eeui.android.eeuiShare.adapter.ChatAdapter;
 import eeui.android.eeuiShare.entity.User;
 import eeui.android.eeuiShare.utils.StringSplitUtils;
 import eeui.android.eeuiShare.utils.UriUtils;
+import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import rxhttp.wrapper.param.RxHttp;
 import rxhttp.wrapper.param.RxHttpFormParam;
