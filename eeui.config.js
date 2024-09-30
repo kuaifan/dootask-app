@@ -58,7 +58,7 @@ module.exports = {
 			"channel": "dootask",
 			"xiaomiAppId": "2882303761520159644",
 			"xiaomiAppKey": "5502015936644",
-			"huaweiAppId": "106275915",
+			"huaweiAppId": "112092611",
 			"meizuAppId": "",
 			"meizuAppKey": "",
 			"oppoAppKey": "f48b126465804bbeb847433afdbcb799",
