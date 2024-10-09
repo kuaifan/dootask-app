@@ -19,7 +19,6 @@ import eeui.android.eeuiAgoro.tools.CancelableTimer;
 
 public class eeuiAgoroAppModule extends WXModuleBase {
 
-    private boolean isEnterBackGround = false;
     private CancelableTimer serviceTimer;
     /**
      * 简单演示
@@ -192,7 +191,6 @@ public class eeuiAgoroAppModule extends WXModuleBase {
     @Override
     public void onActivityPause() {
         super.onActivityPause();
-        this.isEnterBackGround = true;
         Log.d("onActivityPause", "enter: ");
         // 设置延迟执行后台转前台 如果频繁切换会导致频繁启动停止服务
         if (serviceTimer == null) {
@@ -220,7 +218,6 @@ public class eeuiAgoroAppModule extends WXModuleBase {
     @Override
     public void onActivityResume() {
         super.onActivityResume();
-        this.isEnterBackGround = false;
         if (serviceTimer != null) {
             serviceTimer.cancel();
             serviceTimer = null;
