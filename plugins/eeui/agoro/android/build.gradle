@@ -22,10 +22,17 @@ android {
         }
     }
 
+    packagingOptions {
+        pickFirst 'lib/x86/libaosl.so'
+        pickFirst 'lib/x86_64/libaosl.so'
+        pickFirst 'lib/armeabi-v7a/libaosl.so'
+        pickFirst 'lib/arm64-v8a/libaosl.so'
+    }
+
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.arr'])
     //
     if (project.implementFromWeex) {
         compileOnly project(':weex_sdk')
@@ -36,7 +43,7 @@ dependencies {
     compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
     //
     compileOnly project(":eeui")
-    implementation 'io.agora.rtc:full-rtc-basic:4.2.0'
+    implementation 'io.agora.rtc:lite-sdk:4.4.1'
     implementation 'com.yanzhenjie:permission:2.0.2'
     implementation 'org.greenrobot:eventbus:3.3.1'
 }

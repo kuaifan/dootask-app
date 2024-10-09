@@ -1,5 +1,6 @@
 package eeui.android.eeuiAgoro.entry;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.taobao.weex.WXSDKEngine;

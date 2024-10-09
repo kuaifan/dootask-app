@@ -8,5 +8,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <!-- 如果你使用的是 Android 12.0 及以上设备，还需要添加如下权限： -->
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"  />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- android 14后的权限声明 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <application>
+
+        <service android:name="eeui.android.eeuiAgoro.service.KeepLiveService"
+                 android:foregroundServiceType="microphone|camera|mediaPlayback" />
+
+    </application>
 </manifest>

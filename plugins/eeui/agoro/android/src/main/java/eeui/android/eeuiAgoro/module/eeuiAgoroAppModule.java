@@ -3,7 +3,10 @@ package eeui.android.eeuiAgoro.module;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.taobao.weex.annotation.JSMethod;
@@ -11,6 +14,7 @@ import com.taobao.weex.bridge.JSCallback;
 
 import app.eeui.framework.extend.base.WXModuleBase;
 import eeui.android.eeuiAgoro.client.AgoraRtcPresenter;
+import eeui.android.eeuiAgoro.service.KeepLiveService;
 
 public class eeuiAgoroAppModule extends WXModuleBase {
 
@@ -180,5 +184,30 @@ public class eeuiAgoroAppModule extends WXModuleBase {
     @JSMethod
     public void localStatusCallback(final JSCallback callback) {
         AgoraRtcPresenter.getInstance().localStatusCallback(callback);
+    }
+
+    @Override
+    public void onActivityPause() {
+        super.onActivityPause();
+        //开启服务
+        Log.d("onActivityPause", "enter: ");
+        if (AgoraRtcPresenter.getInstance().getmRtcEngine() != null) {
+            Log.d("onActivityPause", "start: ");
+            // 正在通话中才启动服务
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //android8.0以上通过startForegroundService启动service
+                getActivity().startForegroundService(new Intent(getActivity(), KeepLiveService.class));
+            } else {
+                getActivity().startService(new Intent(getActivity(), KeepLiveService.class));
+            }
+        }
+
+    }
+
+    @Override
+    public void onActivityResume() {
+        super.onActivityResume();
+
+        getActivity().stopService(new Intent(getActivity(), KeepLiveService.class));
     }
 }
