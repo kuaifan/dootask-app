@@ -15,9 +15,12 @@ import com.taobao.weex.bridge.JSCallback;
 import app.eeui.framework.extend.base.WXModuleBase;
 import eeui.android.eeuiAgoro.client.AgoraRtcPresenter;
 import eeui.android.eeuiAgoro.service.KeepLiveService;
+import eeui.android.eeuiAgoro.tools.CancelableTimer;
 
 public class eeuiAgoroAppModule extends WXModuleBase {
 
+    private boolean isEnterBackGround = false;
+    private CancelableTimer serviceTimer;
     /**
      * 简单演示
      * @param msg
@@ -189,24 +192,39 @@ public class eeuiAgoroAppModule extends WXModuleBase {
     @Override
     public void onActivityPause() {
         super.onActivityPause();
-        //开启服务
+        this.isEnterBackGround = true;
         Log.d("onActivityPause", "enter: ");
-        if (AgoraRtcPresenter.getInstance().getmRtcEngine() != null) {
-            Log.d("onActivityPause", "start: ");
-            // 正在通话中才启动服务
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                //android8.0以上通过startForegroundService启动service
-                getActivity().startForegroundService(new Intent(getActivity(), KeepLiveService.class));
-            } else {
-                getActivity().startService(new Intent(getActivity(), KeepLiveService.class));
-            }
-        }
+        // 设置延迟执行后台转前台 如果频繁切换会导致频繁启动停止服务
+        if (serviceTimer == null) {
+            serviceTimer = new CancelableTimer(new Runnable() {
+                @Override
+                public void run() {
+                    //开启服务
+                    if (AgoraRtcPresenter.getInstance().getmRtcEngine() != null) {
+                        Log.d("onActivityPause", "start: ");
+                        // 正在通话中才启动服务
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            //android8.0以上通过startForegroundService启动service
+                            getActivity().startForegroundService(new Intent(getActivity(), KeepLiveService.class));
+                        } else {
+                            getActivity().startService(new Intent(getActivity(), KeepLiveService.class));
+                        }
+                    }
+                }
+            });
 
+            serviceTimer.start(1000*30); // 延迟30秒执行
+        }
     }
 
     @Override
     public void onActivityResume() {
         super.onActivityResume();
+        this.isEnterBackGround = false;
+        if (serviceTimer != null) {
+            serviceTimer.cancel();
+            serviceTimer = null;
+        }
 
         getActivity().stopService(new Intent(getActivity(), KeepLiveService.class));
     }

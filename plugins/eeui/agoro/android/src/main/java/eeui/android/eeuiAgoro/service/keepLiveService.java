@@ -76,4 +76,17 @@ public class KeepLiveService extends Service {
 
         return pendingIntent;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Log.d("service", "onDestroy: ");
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //创建NotificationChannel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            notificationManager.deleteNotificationChannel(notificationId);
+        }
+    }
 }
