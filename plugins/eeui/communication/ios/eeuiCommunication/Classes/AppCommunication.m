@@ -32,7 +32,11 @@
     }
     NSString *allString = @"tel://";
     allString = [allString stringByAppendingString:phone];
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:allString]];
+    if (@available(iOS 10.0, *)) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:allString] options:@{} completionHandler:nil];
+    } else {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:allString]];
+    }
     callback(nil,nil);
 }
 
