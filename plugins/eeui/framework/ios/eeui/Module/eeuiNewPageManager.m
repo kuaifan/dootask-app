@@ -668,10 +668,14 @@
 
 - (void)openWeb:(NSString*)url
 {
-    bool run = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-    if (!run) {
-        NSURL *URL = [NSURL URLWithString:[DeviceUtil urlEncoder:url]];
-        [[UIApplication sharedApplication] openURL:URL];
+    if (@available(iOS 10.0, *)) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:nil];
+    } else {
+        bool run = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+        if (!run) {
+            NSURL *URL = [NSURL URLWithString:[DeviceUtil urlEncoder:url]];
+            [[UIApplication sharedApplication] openURL:URL];
+        }
     }
 }
 

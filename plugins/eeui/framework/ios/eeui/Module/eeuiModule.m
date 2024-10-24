@@ -397,7 +397,11 @@ WX_EXPORT_METHOD(@selector(openOtherAppTo:cls:callback:))
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://", app]];
 
     if ([[UIApplication sharedApplication] canOpenURL:url]) {
-        [[UIApplication sharedApplication] openURL:url];
+        if (@available(iOS 10.0, *)) {
+            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+        } else {
+            [[UIApplication sharedApplication] openURL:url];
+        }
     }
 }
 
@@ -406,7 +410,11 @@ WX_EXPORT_METHOD(@selector(openOtherAppTo:cls:callback:))
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@", pkg, cls]];
 
     if ([[UIApplication sharedApplication] canOpenURL:url]) {
-        [[UIApplication sharedApplication] openURL:url];
+        if (@available(iOS 10.0, *)) {
+            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+        } else {
+            [[UIApplication sharedApplication] openURL:url];
+        }
         if (callback != nil) {
             callback(@{@"status":@"success", @"error":@""}, NO);
         }
