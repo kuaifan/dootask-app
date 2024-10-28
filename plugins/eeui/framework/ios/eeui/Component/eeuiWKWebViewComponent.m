@@ -352,7 +352,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
     } else if ([key isEqualToString:@"progressbarVisibility"]) {
         _isShowProgress = [WXConvert BOOL:value];
         if (isUpdate) {
-            [self setProgressbarVisibility:_isShowProgress];
+            [self setProgressbarVisibility:value];
         }
     } else if ([key isEqualToString:@"allowsInlineMediaPlayback"]) {
         _isAllowsInlineMediaPlayback = [WXConvert BOOL:value];
@@ -361,7 +361,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
     } else if ([key isEqualToString:@"scrollEnabled"]) {
         _isScrollEnabled = [WXConvert BOOL:value];
         if (isUpdate) {
-            [self setScrollEnabled:_isScrollEnabled];
+            [self setScrollEnabled:value];
         }
     } else if ([key isEqualToString:@"enableApi"]) {
         _isEnableApi = [WXConvert BOOL:value];
@@ -370,22 +370,22 @@ WX_EXPORT_METHOD(@selector(goForward:))
     } else if ([key isEqualToString:@"transparency"]) {
         _isTransparency = [WXConvert BOOL:value];
         if (isUpdate) {
-            [self setTransparency:_isTransparency];
+            [self setTransparency:value];
         }
     } else if ([key isEqualToString:@"hiddenDone"]) {
         _isHiddenDone = [WXConvert BOOL:value];
         if (isUpdate) {
-            [self setHiddenDone:_isHiddenDone];
+            [self setHiddenDone:value];
         }
     } else if ([key isEqualToString:@"hapticBackEnabled"]) {
         _isHapticBackEnabled = [WXConvert BOOL:value];
         if (isUpdate) {
-            [self setHapticBackEnabled:_isHapticBackEnabled];
+            [self setHapticBackEnabled:value];
         }
     } else if ([key isEqualToString:@"disabledUserLongClickSelect"]) {
         _isDisabledUserLongClickSelect = [WXConvert BOOL:value];
         if (isUpdate) {
-            [self setDisabledUserLongClickSelect:_isDisabledUserLongClickSelect];
+            [self setDisabledUserLongClickSelect:value];
         }
     }
 }
@@ -522,9 +522,9 @@ WX_EXPORT_METHOD(@selector(goForward:))
 }
 
 //是否显示进度条
-- (void)setProgressbarVisibility:(BOOL)var
+- (void)setProgressbarVisibility:(id)var
 {
-    _isShowProgress = var;
+    _isShowProgress = [WXConvert BOOL:var];
     if (_isShowProgress == NO) {
         [self.progressView setProgress:1.0f];
     }
@@ -532,10 +532,10 @@ WX_EXPORT_METHOD(@selector(goForward:))
 }
 
 //设置是否透明背景
-- (void)setTransparency:(BOOL)var
+- (void)setTransparency:(id)var
 {
     eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
-    if (var) {
+    if ([WXConvert BOOL:var]) {
         webView.opaque = NO;
         webView.backgroundColor = [UIColor clearColor];
     }else{
@@ -545,10 +545,10 @@ WX_EXPORT_METHOD(@selector(goForward:))
 }
 
 //隐藏键盘done部分（仅支持ios，android无效）
-- (void)setHiddenDone:(BOOL)var
+- (void)setHiddenDone:(id)var
 {
     eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
-    if (var) {
+    if ([WXConvert BOOL:var]) {
         [self hideWKWebviewKeyboardShortcutBar: webView];
     }else{
         //不支持恢复
@@ -556,23 +556,23 @@ WX_EXPORT_METHOD(@selector(goForward:))
 }
 
 //长按网页内容震动（仅支持android，ios无效）
-- (void)setHapticBackEnabled:(BOOL)var
+- (void)setHapticBackEnabled:(id)var
 {
-    _isHapticBackEnabled = var;
+    _isHapticBackEnabled = [WXConvert BOOL:var];
 }
 
 //允许用户长按选择内容（仅支持android，ios无效）
-- (void)setDisabledUserLongClickSelect:(BOOL)var
+- (void)setDisabledUserLongClickSelect:(id)var
 {
-    _isDisabledUserLongClickSelect = var;
+    _isDisabledUserLongClickSelect = [WXConvert BOOL:var];
 }
 
 //设置是否允许滚动
-- (void)setScrollEnabled:(BOOL)var
+- (void)setScrollEnabled:(id)var
 {
-    _isScrollEnabled = var;
+    _isScrollEnabled = [WXConvert BOOL:var];
     eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
-    ((UIScrollView *)[webView.subviews objectAtIndex:0]).scrollEnabled = var;
+    ((UIScrollView *)[webView.subviews objectAtIndex:0]).scrollEnabled = _isScrollEnabled;
 }
 
 //是否可以后退
