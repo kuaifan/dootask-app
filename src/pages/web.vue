@@ -67,8 +67,8 @@ export default {
             windowWidth: parseInt(eeui.getVariate("windowWidth", "0")) || 430,
 
             moreShow: false,
-            moreBrowserText: eeui.getVariate("languageWebBrowser", "浏览器打开"),
-            moreRefreshText: eeui.getVariate("languageWebRefresh", "刷新"),
+            moreBrowserText: eeui.getCachesString("languageWebBrowser", "浏览器打开"),
+            moreRefreshText: eeui.getCachesString("languageWebRefresh", "刷新"),
 
             navColor: null,                     // 导航栏颜色
             themeColor: null,                   // 主题颜色
