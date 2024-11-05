@@ -7,6 +7,7 @@ import com.taobao.weex.annotation.JSMethod;
 import java.util.HashMap;
 import java.util.Map;
 
+import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.extend.view.ExtendWebView;
 import app.eeui.framework.extend.view.webviewBridge.JsCallback;
 import app.eeui.framework.ui.eeui;
@@ -251,21 +252,21 @@ public class WebModule {
      * @param key
      * @param value
      */
-    public static void setCustomConfig(String key, Object value) {
+    public static void setCustomConfig(ExtendWebView webView, String key, Object value) {
         myApp().setCustomConfig(key, value);
     }
 
     /**
      * 获取自定义配置
      */
-    public static Object getCustomConfig() {
+    public static Object getCustomConfig(ExtendWebView webView) {
         return myApp().getCustomConfig();
     }
 
     /**
      * 清空自定义配置
      */
-    public static void clearCustomConfig() {
+    public static void clearCustomConfig(ExtendWebView webView) {
         myApp().clearCustomConfig();
     }
 
@@ -293,14 +294,14 @@ public class WebModule {
      * 获取已热更新至的数据ID
      * @return
      */
-    public static int getUpdateId() {
+    public static int getUpdateId(ExtendWebView webView) {
         return myApp().getUpdateId();
     }
 
     /**
      * 客户触发检测热更新
      */
-    public static void checkUpdate() {
+    public static void checkUpdate(ExtendWebView webView) {
         myApp().checkUpdate();
     }
 
@@ -444,8 +445,8 @@ public class WebModule {
      * @param value
      * @param expired
      */
-    public static void setCaches(ExtendWebView webView, String key, Object value, Long expired) {
-        myApp().setCaches(webView.getContext(), key, value, expired);
+    public static void setCaches(ExtendWebView webView, String key, Object value, String expired) {
+        myApp().setCaches(webView.getContext(), key, value, eeuiParse.parseLong(expired));
     }
 
     /**
@@ -463,8 +464,8 @@ public class WebModule {
      * @param value
      * @param expired
      */
-    public static void setCachesString(ExtendWebView webView, String key, String value, Long expired) {
-        myApp().setCachesString(webView.getContext(), key, value, expired);
+    public static void setCachesString(ExtendWebView webView, String key, String value, String expired) {
+        myApp().setCachesString(webView.getContext(), key, value, eeuiParse.parseLong(expired));
     }
 
     /**

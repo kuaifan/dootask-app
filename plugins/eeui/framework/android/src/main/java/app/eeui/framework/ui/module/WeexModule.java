@@ -8,6 +8,7 @@ import com.taobao.weex.common.WXModule;
 import java.util.HashMap;
 import java.util.Map;
 
+import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.ui.eeui;
 
 public class WeexModule extends WXModule {
@@ -487,8 +488,8 @@ public class WeexModule extends WXModule {
      * @param expired
      */
     @JSMethod(uiThread = false)
-    public void setCaches(String key, Object value, Long expired) {
-        myApp().setCaches(mWXSDKInstance.getContext(), key, value, expired);
+    public void setCaches(String key, Object value, String expired) {
+        myApp().setCaches(mWXSDKInstance.getContext(), key, value, eeuiParse.parseLong(expired));
     }
 
     /**
@@ -508,8 +509,8 @@ public class WeexModule extends WXModule {
      * @param expired
      */
     @JSMethod(uiThread = false)
-    public void setCachesString(String key, String value, Long expired) {
-        myApp().setCachesString(mWXSDKInstance.getContext(), key, value, expired);
+    public void setCachesString(String key, String value, String expired) {
+        myApp().setCachesString(mWXSDKInstance.getContext(), key, value, eeuiParse.parseLong(expired));
     }
 
     /**

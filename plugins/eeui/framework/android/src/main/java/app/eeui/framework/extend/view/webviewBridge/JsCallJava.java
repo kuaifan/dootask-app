@@ -41,8 +41,11 @@ public class JsCallJava {
             sb.append("if(b.__").append(mInjectedName).append("===true){return}b.__").append(mInjectedName).append("=true;");
             sb.append("var a={queue:[],callback:function(){var d=Array.prototype.slice.call(arguments,0);var c=d.shift();var e=d.shift();this.queue[c].apply(this,d)/*;if(!e){delete this.queue[c]}*/}};");
             for (Method method : methods) {
-                String sign;
-                if (method.getModifiers() != (Modifier.PUBLIC | Modifier.STATIC) || (sign = genJavaMethodSign(method)) == null) {
+                if (method.getModifiers() != (Modifier.PUBLIC | Modifier.STATIC)) {
+                    continue;
+                }
+                String sign = genJavaMethodSign(method);
+                if (sign == null) {
                     continue;
                 }
                 mMethodsMap.put(sign, method);
