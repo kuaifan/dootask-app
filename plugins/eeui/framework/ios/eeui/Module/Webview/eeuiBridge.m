@@ -426,9 +426,9 @@
 
 #pragma mark 保存数据信息
 
-- (void)setCachesString:(NSString*)key value:(NSString*)value expired:(NSInteger)expired
+- (void)setCachesString:(NSString*)key value:(NSString*)value expired:(NSString*)expired
 {
-    [[eeuiStorageManager sharedIntstance] setCachesString:key value:value expired:expired];
+    [[eeuiStorageManager sharedIntstance] setCachesString:key value:value expired:[WXConvert NSInteger:expired]];
 }
 
 - (id)getCachesString:key defaultVal:(NSString*)defaultVal
