@@ -13,6 +13,7 @@
 #import "eeuiCachesManager.h"
 #import "eeuiCaptchaManager.h"
 #import "eeuiLoadingManager.h"
+#import "eeuiLocationManager.h"
 #import "eeuiSaveImageManager.h"
 #import "eeuiShareManager.h"
 #import "eeuiStorageManager.h"
@@ -618,6 +619,19 @@
 - (void) keepScreenOff
 {
     [UIApplication sharedApplication].idleTimerDisabled = NO;
+}
+
+//获取当前位置
+- (void) getGeolocation:(WXModuleKeepAliveCallback)callback
+{
+    [[eeuiLocationManager shared] requestLocationWithCompletion:^(CLLocation * _Nullable location, NSError * _Nullable error) {
+        if (error) {
+            callback(@{@"status":@"error", @"error":error.localizedDescription}, NO);
+            return;
+        }
+        CLLocationCoordinate2D coordinate = location.coordinate;
+        callback(@{@"status":@"success", @"latitude":@(coordinate.latitude), @"longitude":@(coordinate.longitude)}, NO);
+    }];
 }
 
 @end
