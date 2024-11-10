@@ -853,4 +853,14 @@ public class WebModule {
     public static void keepScreenOff(ExtendWebView webView) {
         myApp().keepScreenOff(webView.getContext());
     }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 获取位置经纬度
+     */
+    public static void getGeolocation(ExtendWebView webView, JsCallback callback) {
+        myApp().getGeolocation(webView.getContext(), eeui.MCallback(callback));
+    }
 }

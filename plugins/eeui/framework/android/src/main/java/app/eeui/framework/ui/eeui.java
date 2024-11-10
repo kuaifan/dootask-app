@@ -68,6 +68,7 @@ import app.eeui.framework.extend.module.eeuiPage;
 import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.extend.module.eeuiScreenUtils;
 import app.eeui.framework.extend.module.eeuiShareUtils;
+import app.eeui.framework.extend.module.location.LocationHelper;
 import app.eeui.framework.extend.module.utilcode.constant.PermissionConstants;
 import app.eeui.framework.extend.module.utilcode.util.DeviceUtils;
 import app.eeui.framework.extend.module.utilcode.util.FileUtils;
@@ -1745,5 +1746,27 @@ public class eeui {
      */
     public void keepScreenOff(Context context) {
         ((Activity) context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 获取位置经纬度
+     * @param context
+     * @param callback
+     */
+    public void getGeolocation(Context context, JSCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        if (context instanceof PageActivity) {
+            ((PageActivity) context).getGeolocation(callback);
+            return;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("status", "error");
+        data.put("error", "ACTIVITY ERROR");
+        callback.invoke(data);
     }
 }

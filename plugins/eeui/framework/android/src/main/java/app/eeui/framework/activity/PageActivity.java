@@ -100,6 +100,7 @@ import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.extend.module.eeuiScreenUtils;
 import app.eeui.framework.extend.module.eeuiVersionUpdate;
 import app.eeui.framework.extend.module.http.HttpResponseParser;
+import app.eeui.framework.extend.module.location.LocationHelper;
 import app.eeui.framework.extend.module.utilcode.util.KeyboardUtils;
 import app.eeui.framework.extend.module.utilcode.util.PermissionUtils;
 import app.eeui.framework.extend.module.utilcode.util.ScreenUtils;
@@ -158,6 +159,9 @@ public class PageActivity extends AppCompatActivity {
 
     //申请权限部分
     private PermissionUtils mPermissionInstance;
+
+    // 位置部分
+    private LocationHelper locationHelper;
 
     //滑动验证码部分
     private SwipeCaptchaView v_swipeCaptchaView;
@@ -376,6 +380,9 @@ public class PageActivity extends AppCompatActivity {
             if (mWXSDKInstance != null) {
                 mWXSDKInstance.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
+            if (locationHelper != null) {
+                locationHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
@@ -399,6 +406,9 @@ public class PageActivity extends AppCompatActivity {
     public void onDestroy() {
         if (mWXSDKInstance != null) {
             mWXSDKInstance.onActivityDestroy();
+        }
+        if (locationHelper != null) {
+            locationHelper.stop();
         }
         if (mWebView != null) {
             mWebView.onDestroy();
@@ -630,7 +640,7 @@ public class PageActivity extends AppCompatActivity {
                 StatusBarUtil.setLightMode(this, isCancelColorForSwipeBack);
             }
         }
-        getWindow().setSoftInputMode(this.convertSoftInputMode((mPageInfo.getSoftInputMode())));
+        getWindow().setSoftInputMode(this.convertSoftInputMode(mPageInfo.getSoftInputMode()));
     }
 
     /**
@@ -1804,6 +1814,46 @@ public class PageActivity extends AppCompatActivity {
     public void hideNavigation() {
         navigationInit();
         titleBar.setVisibility(View.GONE);
+    }
+
+    /**
+     * 获取位置经纬度
+     * @param callback
+     */
+    public void getGeolocation(JSCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        if (locationHelper == null) {
+            LocationHelper.LocationConfig config = new LocationHelper.LocationConfig.Builder()
+                .setTimeout(20000)           // 20秒超时
+                .setMinAccuracy(50)          // 50米精度
+                .setMinUpdateInterval(1000)  // 1秒更新间隔
+                .setUseLastKnown(true)       // 使用上次定位
+                .build();
+            locationHelper = LocationHelper.getInstance(this);
+            locationHelper.setConfig(config);
+        }
+        locationHelper.requestLocation(this, new LocationHelper.OnLocationResultListener() {
+            @Override
+            public void onSuccess(double latitude, double longitude) {
+                // 获取到位置信息
+                Map<String, Object> data = new HashMap<>();
+                data.put("status", "success");
+                data.put("latitude", latitude);
+                data.put("longitude", longitude);
+                callback.invoke(data);
+            }
+
+            @Override
+            public void onError(String error) {
+                // 处理错误
+                Map<String, Object> data = new HashMap<>();
+                data.put("status", "error");
+                data.put("error", error);
+                callback.invoke(data);
+            }
+        });
     }
 
     /****************************************************************************************************/

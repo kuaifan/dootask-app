@@ -941,4 +941,16 @@ public class WeexModule extends WXModule {
     public void keepScreenOff() {
         myApp().keepScreenOff(mWXSDKInstance.getContext());
     }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 获取位置经纬度
+     * @param callback
+     */
+    @JSMethod
+    public void getGeolocation(JSCallback callback) {
+        myApp().getGeolocation(mWXSDKInstance.getContext(), callback);
+    }
 }
