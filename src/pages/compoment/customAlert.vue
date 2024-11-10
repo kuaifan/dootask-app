@@ -4,7 +4,7 @@
             <div class="flex-d-r">
                 <image :style="iconStyle" src="root://pages/assets/images/alert-icon.png"></image>
                 <div :style="hStyle">
-                    <text :style="titleStyle" class="font-weight-300">{{ title }}</text>
+                    <text :style="titleStyle" class="font-weight-500">{{ title }}</text>
                     <text :style="subTitleStyle" class="font-size-26 font-weight-300">{{ message }}</text>
                 </div>
             </div>
@@ -220,6 +220,10 @@ export default {
 
 .font-weight-300 {
     font-weight: 300;
+}
+
+.font-weight-500 {
+    font-weight: 500;
 }
 
 .color-black {

@@ -92,8 +92,8 @@ export default {
                 break;
 
             case 'keyboardStatus':
-                const data = encodeURIComponent(this.jsonStringify(message));
-                const javascript = `if (typeof window.__onKeyboardStatus === "function"){window.__onKeyboardStatus("${data}")}`;
+                const data = this.jsonStringify(message);
+                const javascript = `if (typeof window.__onKeyboardStatus === "function"){window.__onKeyboardStatus(${data})}`;
                 this.$refs.web.setJavaScript(javascript);
                 break;
 
@@ -301,20 +301,8 @@ export default {
         },
 
         meetingEvent(param) {
-            if (param.act == 'invent') {
-                this.inventEvent(param)
-                return
-            }
-            const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent({"uuid":"${param.uuid}","act":"${param.act}"})}`;
-            this.$refs.web.setJavaScript(javascript);
-        },
-
-        /**
-         * 邀请点击时与H5交互
-         * @param param
-         */
-        inventEvent(param) {
-            const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent({"meetingid":"${param.meetingid}","act":"${param.act}"})}`;
+            const paramStr = this.jsonStringify(param);
+            const javascript = `if (typeof window.__onMeetingEvent === "function"){window.__onMeetingEvent(${paramStr})}`;
             this.$refs.web.setJavaScript(javascript);
         },
 

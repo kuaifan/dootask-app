@@ -365,6 +365,10 @@ export default {
     watch: {
         showShow(val) {
             deviceInfo.keepScreenOn(val);   // 开启/关闭 屏幕常亮
+            this.callbackParam({
+                act: 'status',
+                status: val
+            });
         }
     },
 
