@@ -4,6 +4,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef void(^LocationCompletion)(CLLocation * _Nullable location, NSError * _Nullable error);
+typedef void(^AuthorizationCompletion)(BOOL hasPermission);
 
 @interface eeuiLocationManager : NSObject
 
@@ -12,8 +13,8 @@ typedef void(^LocationCompletion)(CLLocation * _Nullable location, NSError * _Nu
 // 获取位置（包含权限请求）
 - (void)requestLocationWithCompletion:(LocationCompletion)completion;
 
-// 检查是否有定位权限
-- (BOOL)hasLocationPermission;
+// 异步检查定位权限
+- (void)checkLocationPermission:(AuthorizationCompletion)completion;
 
 @end
 
