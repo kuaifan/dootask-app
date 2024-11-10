@@ -689,10 +689,19 @@
     if (@available(iOS 13.0, *)) {
         eeuiViewController *vc = [self getViewController:weexInstance];
         if (vc != nil) {
-            UIUserInterfaceStyle mode = vc.traitCollection.userInterfaceStyle;
-            if (mode == UIUserInterfaceStyleDark) {
-                return @"dark";
+            // 如果当前在主线程，直接获取
+            if ([NSThread isMainThread]) {
+                UIUserInterfaceStyle mode = vc.traitCollection.userInterfaceStyle;
+                return mode == UIUserInterfaceStyleDark ? @"dark" : @"light";
             }
+            
+            // 如果在其他线程，同步等待主线程执行
+            __block NSString *theme = @"light";
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                UIUserInterfaceStyle mode = vc.traitCollection.userInterfaceStyle;
+                theme = mode == UIUserInterfaceStyleDark ? @"dark" : @"light";
+            });
+            return theme;
         }
     }
     return @"light";
