@@ -38,14 +38,23 @@
         if (self.locationCompletion) {
             NSError *error = [NSError errorWithDomain:@"LocationError"
                                                code:-1
-                                           userInfo:@{NSLocalizedDescriptionKey: @"定位服务未开启"}];
+                                           userInfo:@{NSLocalizedDescriptionKey: @"UNAVAILABLE"}];
             self.locationCompletion(nil, error);
         }
         return;
     }
     
-    CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-    
+    // iOS 14及以上版本
+    if (@available(iOS 14.0, *)) {
+        CLAuthorizationStatus status = self.locationManager.authorizationStatus;
+        [self handleAuthorizationStatus:status];
+    } else {
+        // iOS 14以下版本
+        [self.locationManager requestWhenInUseAuthorization];
+    }
+}
+
+- (void)handleAuthorizationStatus:(CLAuthorizationStatus)status {
     switch (status) {
         case kCLAuthorizationStatusNotDetermined:
             // 请求权限
@@ -64,7 +73,7 @@
             if (self.locationCompletion) {
                 NSError *error = [NSError errorWithDomain:@"LocationError"
                                                    code:-2
-                                               userInfo:@{NSLocalizedDescriptionKey: @"没有定位权限"}];
+                                               userInfo:@{NSLocalizedDescriptionKey: @"PERMISSION DENIED"}];
                 self.locationCompletion(nil, error);
             }
             break;
@@ -73,9 +82,15 @@
 }
 
 - (BOOL)hasLocationPermission {
-    CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-    return (status == kCLAuthorizationStatusAuthorizedWhenInUse ||
-            status == kCLAuthorizationStatusAuthorizedAlways);
+    if (@available(iOS 14.0, *)) {
+        CLAuthorizationStatus status = self.locationManager.authorizationStatus;
+        return (status == kCLAuthorizationStatusAuthorizedWhenInUse ||
+                status == kCLAuthorizationStatusAuthorizedAlways);
+    } else {
+        CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+        return (status == kCLAuthorizationStatusAuthorizedWhenInUse ||
+                status == kCLAuthorizationStatusAuthorizedAlways);
+    }
 }
 
 - (void)startUpdatingLocation {
@@ -84,27 +99,14 @@
 }
 
 #pragma mark - CLLocationManagerDelegate
+// iOS 14及以上版本使用此方法
+- (void)locationManagerDidChangeAuthorization:(CLLocationManager *)manager  API_AVAILABLE(ios(14.0)) {
+    [self handleAuthorizationStatus:manager.authorizationStatus];
+}
+
+// iOS 14以下版本使用此方法
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    switch (status) {
-        case kCLAuthorizationStatusAuthorizedWhenInUse:
-        case kCLAuthorizationStatusAuthorizedAlways:
-            [self startUpdatingLocation];
-            break;
-            
-        case kCLAuthorizationStatusDenied:
-        case kCLAuthorizationStatusRestricted: {
-            if (self.locationCompletion) {
-                NSError *error = [NSError errorWithDomain:@"LocationError"
-                                                   code:-2
-                                               userInfo:@{NSLocalizedDescriptionKey: @"没有定位权限"}];
-                self.locationCompletion(nil, error);
-            }
-            break;
-        }
-            
-        default:
-            break;
-    }
+    [self handleAuthorizationStatus:status];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
