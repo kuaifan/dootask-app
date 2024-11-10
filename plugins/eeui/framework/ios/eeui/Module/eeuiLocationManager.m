@@ -34,8 +34,17 @@
 }
 
 - (void)requestLocationWithCompletion:(LocationCompletion)completion {
+    // 重置状态
+    self.isRequestingLocation = NO;  // 添加这行
     self.locationCompletion = completion;
     self.isWaitingForPermission = YES;
+    
+    // 检查当前权限状态
+    if (@available(iOS 14.0, *)) {
+        [self handleAuthorizationStatus:self.locationManager.authorizationStatus];
+    } else {
+        [self handleAuthorizationStatus:[CLLocationManager authorizationStatus]];
+    }
     
     // 直接请求权限，在回调中处理
     [self.locationManager requestWhenInUseAuthorization];
@@ -72,7 +81,7 @@
 }
 
 - (void)handleAuthorizationStatus:(CLAuthorizationStatus)status {
-    // 如果只是检查权限
+    // 修改权限检查逻辑
     if (!self.isWaitingForPermission) {
         BOOL hasPermission = (status == kCLAuthorizationStatusAuthorizedWhenInUse ||
                              status == kCLAuthorizationStatusAuthorizedAlways);
@@ -83,9 +92,7 @@
         return;
     }
     
-    // 处理定位请求
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        // 在后台线程检查定位服务状态
         if (![CLLocationManager locationServicesEnabled]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (self.locationCompletion) {
@@ -93,6 +100,7 @@
                                                        code:-1
                                                    userInfo:@{NSLocalizedDescriptionKey: @"UNAVAILABLE"}];
                     self.locationCompletion(nil, error);
+                    self.locationCompletion = nil;  // 添加这行
                     self.isWaitingForPermission = NO;
                 }
             });
@@ -107,6 +115,8 @@
                     
                 case kCLAuthorizationStatusAuthorizedWhenInUse:
                 case kCLAuthorizationStatusAuthorizedAlways:
+                    // 重置状态并开始定位
+                    self.isRequestingLocation = NO;  // 添加这行
                     [self startUpdatingLocation];
                     break;
                     
@@ -117,6 +127,7 @@
                                                            code:-2
                                                        userInfo:@{NSLocalizedDescriptionKey: @"PERMISSION DENIED"}];
                         self.locationCompletion(nil, error);
+                        self.locationCompletion = nil;  // 添加这行
                         self.isWaitingForPermission = NO;
                     }
                     break;
