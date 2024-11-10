@@ -456,13 +456,12 @@ public class LocationHelper {
             double longitude = location.getLongitude();
 
             // 根据配置转换坐标系
-            if (config.coordinateSystem == CoordinateSystem.WGS84) {
-                // Android 在中国返回的是 GCJ02，需要转换为 WGS84
-                CoordinateConverter.LatLng wgs84 = CoordinateConverter.gcj02ToWgs84(latitude, longitude);
-                latitude = wgs84.latitude;
-                longitude = wgs84.longitude;
+            if (config.coordinateSystem == CoordinateSystem.GCJ02) {
+                // Android 在中国返回的是 WGS84，如果需要转换为 GCJ02
+                CoordinateConverter.LatLng gcj02 = CoordinateConverter.wgs84ToGcj02(latitude, longitude);
+                latitude = gcj02.latitude;
+                longitude = gcj02.longitude;
             }
-            // 如果需要其他坐标系，可以在这里添加转换
 
             // 通知所有监听器
             final double finalLat = latitude;
