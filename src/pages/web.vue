@@ -3,6 +3,7 @@
         <web-view
             ref="web"
             class="flex"
+            :hiddenDone="hiddenDone"
             :transparency="true"
             :allowFileAccessFromFileURLs="allowAccess"
             :progressbarVisibility="showProgress"
@@ -63,6 +64,7 @@ export default {
             urlFixed: !!app.config.params.urlFixed,
             showProgress: !!app.config.params.showProgress,
             allowAccess: !!app.config.params.allowAccess,
+            hiddenDone: !!app.config.params.hiddenDone,
 
             windowWidth: parseInt(eeui.getVariate("windowWidth", "0")) || 430,
 
