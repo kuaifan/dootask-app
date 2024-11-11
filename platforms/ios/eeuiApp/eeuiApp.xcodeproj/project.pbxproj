@@ -1074,6 +1074,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G365J5PZA2;
 				ENABLE_BITCODE = NO;
+				EXLUDED_ARCHS = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/eeuiApp/eeui/Utility/Pay/Alipay",
@@ -1109,6 +1110,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G365J5PZA2;
 				ENABLE_BITCODE = NO;
+				EXLUDED_ARCHS = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/eeuiApp/eeui/Utility/Pay/Alipay",
