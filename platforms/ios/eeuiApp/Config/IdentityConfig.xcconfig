@@ -5,6 +5,8 @@
 //  Created by Hitosea-005 on 2023/5/31.
 //
 
+#include? "Version.xcconfig"
+
 // Configuration settings file format documentation can be found at:
 
 BASE_DISPLAY_NAME = DooTask
@@ -13,9 +15,9 @@ BASE_BUNDLE_ID = com.dootask.task
 
 BASE_SHARE_BUNDLE_ID = com.dootask.task.shareExtension
 
-BASE_SHORT_VERSON = 0.39.97
+BASE_SHORT_VERSON = $(VERSION_NAME:default=0.0.1)
 
-BASE_CODE_VERSON = 154
+BASE_CODE_VERSON = $(VERSION_CODE:default=1)
 
 APPLICATION_SCHEME = dootask
 

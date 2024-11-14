@@ -73,10 +73,16 @@ subprojects {
 }
 
 ext {
+    def localProperties = new Properties()
+    def localPropertiesFile = rootProject.file('local.properties')
+    if (localPropertiesFile.exists()) {
+        localProperties.load(new FileInputStream(localPropertiesFile))
+    }
+
     applicationId = "com.dootask.task"
 
-    versionCode = 154
-    versionName = "0.39.97"
+    versionCode = localProperties.getProperty('versionCode') ? localProperties.getProperty('versionCode').toInteger() : 1
+    versionName = localProperties.getProperty('versionName') ?: "0.0.1"
 
     eeuiVersionCode = 66
     eeuiVersionName = "2.5.1"
