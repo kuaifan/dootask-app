@@ -771,8 +771,16 @@ WX_EXPORT_METHOD(@selector(deleteCache))
             KSPhotoItem *item = nil;
             if ([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"] || [url hasPrefix:@"ftp://"]) {
                 item = [KSPhotoItem itemWithSourceView:nil imageUrl:[NSURL URLWithString:url]];
-            }else{
-                item = [KSPhotoItem itemWithSourceView:nil image:[UIImage imageNamed:url]];
+            } else if ([url hasPrefix:@"file://"]) {
+                NSString *filePath = [url stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+                UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+                item = [KSPhotoItem itemWithSourceView:nil image:image];
+            } else {
+                UIImage *image = [UIImage imageWithContentsOfFile:url];
+                if (!image) {
+                    image = [UIImage imageNamed:url];
+                }
+                item = [KSPhotoItem itemWithSourceView:nil image:image];
             }
             [items addObject:item];
         }
