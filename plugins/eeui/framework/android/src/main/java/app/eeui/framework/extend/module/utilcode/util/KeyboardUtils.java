@@ -17,6 +17,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * <pre>
@@ -28,10 +30,10 @@ import java.lang.reflect.Field;
  */
 public final class KeyboardUtils {
 
-    private static int                        sDecorViewInvisibleHeightPre;
-    private static OnGlobalLayoutListener     onGlobalLayoutListener;
-    private static OnSoftInputChangedListener onSoftInputChangedListener;
-    private static int                        sContentViewInvisibleHeightPre5497;
+    private static int sDecorViewInvisibleHeightPre;
+    private static int sContentViewInvisibleHeightPre5497;
+    private static final Map<Activity, OnGlobalLayoutListener> onGlobalLayoutListeners = new WeakHashMap<>();
+    private static final Map<Activity, OnSoftInputChangedListener> onSoftInputChangedListeners = new WeakHashMap<>();
 
     private KeyboardUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -173,16 +175,18 @@ public final class KeyboardUtils {
      */
     public static void registerSoftInputChangedListener(final Activity activity,
                                                         final OnSoftInputChangedListener listener) {
+        // eeui dev 改造支持多注册
         final int flags = activity.getWindow().getAttributes().flags;
         if ((flags & WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) != 0) {
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
         final FrameLayout contentView = activity.findViewById(android.R.id.content);
         sDecorViewInvisibleHeightPre = getDecorViewInvisibleHeight(activity);
-        onSoftInputChangedListener = listener;
-        onGlobalLayoutListener = new OnGlobalLayoutListener() {
+        onSoftInputChangedListeners.put(activity, listener);
+        OnGlobalLayoutListener onGlobalLayoutListener = new OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                OnSoftInputChangedListener onSoftInputChangedListener = onSoftInputChangedListeners.get(activity);
                 if (onSoftInputChangedListener != null) {
                     int height = getDecorViewInvisibleHeight(activity);
                     if (sDecorViewInvisibleHeightPre != height) {
@@ -192,6 +196,7 @@ public final class KeyboardUtils {
                 }
             }
         };
+        onGlobalLayoutListeners.put(activity, onGlobalLayoutListener);
         contentView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(onGlobalLayoutListener);
     }
@@ -203,14 +208,13 @@ public final class KeyboardUtils {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void unregisterSoftInputChangedListener(final Activity activity) {
-        // eeui dev 防止重复注销监听
-        if (onGlobalLayoutListener == null) {
-            return;
+        // eeui dev 改造支持多注册
+        OnGlobalLayoutListener onGlobalLayoutListener = onGlobalLayoutListeners.remove(activity);
+        if (onGlobalLayoutListener != null) {
+            final View contentView = activity.findViewById(android.R.id.content);
+            contentView.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
         }
-        final View contentView = activity.findViewById(android.R.id.content);
-        contentView.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
-        onSoftInputChangedListener = null;
-        onGlobalLayoutListener = null;
+        onSoftInputChangedListeners.remove(activity);
     }
 
     /**
