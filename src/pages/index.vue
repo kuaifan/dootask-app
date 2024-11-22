@@ -175,9 +175,14 @@ export default {
                     break;
 
                 case 'setUmengAlias':
-                    this.umengApiUrl = message.url;
                     this.webReady = true;
+                    this.umengApiUrl = message.url;
                     this.updateUmengAlias();
+                    break;
+
+                case 'delUmengAlias':
+                    this.umengApiUrl = message.url;
+                    this.removeUmengAlias();
                     break;
 
                 case 'setVibrate':
@@ -263,33 +268,49 @@ export default {
             }
         },
 
-        updateUmengAlias() {
-            const alias = `${WXEnvironment.platform}-${this.appMessage.userid}-${this.uniqueId}`;
-            umengPush.deleteAlias(alias, "userid", () => {
-                umengPush.addAlias(alias, "userid", data => {
-                    if (data.status === 'success') {
-                        // 别名保存到服务器
-                        eeui.ajax({
-                            url: this.umengApiUrl,
-                            method: 'get',
-                            data: {
-                                alias,
-                                osName: WXEnvironment.osName,
-                                osVersion: WXEnvironment.osVersion,
-                                deviceModel: WXEnvironment.deviceModel,
-                                userAgent: this.appMessage.userAgent,
-                            },
-                            headers: {
-                                token: this.appMessage.token,
-                            }
-                        }, result => {
-                            console.log(result);
-                        });
-                    } else {
-                        console.log("[UmengAlias] add error");
-                    }
-                    this.umengError = data.status !== 'success'
-                });
+        async updateUmengAlias() {
+            const alias = await this.aliasDelete()
+            umengPush.addAlias(alias, "userid", data => {
+                if (data.status === 'success') {
+                    this.ajaxUmengAlias(alias, 'update')
+                } else {
+                    console.log("[UmengAlias] add error");
+                }
+                this.umengError = data.status !== 'success'
+            });
+        },
+
+        async removeUmengAlias() {
+            const alias = await this.aliasDelete()
+            this.ajaxUmengAlias(alias, 'remove')
+        },
+
+        ajaxUmengAlias(alias, action) {
+            eeui.ajax({
+                url: this.umengApiUrl,
+                method: 'get',
+                data: {
+                    alias,
+                    action,
+                    osName: WXEnvironment.osName,
+                    osVersion: WXEnvironment.osVersion,
+                    deviceModel: WXEnvironment.deviceModel,
+                    userAgent: this.appMessage.userAgent,
+                },
+                headers: {
+                    token: this.appMessage.token,
+                }
+            }, result => {
+                console.log(result);
+            });
+        },
+
+        aliasDelete() {
+            return new Promise(resolve => {
+                const alias = `${WXEnvironment.platform}-${this.appMessage.userid}-${this.uniqueId}`;
+                umengPush.deleteAlias(alias, "userid", () => {
+                    resolve(alias)
+                })
             })
         },
 
