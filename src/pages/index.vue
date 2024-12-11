@@ -285,7 +285,7 @@ export default {
             this.ajaxUmengAlias(alias, 'remove')
         },
 
-        ajaxUmengAlias(alias, action) {
+        async ajaxUmengAlias(alias, action) {
             eeui.ajax({
                 url: this.umengApiUrl,
                 method: 'get',
@@ -296,6 +296,7 @@ export default {
                     osVersion: WXEnvironment.osVersion,
                     deviceModel: WXEnvironment.deviceModel,
                     userAgent: this.appMessage.userAgent,
+                    isNotified: await this.getPermissionStatus(),
                 },
                 headers: {
                     token: this.appMessage.token,
@@ -311,6 +312,14 @@ export default {
                 umengPush.deleteAlias(alias, "userid", () => {
                     resolve(alias)
                 })
+            })
+        },
+
+        getPermissionStatus() {
+            return new Promise(resolve => {
+                notifications.getPermissionStatus(ret => {
+                    resolve(ret)
+                });
             })
         },
 
