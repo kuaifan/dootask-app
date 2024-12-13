@@ -295,6 +295,8 @@ export default {
                     osName: WXEnvironment.osName,
                     osVersion: WXEnvironment.osVersion,
                     deviceModel: WXEnvironment.deviceModel,
+                    appVersion: eeui.getVersion(),
+                    appVersionName: eeui.getVersionName(),
                     userAgent: this.appMessage.userAgent,
                     isNotified: await this.getPermissionStatus(),
                 },
