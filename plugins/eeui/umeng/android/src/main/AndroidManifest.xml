@@ -69,6 +69,12 @@
             android:value="appid=${huaweiAppId}" />
         <!-- HUAWEI厂商通道 end-->
 
+        <!-- 荣耀厂商通道 start-->
+        <meta-data
+            android:name="com.hihonor.push.app_id"
+            android:value="appid=${honorAppId}" />
+        <!-- 荣耀厂商通道 end-->
+
     </application>
 
 </manifest>

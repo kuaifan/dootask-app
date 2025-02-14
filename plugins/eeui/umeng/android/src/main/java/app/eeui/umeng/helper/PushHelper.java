@@ -17,6 +17,7 @@ import com.umeng.message.api.UPushRegisterCallback;
 import com.umeng.message.entity.UMessage;
 
 import org.android.agoo.fcm.FCMRegister;
+import org.android.agoo.honor.HonorRegister;
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.mezu.MeizuRegister;
 import org.android.agoo.oppo.OppoRegister;
@@ -123,6 +124,7 @@ public class PushHelper {
         String oppoAppSecret = eeuiJson.getString(umengConfig, "oppoAppSecret");
         String vivoAppId = eeuiJson.getString(umengConfig, "vivoAppId");
         String vivoAppKey = eeuiJson.getString(umengConfig, "vivoAppKey");
+        String honorAppId = eeuiJson.getString(umengConfig, "honorAppId");
         //小米通道
         if (!TextUtils.isEmpty(xiaomiAppId)) {
             MiPushRegistar.register(context, xiaomiAppId, xiaomiAppKey);
@@ -142,6 +144,10 @@ public class PushHelper {
         //VIVO 通道，注意VIVO通道的初始化参数在minifest中配置
         if (!TextUtils.isEmpty(vivoAppId)) {
             VivoRegister.register(context);
+        }
+        //HONOR 通道
+        if (!TextUtils.isEmpty(honorAppId)) {
+            HonorRegister.register((Application) context);
         }
 
         FCMRegister.register(context);
