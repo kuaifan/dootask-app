@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
 		manifestPlaceholders = [
+			honorAppId:"900873555",
 			huaweiAppId:"112092611",
 			vivoAppId:"105562603",
-			vivoAppKey:"ea6a826256eb2896a2f36743d859dbd0",
-            honorAppId:"900873555"
+			vivoAppKey:"ea6a826256eb2896a2f36743d859dbd0"
 		]
         applicationId project.applicationId
         minSdkVersion project.appMinSdkVersion

@@ -91,17 +91,18 @@ function _androidGradle() {
         let match = gradleContent.match(gradleReg);
         if (match) {
             try {
-                let tempContent = match[1],
-                    tempRes = /\s*([a-zA-Z][a-zA-Z0-9_]*)\s*:\s*('|")(.*?)\2\s*[,\n]/g,
-                    tempObject = {},
+                let tempContent = match[1],
+                    tempRes = /\s*([a-zA-Z][a-zA-Z0-9_]*)\s*:\s*('|")(.*?)\2\s*[,\n]/g,
+                    tempObject = {},
                     tempValue = "";
-                while (tempValue = tempRes.exec(tempContent)) {
+                while (tempValue = tempRes.exec(tempContent)) {
                     tempObject[tempValue[1]] = tempValue[3];
                 }
                 tempObject = _ksort(Object.assign(tempObject, {
                     vivoAppKey  : jsonData['vivoAppKey'] || "",
                     vivoAppId   : jsonData['vivoAppId'] || "",
-                    huaweiAppId : jsonData['huaweiAppId'] || ""
+                    huaweiAppId : jsonData['huaweiAppId'] || "",
+                    honorAppId  : jsonData['honorAppId'] || ""
                 }));
                 //
                 let newContent = "";
