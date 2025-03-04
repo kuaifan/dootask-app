@@ -935,7 +935,6 @@ public class WeexModule extends WXModule {
 
     /**
      * 关闭屏幕常亮
-     * @return
      */
     @JSMethod
     public void keepScreenOff() {
@@ -952,5 +951,24 @@ public class WeexModule extends WXModule {
     @JSMethod
     public void getGeolocation(JSCallback callback) {
         myApp().getGeolocation(mWXSDKInstance.getContext(), callback);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 开启应用程序级别的摇动撤销（仅支持ios，android无效）
+     */
+    @JSMethod
+    public void shakeToEditOn() {
+        myApp().shakeToEditOn(mWXSDKInstance.getContext());
+    }
+
+    /**
+     * 禁用应用程序级别的摇动撤销（仅支持ios，android无效）
+     */
+    @JSMethod
+    public void shakeToEditOff() {
+        myApp().shakeToEditOff(mWXSDKInstance.getContext());
     }
 }

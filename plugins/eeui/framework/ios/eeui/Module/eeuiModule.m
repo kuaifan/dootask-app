@@ -852,8 +852,7 @@ WX_EXPORT_METHOD(@selector(keepScreenOff))
     [UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
-
-#pragma mark 定位
+#pragma mark 位置
 WX_EXPORT_METHOD(@selector(getGeolocation:))
 //获取当前位置
 - (void)getGeolocation:(WXModuleKeepAliveCallback)callback
@@ -867,4 +866,20 @@ WX_EXPORT_METHOD(@selector(getGeolocation:))
         callback(@{@"status":@"success", @"latitude":@(coordinate.latitude), @"longitude":@(coordinate.longitude)}, NO);
     }];
 }
+
+#pragma mark 摇动
+WX_EXPORT_METHOD(@selector(shakeToEditOn))
+WX_EXPORT_METHOD(@selector(shakeToEditOff))
+//开启应用程序级别的摇动撤销
+- (void) shakeToEditOn
+{
+    [UIApplication sharedApplication].applicationSupportsShakeToEdit = YES;
+}
+
+//禁用应用程序级别的摇动撤销
+- (void) shakeToEditOff
+{
+    [UIApplication sharedApplication].applicationSupportsShakeToEdit = NO;
+}
+
 @end

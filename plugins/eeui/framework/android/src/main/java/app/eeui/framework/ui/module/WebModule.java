@@ -2,7 +2,6 @@ package app.eeui.framework.ui.module;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.taobao.weex.annotation.JSMethod;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -862,5 +861,22 @@ public class WebModule {
      */
     public static void getGeolocation(ExtendWebView webView, JsCallback callback) {
         myApp().getGeolocation(webView.getContext(), eeui.MCallback(callback));
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 开启应用程序级别的摇动撤销（仅支持ios，android无效）
+     */
+    public static void shakeToEditOn(ExtendWebView webView) {
+        myApp().shakeToEditOn(webView.getContext());
+    }
+
+    /**
+     * 禁用应用程序级别的摇动撤销（仅支持ios，android无效）
+     */
+    public static void shakeToEditOff(ExtendWebView webView) {
+        myApp().shakeToEditOff(webView.getContext());
     }
 }

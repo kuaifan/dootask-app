@@ -609,6 +609,7 @@
     return [CustomWeexSDKManager getKeyBoardlsVisible];
 }
 
+#pragma mark 屏幕
 //打开屏幕常亮
 - (void) keepScreenOn
 {
@@ -621,6 +622,7 @@
     [UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
+#pragma mark 位置
 //获取当前位置
 - (void) getGeolocation:(WXModuleKeepAliveCallback)callback
 {
@@ -632,6 +634,19 @@
         CLLocationCoordinate2D coordinate = location.coordinate;
         callback(@{@"status":@"success", @"latitude":@(coordinate.latitude), @"longitude":@(coordinate.longitude)}, NO);
     }];
+}
+
+#pragma mark 摇动
+//开启应用程序级别的摇动撤销
+- (void) shakeToEditOn
+{
+    [UIApplication sharedApplication].applicationSupportsShakeToEdit = YES;
+}
+
+//禁用应用程序级别的摇动撤销
+- (void) shakeToEditOff
+{
+    [UIApplication sharedApplication].applicationSupportsShakeToEdit = NO;
 }
 
 @end

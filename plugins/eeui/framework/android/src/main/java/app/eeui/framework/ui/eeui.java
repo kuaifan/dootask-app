@@ -68,7 +68,6 @@ import app.eeui.framework.extend.module.eeuiPage;
 import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.extend.module.eeuiScreenUtils;
 import app.eeui.framework.extend.module.eeuiShareUtils;
-import app.eeui.framework.extend.module.location.LocationHelper;
 import app.eeui.framework.extend.module.utilcode.constant.PermissionConstants;
 import app.eeui.framework.extend.module.utilcode.util.DeviceUtils;
 import app.eeui.framework.extend.module.utilcode.util.FileUtils;
@@ -1768,5 +1767,22 @@ public class eeui {
         data.put("status", "error");
         data.put("error", "ACTIVITY ERROR");
         callback.invoke(data);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 开启应用程序级别的摇动撤销（仅支持ios，android无效）
+     */
+    public void shakeToEditOn(Context context) {
+        //
+    }
+
+    /**
+     * 禁用应用程序级别的摇动撤销（仅支持ios，android无效）
+     */
+    public void shakeToEditOff(Context context) {
+        //
     }
 }
