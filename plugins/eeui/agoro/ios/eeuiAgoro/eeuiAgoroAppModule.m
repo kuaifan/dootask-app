@@ -246,10 +246,10 @@ WX_EXPORT_METHOD_SYNC(@selector(muteRemoteVideoStream:mute:))
     
 }
 
--(void)rtcEngine:(AgoraRtcEngineKit *)engine localVideoStateChangedOfState:(AgoraVideoLocalState)state error:(AgoraLocalVideoStreamError)error sourceType:(AgoraVideoSourceType)sourceType{
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine localVideoStateChangedOfState:(AgoraVideoLocalState)state reason:(AgoraLocalVideoStreamReason)reason sourceType:(AgoraVideoSourceType)sourceType NS_SWIFT_NAME(rtcEngine(_:localVideoStateChangedOf:reason:sourceType:)){
     self.statusBlock?self.statusBlock(@{@"uuid": @"me", @"status": @(state), @"type":@"video"}, YES): nil;
 }
--(void)rtcEngine:(AgoraRtcEngineKit *)engine localAudioStateChanged:(AgoraAudioLocalState)state error:(AgoraAudioLocalError)error {
+-(void)rtcEngine:(AgoraRtcEngineKit *)engine localAudioStateChanged:(AgoraAudioLocalState)state reason:(AgoraAudioLocalReason)reason NS_SWIFT_NAME(rtcEngine(_:localAudioStateChanged:reason:)){
     self.statusBlock?self.statusBlock(@{@"uuid": @"me", @"status": @(state), @"type":@"audio"}, YES): nil;
 }
 
