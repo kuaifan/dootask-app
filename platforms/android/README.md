@@ -10,3 +10,13 @@
 注：
 
 * 可能您第一次构建的时间太长您也可以尝试[解决 Android Studio 第一次导入项目太慢](https://www.jianshu.com/p/ba8189146a6b)。实在不行就请耐心等待 Android Studio 自己构建完成吧
+
+## Android studio 配置
+
+- 设置 JDK: `Settings > Build, Execution, Deployment > Build Tools > Gradle > Gradle JDK > 选择：corretto-11 (Amazon Corretto 11.xx)`
+
+- 设置 NDK: `Settings > Languages & Frameworks > Android SDK > SDK Tools > 勾选 Show Package Details > 勾选 NDK (21.4.xx) > Apply`
+
+- 设置 CMake: `Settings > Languages & Frameworks > Android SDK > SDK Tools > 勾选 Show Package Details > 勾选 CMake (3.10.2.xx) > Apply`
+
+- 然后 `Sync Now`
