@@ -12,6 +12,14 @@
         <div v-if="moreShow===true" class="more" @click="moreShow=false">
             <icon class="more-top" :style="moreTopStyle" content="tb-triangle-up-fill"/>
             <div class="more-box" :style="moreBoxStyle">
+                <template v-if="canGoBack">
+                    <text class="more-item" :style="moreItemStyle" @click="itemClick('back')">{{moreBackText}}</text>
+                    <div class="more-line" :style="moreLineStyle"></div>
+                </template>
+                <template v-if="canGoForward">
+                    <text class="more-item" :style="moreItemStyle" @click="itemClick('forward')">{{moreForwardText}}</text>
+                    <div class="more-line" :style="moreLineStyle"></div>
+                </template>
                 <template v-if="browser">
                     <text class="more-item" :style="moreItemStyle" @click="itemClick('browser')">{{moreBrowserText}}</text>
                     <div class="more-line" :style="moreLineStyle"></div>
@@ -65,10 +73,14 @@ export default {
             showProgress: !!app.config.params.showProgress,
             allowAccess: !!app.config.params.allowAccess,
             hiddenDone: !!app.config.params.hiddenDone,
+            canGoBack: false,
+            canGoForward: false,
 
             windowWidth: parseInt(eeui.getVariate("windowWidth", "0")) || 430,
 
             moreShow: false,
+            moreBackText: eeui.getCachesString("languageWebBack", "后退"),
+            moreForwardText: eeui.getCachesString("languageWebForward", "前进"),
             moreBrowserText: eeui.getCachesString("languageWebBrowser", "浏览器打开"),
             moreRefreshText: eeui.getCachesString("languageWebRefresh", "刷新"),
 
@@ -180,7 +192,9 @@ export default {
                 iconSize: 40,
                 iconColor: this.navColor,
                 width: 120,
-            }, _ => {
+            }, async () => {
+                this.canGoBack = await new Promise(resolve => this.$refs.web.canGoBack(resolve));
+                this.canGoForward = await new Promise(resolve => this.$refs.web.canGoForward(resolve));
                 this.moreShow = !this.moreShow;
             })
         },
@@ -191,6 +205,16 @@ export default {
          */
         itemClick(action) {
             switch (action) {
+                case 'back':
+                    this.$refs.web.goBack(async () => {
+                        this.canGoBack = await new Promise(resolve => this.$refs.web.canGoBack(resolve));
+                    });
+                    break;
+                case 'forward':
+                    this.$refs.web.goForward(async () => {
+                        this.canGoForward = await new Promise(resolve => this.$refs.web.canGoForward(resolve));
+                    });
+                    break;
                 case 'browser':
                     if (this.url) {
                         eeui.openWeb(this.url);
