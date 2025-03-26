@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.eeui.framework.extend.module.eeuiParse;
+import app.eeui.framework.extend.module.eeuiPhoto;
 import app.eeui.framework.ui.eeui;
 
 public class WeexModule extends WXModule {
@@ -970,5 +971,24 @@ public class WeexModule extends WXModule {
     @JSMethod
     public void shakeToEditOff() {
         myApp().shakeToEditOff(mWXSDKInstance.getContext());
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 获取最新照片
+     */
+    @JSMethod
+    public void getLatestPhoto(JSCallback callback) {
+        eeuiPhoto.getLatestPhoto(mWXSDKInstance.getContext(), callback);
+    }
+
+    /**
+     * 上传图片到指定URL
+     */
+    @JSMethod
+    public void uploadPhoto(String params, JSCallback callback) {
+        eeuiPhoto.uploadPhoto(mWXSDKInstance.getContext(), params, callback);
     }
 }

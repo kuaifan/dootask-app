@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.eeui.framework.extend.module.eeuiParse;
+import app.eeui.framework.extend.module.eeuiPhoto;
 import app.eeui.framework.extend.view.ExtendWebView;
 import app.eeui.framework.extend.view.webviewBridge.JsCallback;
 import app.eeui.framework.ui.eeui;
@@ -878,5 +879,22 @@ public class WebModule {
      */
     public static void shakeToEditOff(ExtendWebView webView) {
         myApp().shakeToEditOff(webView.getContext());
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 获取最新照片
+     */
+    public static void getLatestPhoto(ExtendWebView webView, JsCallback callback) {
+        eeuiPhoto.getLatestPhoto(webView.getContext(), eeui.MCallback(callback));
+    }
+
+    /**
+     * 上传图片到指定URL
+     */
+    public static void uploadPhoto(ExtendWebView webView, String params, JsCallback callback) {
+        eeuiPhoto.uploadPhoto(webView.getContext(), params, eeui.MCallback(callback));
     }
 }
