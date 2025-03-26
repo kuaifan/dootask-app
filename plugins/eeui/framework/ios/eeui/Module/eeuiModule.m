@@ -3,7 +3,7 @@
 //  WeexTestDemo
 //
 //  Created by apple on 2018/6/2.
-//  Copyright © 2018年 TomQin. All rights reserved.
+//  Copyright 2018年 TomQin. All rights reserved.
 //
 
 #import "eeuiModule.h"
@@ -15,6 +15,7 @@
 #import "eeuiLoadingManager.h"
 #import "eeuiLocationManager.h"
 #import "eeuiSaveImageManager.h"
+#import "eeuiPhotoManager.h"
 #import "eeuiShareManager.h"
 #import "eeuiStorageManager.h"
 #import "eeuiToastManager.h"
@@ -880,6 +881,29 @@ WX_EXPORT_METHOD(@selector(shakeToEditOff))
 - (void) shakeToEditOff
 {
     [UIApplication sharedApplication].applicationSupportsShakeToEdit = NO;
+}
+
+#pragma mark 相册相关
+WX_EXPORT_METHOD(@selector(getLatestPhoto:))
+WX_EXPORT_METHOD(@selector(uploadPhoto:callback:))
+// 获取相册最新图片（同时返回缩略图和原图）
+- (void)getLatestPhoto:(WXModuleKeepAliveCallback)callback
+{
+    [[eeuiPhotoManager sharedInstance] getLatestPhoto:^(id result, BOOL keepAlive) {
+        if (callback) {
+            callback(result, keepAlive);
+        }
+    }];
+}
+
+// 上传图片到指定URL
+- (void)uploadPhoto:(id)params callback:(WXModuleKeepAliveCallback)callback
+{
+    [[eeuiPhotoManager sharedInstance] uploadPhoto:params callback:^(id result, BOOL keepAlive) {
+        if (callback) {
+            callback(result, keepAlive);
+        }
+    }];
 }
 
 @end

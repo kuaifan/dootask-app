@@ -15,6 +15,7 @@
 #import "eeuiLoadingManager.h"
 #import "eeuiLocationManager.h"
 #import "eeuiSaveImageManager.h"
+#import "eeuiPhotoManager.h"
 #import "eeuiShareManager.h"
 #import "eeuiStorageManager.h"
 #import "eeuiToastManager.h"
@@ -647,6 +648,27 @@
 - (void) shakeToEditOff
 {
     [UIApplication sharedApplication].applicationSupportsShakeToEdit = NO;
+}
+
+#pragma mark 相册相关
+//获取相册最新图片（同时返回缩略图和原图）
+- (void) getLatestPhoto:(WXModuleKeepAliveCallback)callback
+{
+    [[eeuiPhotoManager sharedInstance] getLatestPhoto:^(id result, BOOL keepAlive) {
+        if (callback) {
+            callback(result, keepAlive);
+        }
+    }];
+}
+
+//上传图片到指定URL
+- (void) uploadPhoto:(id)params callback:(WXModuleKeepAliveCallback)callback
+{
+    [[eeuiPhotoManager sharedInstance] uploadPhoto:params callback:^(id result, BOOL keepAlive) {
+        if (callback) {
+            callback(result, keepAlive);
+        }
+    }];
 }
 
 @end
