@@ -164,6 +164,7 @@ static eeuiPhotoManager *instance = nil;
  *                   - width: 缩略图宽度
  *                   - height: 缩略图高度
  *                   - size: 文件大小（字节）
+ *                   - name: 原始文件名
  */
 - (void)getThumbnailImage:(PHAsset *)asset withCompletion:(void (^)(NSDictionary *))completion {
     // 获取照片的缩略图
@@ -214,6 +215,17 @@ static eeuiPhotoManager *instance = nil;
     NSString *fileName = [NSString stringWithFormat:@"thumb_%@.jpg", [[NSUUID UUID] UUIDString]];
     NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
     
+    // 获取原始文件名
+    __block NSString *originalFileName = @"";
+    if (@available(iOS 9, *)) {
+        PHAssetResource *resource = [[PHAssetResource assetResourcesForAsset:asset] firstObject];
+        if (resource) {
+            originalFileName = resource.originalFilename;
+        }
+    } else {
+        // Fallback on earlier versions
+    }
+    
     // 获取缩略图
     [[PHImageManager defaultManager] requestImageForAsset:asset
                                                targetSize:targetSize
@@ -247,6 +259,7 @@ static eeuiPhotoManager *instance = nil;
                     @"width": @(imageSize.width),
                     @"height": @(imageSize.height),
                     @"size": @(fileSize),
+                    @"name": originalFileName,
                 };
                 
                 completion(thumbResult);
@@ -269,6 +282,7 @@ static eeuiPhotoManager *instance = nil;
  *                   - width: 原图宽度
  *                   - height: 原图高度
  *                   - size: 文件大小（字节）
+ *                   - name: 原始文件名
  */
 - (void)getOriginalImage:(PHAsset *)asset withCompletion:(void (^)(NSDictionary *))completion {
     // 配置图片请求选项
@@ -283,6 +297,17 @@ static eeuiPhotoManager *instance = nil;
     NSString *tempDir = NSTemporaryDirectory();
     NSString *fileName = [NSString stringWithFormat:@"original_%@.jpg", [[NSUUID UUID] UUIDString]];
     NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
+    
+    // 获取原始文件名
+    __block NSString *originalFileName = @"";
+    if (@available(iOS 9, *)) {
+        PHAssetResource *resource = [[PHAssetResource assetResourcesForAsset:asset] firstObject];
+        if (resource) {
+            originalFileName = resource.originalFilename;
+        }
+    } else {
+        // Fallback on earlier versions
+    }
     
     // 请求原始图片数据
     [[PHImageManager defaultManager] requestImageDataForAsset:asset
@@ -313,6 +338,7 @@ static eeuiPhotoManager *instance = nil;
                     @"width": @(imageSize.width),
                     @"height": @(imageSize.height),
                     @"size": @(fileSize),
+                    @"name": originalFileName,
                 };
                 
                 completion(originalResult);
@@ -348,6 +374,7 @@ static eeuiPhotoManager *instance = nil;
                             @"width": @(imageSize.width),
                             @"height": @(imageSize.height),
                             @"size": @(fileSize),
+                            @"name": originalFileName,
                         };
                         
                         completion(originalResult);

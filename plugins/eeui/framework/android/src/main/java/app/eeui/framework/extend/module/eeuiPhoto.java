@@ -259,7 +259,7 @@ public class eeuiPhoto {
      *                   - error: 如果失败，包含错误信息
      *                   - created: 照片创建时间戳（秒）
      *                   - thumbnail: 缩略图信息，包含path、base64、width、height、size
-     *                   - original: 原图信息，包含path、width、height、size
+     *                   - original: 原图信息，包含path、width、height、size、name
      */
     public static void getLatestPhoto(Context context, JSCallback callback) {
         try {
@@ -309,7 +309,8 @@ public class eeuiPhoto {
                     MediaStore.Images.Media.DATE_ADDED,
                     MediaStore.Images.Media.WIDTH,
                     MediaStore.Images.Media.HEIGHT,
-                    MediaStore.Images.Media.SIZE
+                    MediaStore.Images.Media.SIZE,
+                    MediaStore.Images.Media.DISPLAY_NAME
                 };
                 String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
@@ -342,6 +343,7 @@ public class eeuiPhoto {
                 int widthColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH);
                 int heightColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT);
                 int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
+                int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
 
                 long id = cursor.getLong(idColumn);
                 String path = cursor.getString(pathColumn);
@@ -349,6 +351,7 @@ public class eeuiPhoto {
                 int width = cursor.getInt(widthColumn);
                 int height = cursor.getInt(heightColumn);
                 long size = cursor.getLong(sizeColumn);
+                String fileName = cursor.getString(nameColumn);
 
                 cursor.close();
 
@@ -374,10 +377,11 @@ public class eeuiPhoto {
                 originalInfo.put("width", width);
                 originalInfo.put("height", height);
                 originalInfo.put("size", size);
+                originalInfo.put("name", fileName);
                 result.put("original", originalInfo);
 
                 // 生成缩略图并获取信息
-                JSONObject thumbnailInfo = createThumbnail(context, path);
+                JSONObject thumbnailInfo = createThumbnail(context, path, fileName);
                 if (thumbnailInfo != null) {
                     result.put("thumbnail", thumbnailInfo);
                 }
@@ -404,7 +408,7 @@ public class eeuiPhoto {
     /**
      * 为指定路径的图片创建缩略图并返回相关信息
      */
-    private static JSONObject createThumbnail(Context context, String path) {
+    private static JSONObject createThumbnail(Context context, String path, String fileName) {
         try {
             // 创建File对象
             File originalFile = new File(path);
@@ -504,8 +508,10 @@ public class eeuiPhoto {
                 cacheDir.mkdirs();
             }
 
-            String fileName = "thumb_" + System.currentTimeMillis() + ".jpg";
-            File outputFile = new File(cacheDir, fileName);
+            String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+            String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+            String newFileName = "thumb_" + System.currentTimeMillis() + fileExtension;
+            File outputFile = new File(cacheDir, newFileName);
             String outputPath = outputFile.getAbsolutePath();
 
             FileOutputStream fos = null;
@@ -551,6 +557,7 @@ public class eeuiPhoto {
             thumbnailInfo.put("width", targetWidth);
             thumbnailInfo.put("height", targetHeight);
             thumbnailInfo.put("size", outputFile.length());
+            thumbnailInfo.put("name", fileName);
 
             return thumbnailInfo;
         } catch (Exception e) {
