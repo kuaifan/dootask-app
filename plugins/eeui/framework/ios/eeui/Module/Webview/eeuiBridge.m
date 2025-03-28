@@ -671,4 +671,14 @@
     }];
 }
 
+//取消图片上传
+- (void) cancelUploadPhoto:(NSString*)uploadId callback:(WXModuleKeepAliveCallback)callback
+{
+    [[eeuiPhotoManager sharedInstance] cancelUploadPhoto:uploadId callback:^(id result, BOOL keepAlive) {
+        if (callback) {
+            callback(result, keepAlive);
+        }
+    }];
+}
+
 @end

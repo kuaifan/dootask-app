@@ -34,6 +34,9 @@ import okhttp3.Response;
 
 public class eeuiPhoto {
 
+    // 用于存储上传任务的映射表
+    private static final Map<String, Call> uploadCallMap = new HashMap<>();
+
     /**
      * 上传图片到指定URL
      * 该方法将图片文件以multipart/form-data格式上传到指定URL
@@ -45,6 +48,7 @@ public class eeuiPhoto {
      *              - data: (可选) 附加表单数据，必须是字典类型，键值会被转换为表单字段
      *              - headers: (可选) 自定义HTTP请求头，必须是字典类型
      * @param callback 回调函数，会返回上传结果，包含以下信息：
+     *                - 准备就绪: {status: "ready", id: "上传ID"}
      *                - 成功: {status: "success", statusCode: HTTP状态码, data: 服务器响应数据}
      *                - 失败: {status: "error", error: 错误信息}
      */
@@ -139,9 +143,21 @@ public class eeuiPhoto {
             Request request = builder.build();
 
             // 执行请求
-            client.newCall(request).enqueue(new Callback() {
+            Call call = client.newCall(request);
+            uploadCallMap.put(url, call);
+            if (callback != null) {
+                final JSONObject readyResult = new JSONObject();
+                readyResult.put("status", "ready");
+                readyResult.put("id", url);
+                ((Activity) context).runOnUiThread(() -> {
+                    callback.invokeAndKeepAlive(readyResult);
+                });
+            }
+
+            call.enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    uploadCallMap.remove(url);
                     if (callback != null) {
                         final JSONObject errorResult = createErrorJSON(e.getMessage());
                         ((Activity) context).runOnUiThread(() -> {
@@ -152,6 +168,7 @@ public class eeuiPhoto {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    uploadCallMap.remove(url);
                     int statusCode = response.code();
                     String responseBody = response.body().string();
 
@@ -172,6 +189,44 @@ public class eeuiPhoto {
                 ((Activity) context).runOnUiThread(() -> {
                     callback.invoke(errorResult);
                 });
+            }
+        }
+    }
+
+    /**
+     * 取消图片上传
+     *
+     * @param uploadId 上传任务的ID，即uploadPhoto方法返回的ready状态中的id值
+     * @param callback 回调函数，会返回取消结果
+     */
+    public static void cancelUploadPhoto(String uploadId, JSCallback callback) {
+        if (uploadId == null || uploadId.isEmpty()) {
+            if (callback != null) {
+                JSONObject result = new JSONObject();
+                result.put("status", "error");
+                result.put("error", "上传ID不能为空");
+                callback.invoke(result);
+            }
+            return;
+        }
+
+        Call call = uploadCallMap.get(uploadId);
+        if (call != null && !call.isCanceled()) {
+            call.cancel();
+            uploadCallMap.remove(uploadId);
+
+            if (callback != null) {
+                JSONObject result = new JSONObject();
+                result.put("status", "success");
+                result.put("id", uploadId);
+                callback.invoke(result);
+            }
+        } else {
+            if (callback != null) {
+                JSONObject result = new JSONObject();
+                result.put("status", "error");
+                result.put("error", "未找到上传任务或已取消");
+                callback.invoke(result);
             }
         }
     }

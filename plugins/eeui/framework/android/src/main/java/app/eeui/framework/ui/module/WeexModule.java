@@ -991,4 +991,12 @@ public class WeexModule extends WXModule {
     public void uploadPhoto(String params, JSCallback callback) {
         eeuiPhoto.uploadPhoto(mWXSDKInstance.getContext(), params, callback);
     }
+
+    /**
+     * 取消图片上传
+     */
+    @JSMethod
+    public void cancelUploadPhoto(String uploadId, JSCallback callback) {
+        eeuiPhoto.cancelUploadPhoto(uploadId, callback);
+    }
 }

@@ -897,4 +897,11 @@ public class WebModule {
     public static void uploadPhoto(ExtendWebView webView, String params, JsCallback callback) {
         eeuiPhoto.uploadPhoto(webView.getContext(), params, eeui.MCallback(callback));
     }
+
+    /**
+     * 取消图片上传
+     */
+    public static void cancelUploadPhoto(ExtendWebView webView, String uploadId, JsCallback callback) {
+        eeuiPhoto.cancelUploadPhoto(uploadId, eeui.MCallback(callback));
+    }
 }

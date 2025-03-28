@@ -886,6 +886,7 @@ WX_EXPORT_METHOD(@selector(shakeToEditOff))
 #pragma mark 相册相关
 WX_EXPORT_METHOD(@selector(getLatestPhoto:))
 WX_EXPORT_METHOD(@selector(uploadPhoto:callback:))
+WX_EXPORT_METHOD(@selector(cancelUploadPhoto:callback:))
 // 获取相册最新图片（同时返回缩略图和原图）
 - (void)getLatestPhoto:(WXModuleKeepAliveCallback)callback
 {
@@ -904,6 +905,12 @@ WX_EXPORT_METHOD(@selector(uploadPhoto:callback:))
             callback(result, keepAlive);
         }
     }];
+}
+
+//取消图片上传
+- (void)cancelUploadPhoto:(NSString*)imgUrl callback:(WXModuleKeepAliveCallback)callback
+{
+    [[eeuiPhotoManager sharedInstance] cancelUploadPhoto:imgUrl callback:callback];
 }
 
 @end

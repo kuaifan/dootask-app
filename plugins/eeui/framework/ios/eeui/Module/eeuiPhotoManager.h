@@ -25,4 +25,11 @@
  */
 - (void)uploadPhoto:(NSDictionary *)params callback:(WXKeepAliveCallback)callback;
 
+/**
+ * 取消图片上传
+ * @param uploadId 上传任务的ID
+ * @param callback 回调
+ */
+- (void)cancelUploadPhoto:(NSString *)uploadId callback:(WXKeepAliveCallback)callback;
+
 @end

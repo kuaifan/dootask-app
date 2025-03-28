@@ -8,6 +8,13 @@
 #import "eeuiPhotoManager.h"
 #import <Photos/Photos.h>
 
+@interface eeuiPhotoManager ()
+
+// 用于存储上传任务的映射表
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSURLSessionUploadTask *> *uploadTaskMap;
+
+@end
+
 @implementation eeuiPhotoManager
 
 static eeuiPhotoManager *instance = nil;
@@ -18,6 +25,14 @@ static eeuiPhotoManager *instance = nil;
         instance = [[eeuiPhotoManager alloc] init];
     });
     return instance;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _uploadTaskMap = [NSMutableDictionary dictionary];
+    }
+    return self;
 }
 
 /**
@@ -359,6 +374,7 @@ static eeuiPhotoManager *instance = nil;
  *              - headers: (可选) 自定义HTTP请求头，必须是字典类型
  * 
  * @param callback 回调函数，会返回上传结果，包含以下信息：
+ *                - 准备就绪: {status: "ready", id: "上传ID"}
  *                - 成功: {status: "success", statusCode: HTTP状态码, data: 服务器响应数据}
  *                - 失败: {status: "error", error: 错误信息}
  */
@@ -375,6 +391,13 @@ static eeuiPhotoManager *instance = nil;
     NSString *urlString = params[@"url"];
     NSString *path = params[@"path"];
     
+    if (!urlString || [urlString isEqualToString:@""] || !path || [path isEqualToString:@""]) {
+        if (callback) {
+            callback(@{@"status": @"error", @"error": @"必须包含url和path参数"}, NO);
+        }
+        return;
+    }
+    
     // 获取可选参数 - 表单字段名
     NSString *fieldName = params[@"fieldName"];
     if (!fieldName || [fieldName isEqualToString:@""]) {
@@ -382,99 +405,113 @@ static eeuiPhotoManager *instance = nil;
     }
     
     // 获取可选参数 - 附加表单数据
-    NSDictionary *formData = nil;
-    if (params[@"data"] && [params[@"data"] isKindOfClass:[NSDictionary class]]) {
-        formData = params[@"data"];
+    NSDictionary *data = params[@"data"];
+    if (data && ![data isKindOfClass:[NSDictionary class]]) {
+        data = nil;
     }
     
     // 获取可选参数 - 自定义请求头
-    NSDictionary *headers = nil;
-    if (params[@"headers"] && [params[@"headers"] isKindOfClass:[NSDictionary class]]) {
-        headers = params[@"headers"];
-    }
-    
-    // 参数验证
-    if (!urlString || !path || [urlString isEqualToString:@""] || [path isEqualToString:@""]) {
-        if (callback) {
-            callback(@{@"status": @"error", @"error": @"参数错误，请提供有效的URL和图片路径"}, NO);
-        }
-        return;
+    NSDictionary *headers = params[@"headers"];
+    if (headers && ![headers isKindOfClass:[NSDictionary class]]) {
+        headers = nil;
     }
     
     // 检查文件是否存在
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if (![fileManager fileExistsAtPath:path]) {
         if (callback) {
-            callback(@{@"status": @"error", @"error": @"图片文件不存在"}, NO);
+            callback(@{@"status": @"error", @"error": @"文件不存在"}, NO);
         }
         return;
     }
     
-    // 读取图片数据
-    NSData *imageData = [NSData dataWithContentsOfFile:path];
-    if (!imageData) {
+    // 获取文件内容
+    NSData *fileData = [NSData dataWithContentsOfFile:path];
+    if (!fileData) {
         if (callback) {
-            callback(@{@"status": @"error", @"error": @"图片数据读取失败"}, NO);
+            callback(@{@"status": @"error", @"error": @"文件读取失败"}, NO);
         }
         return;
     }
     
-    // 创建请求
+    // 获取文件名
+    NSString *fileName = [path lastPathComponent];
+    
+    // 创建URL并设置请求
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
     
-    // 创建唯一的boundary
+    // 添加自定义请求头
+    if (headers) {
+        for (NSString *key in headers) {
+            [request setValue:headers[key] forHTTPHeaderField:key];
+        }
+    }
+    
+    // 生成边界字符串
     NSString *boundary = [NSString stringWithFormat:@"Boundary-%@", [[NSUUID UUID] UUIDString]];
     NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
     [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
     
-    // 设置自定义请求头
-    if (headers) {
-        [headers enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            if ([key isKindOfClass:[NSString class]] && ([obj isKindOfClass:[NSString class]] || [obj isKindOfClass:[NSNumber class]])) {
-                [request setValue:[obj description] forHTTPHeaderField:key];
-            }
-        }];
-    }
-    
-    // 准备请求体数据
+    // 创建请求体
     NSMutableData *body = [NSMutableData data];
     
-    // 添加其他表单数据
-    if (formData) {
-        [formData enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            if ([key isKindOfClass:[NSString class]]) {
-                NSString *value = [obj description]; // 将任何类型转换为字符串
-                [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-                [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
-                [body appendData:[[NSString stringWithFormat:@"%@\r\n", value] dataUsingEncoding:NSUTF8StringEncoding]];
-            }
-        }];
+    // 添加附加表单数据
+    if (data) {
+        for (NSString *key in data) {
+            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"%@\r\n", data[key]] dataUsingEncoding:NSUTF8StringEncoding]];
+        }
     }
     
-    // 添加图片数据
+    // 添加文件数据
     [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", fieldName, [path lastPathComponent]] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:imageData];
+    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", fieldName, fileName] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:fileData];
     [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
     
     // 结束标记
     [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     
-    // 设置请求体
-    [request setHTTPBody:body];
+    // 设置内容类型请求头
+    [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
     
     // 创建会话配置
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     
-    // 创建上传任务
+    // 先返回准备就绪状态和上传ID
+    if (callback) {
+        callback(@{@"status": @"ready", @"id": urlString}, YES);
+    }
+    
+    // 创建临时文件存储请求体数据
+    NSString *tempFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:
+                             [NSString stringWithFormat:@"upload_%@.tmp", [[NSUUID UUID] UUIDString]]];
+    [body writeToFile:tempFilePath atomically:YES];
+    
+    // 创建上传任务（使用文件方式）
     NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request
-                                                               fromData:body
+                                                               fromFile:[NSURL fileURLWithPath:tempFilePath]
                                                       completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        // 完成后删除临时文件
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:tempFilePath]) {
+            [fileManager removeItemAtPath:tempFilePath error:nil];
+        }
+        
+        // 从映射表中移除任务
+        [self.uploadTaskMap removeObjectForKey:urlString];
+        
         if (error) {
+            // 检查是否是取消错误
+            if (error.code == NSURLErrorCancelled) {
+                return; // 已通过cancelUploadPhoto回调，此处不再回调
+            }
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (callback) {
                     callback(@{@"status": @"error", @"error": error.localizedDescription}, NO);
@@ -526,8 +563,40 @@ static eeuiPhotoManager *instance = nil;
         });
     }];
     
-    // 启动上传任务
+    // 存储上传任务
+    self.uploadTaskMap[urlString] = uploadTask;
+    
+    // 开始上传
     [uploadTask resume];
+}
+
+/**
+ * 取消图片上传
+ *
+ * @param uploadId 上传任务的ID，即uploadPhoto方法返回的ready状态中的id值
+ * @param callback 回调函数，会返回取消结果
+ */
+- (void)cancelUploadPhoto:(NSString *)uploadId callback:(WXKeepAliveCallback)callback {
+    if (!uploadId || [uploadId isEqualToString:@""]) {
+        if (callback) {
+            callback(@{@"status": @"error", @"error": @"上传ID不能为空"}, NO);
+        }
+        return;
+    }
+    
+    NSURLSessionUploadTask *task = self.uploadTaskMap[uploadId];
+    if (task) {
+        [task cancel];
+        [self.uploadTaskMap removeObjectForKey:uploadId];
+        
+        if (callback) {
+            callback(@{@"status": @"success", @"id": uploadId}, NO);
+        }
+    } else {
+        if (callback) {
+            callback(@{@"status": @"error", @"error": @"未找到上传任务或已取消"}, NO);
+        }
+    }
 }
 
 @end
