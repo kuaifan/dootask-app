@@ -45,7 +45,6 @@ public class eeuiPhoto {
      *              - data: (可选) 附加表单数据，必须是字典类型，键值会被转换为表单字段
      *              - headers: (可选) 自定义HTTP请求头，必须是字典类型
      * @param callback 回调函数，会返回上传结果，包含以下信息：
-     *                - 上传中: {status: "uploading", progress: 进度值}
      *                - 成功: {status: "success", statusCode: HTTP状态码, data: 服务器响应数据}
      *                - 失败: {status: "error", error: 错误信息}
      */

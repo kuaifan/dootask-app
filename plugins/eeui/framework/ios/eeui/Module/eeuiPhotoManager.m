@@ -359,7 +359,6 @@ static eeuiPhotoManager *instance = nil;
  *              - headers: (可选) 自定义HTTP请求头，必须是字典类型
  * 
  * @param callback 回调函数，会返回上传结果，包含以下信息：
- *                - 上传中: {status: "uploading", progress: 进度值}
  *                - 成功: {status: "success", statusCode: HTTP状态码, data: 服务器响应数据}
  *                - 失败: {status: "error", error: 错误信息}
  */
@@ -466,13 +465,6 @@ static eeuiPhotoManager *instance = nil;
     
     // 设置请求体
     [request setHTTPBody:body];
-    
-    // 显示进度提示（可选）
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (callback) {
-            callback(@{@"status": @"uploading", @"progress": @0}, YES);
-        }
-    });
     
     // 创建会话配置
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
