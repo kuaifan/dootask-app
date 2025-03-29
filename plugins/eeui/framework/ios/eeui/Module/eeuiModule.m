@@ -593,6 +593,7 @@ WX_EXPORT_METHOD(@selector(getIfaAsync:))
 WX_EXPORT_METHOD_SYNC(@selector(getSDKVersionCode))
 WX_EXPORT_METHOD_SYNC(@selector(getSDKVersionName))
 WX_EXPORT_METHOD_SYNC(@selector(isIPhoneXType))
+WX_EXPORT_METHOD_SYNC(@selector(isDebug))
 
 - (NSInteger)getStatusBarHeight
 {
@@ -704,6 +705,15 @@ WX_EXPORT_METHOD_SYNC(@selector(isIPhoneXType))
 - (Boolean)isIPhoneXType
 {
     return iPhoneXSeries;
+}
+
+- (Boolean)isDebug
+{
+#ifdef DEBUG
+    return true;
+#else
+    return false;
+#endif
 }
 
 #pragma mark 吐司提示

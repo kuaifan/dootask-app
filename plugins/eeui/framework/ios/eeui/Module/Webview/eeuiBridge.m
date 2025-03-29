@@ -561,6 +561,15 @@
     return iPhoneXSeries;
 }
 
+- (Boolean)isDebug
+{
+#ifdef DEBUG
+    return true;
+#else
+    return false;
+#endif
+}
+
 #pragma mark 吐司提示
 
 - (void)toast:(NSDictionary *)param

@@ -282,7 +282,7 @@ export default {
 
         async removeUmengAlias() {
             const alias = await this.aliasDelete()
-            this.ajaxUmengAlias(alias, 'remove')
+            await this.ajaxUmengAlias(alias, 'remove')
         },
 
         async ajaxUmengAlias(alias, action) {
@@ -297,6 +297,7 @@ export default {
                     deviceModel: WXEnvironment.deviceModel,
                     appVersion: eeui.getLocalVersion(),
                     appVersionName: eeui.getLocalVersionName(),
+                    isDebug: eeui.isDebug(),
                     userAgent: this.appMessage.userAgent,
                     isNotified: await this.getPermissionStatus(),
                 },

@@ -479,6 +479,15 @@ public class WeexModule extends WXModule {
         return myApp().isIPhoneXType(mWXSDKInstance.getContext());
     }
 
+    /**
+     * 是否debug模式
+     * @return
+     */
+    @JSMethod(uiThread = false)
+    public boolean isDebug() {
+        return myApp().isDebug(mWXSDKInstance.getContext());
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 

@@ -436,6 +436,14 @@ public class WebModule {
         return myApp().isIPhoneXType(webView.getContext());
     }
 
+    /**
+     * 是否debug模式
+     * @return
+     */
+    public static boolean isDebug(ExtendWebView webView) {
+        return myApp().isDebug(webView.getContext());
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 
