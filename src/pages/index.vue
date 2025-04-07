@@ -43,9 +43,19 @@ export default {
             umengApiUrl: null,
             umengError: false,
 
-            navColor: null,                     // 导航栏颜色
             themeName: '',                      // 主题颜色
             themeColor: null,                   // 主题颜色
+            themeDefault: {                     // 主题默认值
+                theme: {
+                    dark: '#131313',
+                    light: '#f8f8f8'
+                },
+                nav: {
+                    dark: '#cdcdcd',
+                    light: '#232323'
+                }
+            },
+            navColor: null,                     // 导航栏颜色
             systemTheme: eeui.getThemeName(),   // 主题名称
 
             appGroupID: "group.im.dootask",     // iOS共享储存的应用唯一标识符
@@ -144,6 +154,11 @@ export default {
          * @param themeName
          */
         initTheme(themeName) {
+            const config = this.jsonParse(eeui.getCachesString("themeDefault", "{}"), this.themeDefault)
+            if (config.theme && config.nav) {
+                this.themeDefault = config
+            }
+            //
             if (themeName) {
                 eeui.setCachesString("themeName", themeName, 0)
             } else {
@@ -152,9 +167,10 @@ export default {
             if (!['light', 'dark'].includes(themeName)) {
                 themeName = this.systemTheme
             }
+            //
             this.themeName = themeName
-            this.themeColor = themeName === 'dark' ? '#131313' : '#f8f8f8'
-            this.navColor = themeName === 'dark' ? '#cdcdcd' : '#232323'
+            this.themeColor = this.themeDefault.theme[themeName]
+            this.navColor = this.themeDefault.nav[themeName]
             eeui.setStatusBarStyle(themeName === 'dark')
             eeui.setStatusBarColor(this.themeColor)
             eeui.setBackgroundColor(this.themeColor)
@@ -248,6 +264,9 @@ export default {
 
                 // 更新状态栏
                 case 'updateTheme':
+                    if (this.isJson(message.themeDefault)) {
+                        eeui.setCachesString("themeDefault", this.jsonStringify(message.themeDefault), 0)
+                    }
                     this.initTheme(message.themeName)
                     break
 
