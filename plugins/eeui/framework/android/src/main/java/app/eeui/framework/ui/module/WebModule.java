@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import app.eeui.framework.extend.module.eeuiNavMask;
 import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.extend.module.eeuiPhoto;
 import app.eeui.framework.extend.view.ExtendWebView;
@@ -442,6 +443,33 @@ public class WebModule {
      */
     public static boolean isDebug(ExtendWebView webView) {
         return myApp().isDebug(webView.getContext());
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 添加导航栏遮罩
+     * @param color
+     * @return
+     */
+    public static String addNavMask(ExtendWebView webView, String color) {
+        return eeuiNavMask.addNavMask(webView.getContext(), color);
+    }
+
+    /**
+     * 移除导航栏遮罩
+     * @param name
+     */
+    public static void removeNavMask(ExtendWebView webView, String name) {
+        eeuiNavMask.removeNavMask(webView.getContext(), name);
+    }
+
+    /**
+     * 移除所有导航栏遮罩
+     */
+    public static void removeAllNavMasks(ExtendWebView webView) {
+        eeuiNavMask.removeAllNavMasks(webView.getContext());
     }
 
     /****************************************************************************************/

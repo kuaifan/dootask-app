@@ -15,6 +15,7 @@
 #import "eeuiLoadingManager.h"
 #import "eeuiLocationManager.h"
 #import "eeuiSaveImageManager.h"
+#import "eeuiNavMaskManager.h"
 #import "eeuiPhotoManager.h"
 #import "eeuiShareManager.h"
 #import "eeuiStorageManager.h"
@@ -568,6 +569,23 @@
 #else
     return false;
 #endif
+}
+
+#pragma mark 导航栏遮罩
+
+- (NSString*)addNavMask:(NSString*)color
+{
+    return [[eeuiNavMaskManager sharedIntstance] addNavMask:color];
+}
+
+- (void)removeNavMask:(NSString*)name
+{
+    [[eeuiNavMaskManager sharedIntstance] removeNavMask:name];
+}
+
+- (void)removeAllNavMasks
+{
+    [[eeuiNavMaskManager sharedIntstance] removeAllNavMasks];
 }
 
 #pragma mark 吐司提示

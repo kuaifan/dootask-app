@@ -8,6 +8,7 @@ import com.taobao.weex.common.WXModule;
 import java.util.HashMap;
 import java.util.Map;
 
+import app.eeui.framework.extend.module.eeuiNavMask;
 import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.extend.module.eeuiPhoto;
 import app.eeui.framework.ui.eeui;
@@ -486,6 +487,36 @@ public class WeexModule extends WXModule {
     @JSMethod(uiThread = false)
     public boolean isDebug() {
         return myApp().isDebug(mWXSDKInstance.getContext());
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 添加导航栏遮罩
+     * @param color
+     * @return
+     */
+    @JSMethod(uiThread = false)
+    public String addNavMask(String color) {
+        return eeuiNavMask.addNavMask(mWXSDKInstance.getContext(), color);
+    }
+
+    /**
+     * 移除导航栏遮罩
+     * @param name
+     */
+    @JSMethod
+    public void removeNavMask(String name) {
+        eeuiNavMask.removeNavMask(mWXSDKInstance.getContext(), name);
+    }
+
+    /**
+     * 移除所有导航栏遮罩
+     */
+    @JSMethod
+    public void removeAllNavMasks() {
+        eeuiNavMask.removeAllNavMasks(mWXSDKInstance.getContext());
     }
 
     /****************************************************************************************/

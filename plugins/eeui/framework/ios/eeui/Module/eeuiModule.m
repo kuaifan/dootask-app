@@ -15,6 +15,7 @@
 #import "eeuiLoadingManager.h"
 #import "eeuiLocationManager.h"
 #import "eeuiSaveImageManager.h"
+#import "eeuiNavMaskManager.h"
 #import "eeuiPhotoManager.h"
 #import "eeuiShareManager.h"
 #import "eeuiStorageManager.h"
@@ -714,6 +715,27 @@ WX_EXPORT_METHOD_SYNC(@selector(isDebug))
 #else
     return false;
 #endif
+}
+
+#pragma mark 导航栏遮罩
+
+WX_EXPORT_METHOD_SYNC(@selector(addNavMask:))
+WX_EXPORT_METHOD(@selector(removeNavMask:))
+WX_EXPORT_METHOD(@selector(removeAllNavMasks))
+
+- (NSString*)addNavMask:(NSString*)color
+{
+    return [[eeuiNavMaskManager sharedIntstance] addNavMask:color];
+}
+
+- (void)removeNavMask:(NSString*)name
+{
+    [[eeuiNavMaskManager sharedIntstance] removeNavMask:name];
+}
+
+- (void)removeAllNavMasks
+{
+    [[eeuiNavMaskManager sharedIntstance] removeAllNavMasks];
 }
 
 #pragma mark 吐司提示
