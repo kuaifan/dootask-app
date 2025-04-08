@@ -155,9 +155,18 @@ public class eeuiNavMask {
         );
         topParams.topMargin = 0;
 
+        // 设置初始透明度为0，准备淡入动画
+        topMaskView.setAlpha(0f);
+
         // 直接添加到DecorView
         decorView.addView(topMaskView, topParams);
         maskInfo.topView = topMaskView;
+
+        // 添加淡入动画
+        topMaskView.animate()
+                .alpha(1f)
+                .setDuration(150) // 0.15秒
+                .start();
     }
 
     /**
@@ -191,9 +200,18 @@ public class eeuiNavMask {
         );
         bottomParams.gravity = Gravity.BOTTOM;
 
+        // 设置初始透明度为0，准备淡入动画
+        bottomMaskView.setAlpha(0f);
+
         // 直接添加到DecorView
         decorView.addView(bottomMaskView, bottomParams);
         maskInfo.bottomView = bottomMaskView;
+
+        // 添加淡入动画
+        bottomMaskView.animate()
+                .alpha(1f)
+                .setDuration(150) // 0.15秒
+                .start();
     }
 
     /**
@@ -201,21 +219,45 @@ public class eeuiNavMask {
      * @param maskInfo 遮罩信息
      */
     private static void removeMaskViews(NavMaskInfo maskInfo) {
-        // 移除顶部视图
+        // 移除顶部视图（带淡出动画）
         if (maskInfo.topView != null) {
-            ViewGroup parent = (ViewGroup) maskInfo.topView.getParent();
-            if (parent != null) {
-                parent.removeView(maskInfo.topView);
-            }
+            final View topView = maskInfo.topView;
+            final ViewGroup topParent = (ViewGroup) topView.getParent();
+
+            topView.animate()
+                    .alpha(0f)
+                    .setDuration(150) // 0.15秒
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (topParent != null) {
+                                topParent.removeView(topView);
+                            }
+                        }
+                    })
+                    .start();
+
             maskInfo.topView = null;
         }
 
-        // 移除底部视图
+        // 移除底部视图（带淡出动画）
         if (maskInfo.bottomView != null) {
-            ViewGroup parent = (ViewGroup) maskInfo.bottomView.getParent();
-            if (parent != null) {
-                parent.removeView(maskInfo.bottomView);
-            }
+            final View bottomView = maskInfo.bottomView;
+            final ViewGroup bottomParent = (ViewGroup) bottomView.getParent();
+
+            bottomView.animate()
+                    .alpha(0f)
+                    .setDuration(150) // 0.15秒
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (bottomParent != null) {
+                                bottomParent.removeView(bottomView);
+                            }
+                        }
+                    })
+                    .start();
+
             maskInfo.bottomView = null;
         }
     }

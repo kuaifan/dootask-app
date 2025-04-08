@@ -92,7 +92,15 @@
     if (topHeight > 0) {
         UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, keyWindow.bounds.size.width, topHeight)];
         topView.backgroundColor = uiColor;
+        // 设置初始透明度为0，准备淡入动画
+        topView.alpha = 0.0;
         [keyWindow addSubview:topView];
+        
+        // 添加淡入动画
+        [UIView animateWithDuration:0.15 animations:^{
+            topView.alpha = 1.0;
+        }];
+        
         maskInfo.topView = topView;
     }
     
@@ -105,7 +113,15 @@
     if (bottomHeight > 0) {
         UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, keyWindow.bounds.size.height - bottomHeight, keyWindow.bounds.size.width, bottomHeight)];
         bottomView.backgroundColor = uiColor;
+        // 设置初始透明度为0，准备淡入动画
+        bottomView.alpha = 0.0;
         [keyWindow addSubview:bottomView];
+        
+        // 添加淡入动画
+        [UIView animateWithDuration:0.15 animations:^{
+            bottomView.alpha = 1.0;
+        }];
+        
         maskInfo.bottomView = bottomView;
     }
     
@@ -154,16 +170,28 @@
 #pragma mark - Helper Methods
 
 - (void)removeMaskViews:(NavMaskInfo *)maskInfo {
-    // 移除顶部视图
+    // 移除顶部视图（带淡出动画）
     if (maskInfo.topView) {
-        [maskInfo.topView removeFromSuperview];
-        maskInfo.topView = nil;
+        [UIView animateWithDuration:0.15 animations:^{
+            maskInfo.topView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            if (finished) {
+                [maskInfo.topView removeFromSuperview];
+                maskInfo.topView = nil;
+            }
+        }];
     }
     
-    // 移除底部视图
+    // 移除底部视图（带淡出动画）
     if (maskInfo.bottomView) {
-        [maskInfo.bottomView removeFromSuperview];
-        maskInfo.bottomView = nil;
+        [UIView animateWithDuration:0.15 animations:^{
+            maskInfo.bottomView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            if (finished) {
+                [maskInfo.bottomView removeFromSuperview];
+                maskInfo.bottomView = nil;
+            }
+        }];
     }
 }
 
