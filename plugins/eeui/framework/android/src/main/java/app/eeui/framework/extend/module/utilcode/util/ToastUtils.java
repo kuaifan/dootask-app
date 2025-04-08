@@ -221,22 +221,38 @@ public final class ToastUtils {
         HANDLER.post(new Runnable() {
             @Override
             public void run() {
-                cancel();
-                sToast = Toast.makeText(Utils.getApp(), text, duration);
-                TextView tvMessage = sToast.getView().findViewById(android.R.id.message);
-                int msgColor = tvMessage.getCurrentTextColor();
-                //it solve the font of toast
-                TextViewCompat.setTextAppearance(tvMessage, android.R.style.TextAppearance);
-                if (sMsgColor != COLOR_DEFAULT) {
-                    tvMessage.setTextColor(sMsgColor);
-                } else {
-                    tvMessage.setTextColor(msgColor);
+                try {
+                    cancel();
+                    sToast = Toast.makeText(Utils.getApp(), text, duration);
+                    
+                    View view = sToast.getView();
+                    if (view != null) {
+                        TextView tvMessage = view.findViewById(android.R.id.message);
+                        if (tvMessage != null) {
+                            int msgColor = tvMessage.getCurrentTextColor();
+                            //it solve the font of toast
+                            TextViewCompat.setTextAppearance(tvMessage, android.R.style.TextAppearance);
+                            if (sMsgColor != COLOR_DEFAULT) {
+                                tvMessage.setTextColor(sMsgColor);
+                            } else {
+                                tvMessage.setTextColor(msgColor);
+                            }
+                            setBg(tvMessage);
+                        }
+                    }
+                    
+                    if (sGravity != -1 || sXOffset != -1 || sYOffset != -1) {
+                        sToast.setGravity(sGravity, sXOffset, sYOffset);
+                    }
+                    sToast.show();
+                } catch (Exception e) {
+                    // 如果自定义Toast样式失败，至少确保显示一个基本的Toast
+                    try {
+                        Toast.makeText(Utils.getApp(), text, duration).show();
+                    } catch (Exception ignored) {
+                        // 忽略所有异常以避免崩溃
+                    }
                 }
-                if (sGravity != -1 || sXOffset != -1 || sYOffset != -1) {
-                    sToast.setGravity(sGravity, sXOffset, sYOffset);
-                }
-                setBg(tvMessage);
-                sToast.show();
             }
         });
     }
