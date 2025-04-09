@@ -571,6 +571,22 @@
 #endif
 }
 
+- (void)getSafeAreaInsets:(WXModuleCallback)callback
+{
+    if (callback == nil) {
+        return;
+    }
+    
+    // 使用 DeviceUtil 共享方法获取安全区域高度
+    NSDictionary *insets = [DeviceUtil getSafeAreaInsets];
+    
+    // 添加状态信息
+    NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:insets];
+    [result setObject:@"success" forKey:@"status"];
+    
+    callback(result);
+}
+
 #pragma mark 导航栏遮罩
 
 - (NSString*)addNavMask:(NSString*)color

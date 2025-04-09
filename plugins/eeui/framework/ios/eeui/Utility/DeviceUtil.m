@@ -3,7 +3,7 @@
 //  WeexTestDemo
 //
 //  Created by apple on 2018/6/5.
-//  Copyright © 2018年 TomQin. All rights reserved.
+//  Copyright 2018年 TomQin. All rights reserved.
 //
 
 #import "DeviceUtil.h"
@@ -662,5 +662,48 @@ static NSInteger is58InchScreen = -1;
 }
 + (CGSize)screenSizeFor58Inch {
     return CGSizeMake(375, 812);
+}
+
+// 获取安全区域高度（顶部和底部）
++ (NSDictionary *)getSafeAreaInsets {
+    __block CGFloat topInset = 0;
+    __block CGFloat bottomInset = 0;
+    
+    if (NSThread.isMainThread) {
+        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+        if (@available(iOS 11.0, *)) {
+            topInset = window.safeAreaInsets.top;
+            bottomInset = window.safeAreaInsets.bottom;
+        } else {
+            // iOS 11以下，使用状态栏高度作为顶部高度
+            topInset = [UIApplication sharedApplication].statusBarFrame.size.height;
+        }
+    } else {
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIWindow *window = [UIApplication sharedApplication].keyWindow;
+            if (@available(iOS 11.0, *)) {
+                topInset = window.safeAreaInsets.top;
+                bottomInset = window.safeAreaInsets.bottom;
+            } else {
+                // iOS 11以下，使用状态栏高度作为顶部高度
+                topInset = [UIApplication sharedApplication].statusBarFrame.size.height;
+            }
+            dispatch_semaphore_signal(semaphore);
+        });
+        dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+    }
+    
+    // 计算Weex像素单位的值
+    CGFloat topPx = 750 * 1.0 / [UIScreen mainScreen].bounds.size.width * topInset;
+    CGFloat bottomPx = 750 * 1.0 / [UIScreen mainScreen].bounds.size.width * bottomInset;
+    
+    // 返回包含顶部和底部安全区域高度的字典
+    return @{
+        @"top": @(topInset),
+        @"bottom": @(bottomInset),
+        @"topPx": @(topPx),
+        @"bottomPx": @(bottomPx)
+    };
 }
 @end

@@ -3,7 +3,7 @@
 //  WeexTestDemo
 //
 //  Created by apple on 2018/6/5.
-//  Copyright © 2018年 TomQin. All rights reserved.
+//  Copyright 2018年 TomQin. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -28,6 +28,8 @@ static NSMutableDictionary * mAppboardWifi;
 + (NSInteger)font:(NSInteger)font;
 
 + (UIViewController *)getTopviewControler;
+
++ (NSDictionary *)getSafeAreaInsets;
 
 + (NSString*)urlEncoder:(NSString*)url;
 

@@ -595,6 +595,7 @@ WX_EXPORT_METHOD_SYNC(@selector(getSDKVersionCode))
 WX_EXPORT_METHOD_SYNC(@selector(getSDKVersionName))
 WX_EXPORT_METHOD_SYNC(@selector(isIPhoneXType))
 WX_EXPORT_METHOD_SYNC(@selector(isDebug))
+WX_EXPORT_METHOD(@selector(getSafeAreaInsets:))
 
 - (NSInteger)getStatusBarHeight
 {
@@ -715,6 +716,23 @@ WX_EXPORT_METHOD_SYNC(@selector(isDebug))
 #else
     return false;
 #endif
+}
+
+// 获取安全区域高度（顶部和底部）
+- (void)getSafeAreaInsets:(WXModuleCallback)callback
+{
+    if (callback == nil) {
+        return;
+    }
+    
+    // 使用 DeviceUtil 共享方法获取安全区域高度
+    NSDictionary *insets = [DeviceUtil getSafeAreaInsets];
+    
+    // 添加状态信息
+    NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:insets];
+    [result setObject:@"success" forKey:@"status"];
+    
+    callback(result);
 }
 
 #pragma mark 导航栏遮罩
