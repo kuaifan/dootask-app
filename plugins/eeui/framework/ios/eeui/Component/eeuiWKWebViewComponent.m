@@ -3,7 +3,7 @@
 //  WeexTestDemo
 //
 //  Created by apple on 2018/6/5.
-//  Copyright © 2018年 TomQin. All rights reserved.
+//  Copyright 2018年 TomQin. All rights reserved.
 //
 
 #import "eeuiWKWebViewComponent.h"
@@ -49,6 +49,7 @@ NSString * const WKProcessPoolDidCrashNotification = @"WKProcessPoolDidCrashNoti
 @property (nonatomic, assign) BOOL isHiddenDone;
 @property (nonatomic, assign) BOOL isHapticBackEnabled;
 @property (nonatomic, assign) BOOL isDisabledUserLongClickSelect;
+@property (nonatomic, assign) BOOL isFullscreen;
 @property (nonatomic, strong) JSCallCommon* JSCall;
 @property (strong, nonatomic) YHWebViewProgressView *progressView;
 
@@ -65,6 +66,7 @@ WX_EXPORT_METHOD(@selector(setProgressbarVisibility:))
 WX_EXPORT_METHOD(@selector(setHapticBackEnabled:))
 WX_EXPORT_METHOD(@selector(setDisabledUserLongClickSelect:))
 WX_EXPORT_METHOD(@selector(setScrollEnabled:))
+WX_EXPORT_METHOD(@selector(setFullscreen:))
 WX_EXPORT_METHOD(@selector(canGoBack:))
 WX_EXPORT_METHOD(@selector(goBack:))
 WX_EXPORT_METHOD(@selector(canGoForward:))
@@ -88,6 +90,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
         _isHiddenDone = NO;
         _isHapticBackEnabled = NO;
         _isDisabledUserLongClickSelect = NO;
+        _isFullscreen = NO;
         _isHeightChanged = [events containsObject:@"heightChanged"];
         _isReceiveMessage = [events containsObject:@"receiveMessage"];
 
@@ -237,7 +240,11 @@ WX_EXPORT_METHOD(@selector(goForward:))
         [self hideWKWebviewKeyboardShortcutBar: webView];
     }
 
-    ((UIScrollView *)[webView.subviews objectAtIndex:0]).scrollEnabled = _isScrollEnabled;
+    if (_isFullscreen) {
+        [self setFullscreen:@YES];
+    }
+
+    webView.scrollView.scrollEnabled = _isScrollEnabled;
 
     webView.UIDelegate = self;
     webView.navigationDelegate  = self;
@@ -386,6 +393,11 @@ WX_EXPORT_METHOD(@selector(goForward:))
         _isDisabledUserLongClickSelect = [WXConvert BOOL:value];
         if (isUpdate) {
             [self setDisabledUserLongClickSelect:value];
+        }
+    } else if ([key isEqualToString:@"fullscreen"]) {
+        _isFullscreen = [WXConvert BOOL:value];
+        if (isUpdate) {
+            [self setFullscreen:value];
         }
     }
 }
@@ -567,12 +579,63 @@ WX_EXPORT_METHOD(@selector(goForward:))
     _isDisabledUserLongClickSelect = [WXConvert BOOL:var];
 }
 
+//设置是否全屏显示（覆盖顶部状态栏和底部安全区域）
+- (void)setFullscreen:(id)var
+{
+    _isFullscreen = [WXConvert BOOL:var];
+    eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
+    
+    if (_isFullscreen) {
+        if (@available(iOS 11.0, *)) {
+            // 禁用顶部状态栏自动调整
+            webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            
+            // 清除所有边距
+            webView.scrollView.contentInset = UIEdgeInsetsZero;
+            webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero;
+            
+            // 延迟处理确保安全区域信息可用
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // 获取安全区域信息
+                UIWindow *window = [UIApplication sharedApplication].keyWindow;
+                CGFloat bottomInset = 0;
+                if (@available(iOS 11.0, *)) {
+                    bottomInset = window.safeAreaInsets.bottom;
+                }
+                
+                // 增加内容高度以覆盖底部安全区域
+                if (bottomInset > 0) {
+                    UIEdgeInsets scrollInsets = webView.scrollView.contentInset;
+                    scrollInsets.bottom = -bottomInset; // 负值抵消安全区域
+                    webView.scrollView.contentInset = scrollInsets;
+                    
+                    // 增加内容尺寸确保内容可以滚动到底部
+                    CGSize contentSize = webView.scrollView.contentSize;
+                    contentSize.height += bottomInset;
+                    webView.scrollView.contentSize = contentSize;
+                }
+                
+                // 更新布局
+                [webView setNeedsLayout];
+                [webView layoutIfNeeded];
+            });
+        }
+    } else {
+        if (@available(iOS 11.0, *)) {
+            // 恢复默认行为
+            webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAutomatic;
+            webView.scrollView.contentInset = UIEdgeInsetsZero;
+            webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero;
+        }
+    }
+}
+
 //设置是否允许滚动
 - (void)setScrollEnabled:(id)var
 {
     _isScrollEnabled = [WXConvert BOOL:var];
     eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
-    ((UIScrollView *)[webView.subviews objectAtIndex:0]).scrollEnabled = _isScrollEnabled;
+    webView.scrollView.scrollEnabled = _isScrollEnabled;
 }
 
 //是否可以后退
