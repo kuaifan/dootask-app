@@ -10,7 +10,13 @@
             :allowFileAccessFromFileURLs="true"
             @receiveMessage="onReceiveMessage"
             @stateChanged="onStateChanged"/>
-        <meetings ref="meeting" :theme-color="themeColor" :theme-name="themeName" :windowWidth="windowWidth" @meetingEvent="meetingEvent"/>
+        <meetings
+            ref="meeting"
+            :theme-color="themeColor"
+            :theme-name="themeName"
+            :safe-area-size="safeAreaSize"
+            :windowWidth="windowWidth"
+            @meetingEvent="meetingEvent"/>
     </div>
 </template>
 
@@ -39,6 +45,7 @@ export default {
             appMessage: {},
 
             windowWidth: parseInt(eeui.getVariate("windowWidth", "0")) || 430,
+            safeAreaSize: {top: 0, bottom: 0, data: null},
 
             umengInit: false,
             umengApiUrl: null,
@@ -134,6 +141,12 @@ export default {
             this.uniqueId = this.randomString(6);
             eeui.setCachesString("appUniqueId", this.uniqueId, 0);
         }
+
+        eeui.getSafeAreaInsets(result => {
+            if (result.status === 'success') {
+                this.safeAreaSize = result
+            }
+        });
 
         this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
     },

@@ -1,6 +1,10 @@
 <template>
-    <div ref="root" class="mask" v-if="showShow" :style="videoStyle">
-        <scroller class="scroller">
+    <div
+        v-if="showShow"
+        ref="root"
+        class="mask"
+        :style="rootStyle">
+        <scroller class="scroller" :style="scrollerStyle">
             <text :style="titleStyle">{{title}}</text>
             <div class="render-views">
                 <div :style="gridItemStyle" v-for="item in uuids">
@@ -22,7 +26,7 @@
                 </div>
             </div>
         </scroller>
-        <div class="menu">
+        <div class="menu" :style="menuStyle">
             <div class="flex"></div>
             <div class="menu-buttons" :style="subButtonStyle">
                 <div class="button" :style="buttonPadding" @click="audioEnable">
@@ -45,7 +49,13 @@
                 </div>
             </div>
         </div>
-        <div class="mini-box" v-if="mini" :style="popMiniBoxStyle" @touchstart="touchstart" @touchmove="touchAction" @touchend="touchend">
+        <div
+            v-if="mini"
+            class="mini-box"
+            :style="miniBoxStyle"
+            @touchstart="touchstart"
+            @touchmove="touchAction"
+            @touchend="touchend">
             <div :style="popContainerStyle">
                 <image :style="popVideoStyle" :src="audio? 'root://pages/assets/images/meeting_white_audio_on.png':'root://pages/assets/images/meeting_white_audio_off.png'"></image>
             </div>
@@ -53,7 +63,13 @@
                 <image :style="popVideoStyle" :src="video? 'root://pages/assets/images/meeting_white_video_on.png':'root://pages/assets/images/meeting_white_video_off.png'"></image>
             </div>
         </div>
-        <custom-alert ref="alert" :mini-rate="miniRate" :theme-name="themeName" pos="top" :offset="80" @exitConfirm="exitAction"></custom-alert>
+        <custom-alert
+            ref="alert"
+            :mini-rate="miniRate"
+            :theme-name="themeName"
+            pos="top"
+            :offset="100 + safeAreaSize.top"
+            @exitConfirm="exitAction"></custom-alert>
     </div>
 </template>
 
@@ -69,9 +85,7 @@
 
 .scroller {
     position: absolute;
-    top: 0;
     left: 0;
-    bottom: 80px;
     right: 0;
     padding: 16px;
     background-color: v-bind(themeColor);
@@ -80,7 +94,6 @@
 .menu {
     position: absolute;
     flex-direction: row;
-    bottom: 16px;
     right: 0;
     left: 0;
 }
@@ -92,10 +105,8 @@
 
 .mini-box {
     position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
+    left: 0;
+    right: 0;
     flex-direction: row;
 }
 
@@ -153,6 +164,15 @@ export default {
             type: String,
             default: "#f8f8f8",
         },
+        safeAreaSize: {
+            type: Object,
+            default: () => {
+                return {
+                    top: 0,
+                    bottom: 0
+                }
+            }
+        }
     },
     data() {
         return {
@@ -196,7 +216,10 @@ export default {
         titleStyle() {
             return {
                 fontSize: this.scaleSize(32),
-                padding: this.scaleSize(16),
+                paddingTop: this.scaleSize(32),
+                paddingLeft: this.scaleSize(16),
+                paddingRight: this.scaleSize(16),
+                paddingBottom: this.scaleSize(16),
                 color: this.themeColor == "#f8f8f8" ? "black": "white"
             }
         },
@@ -297,7 +320,7 @@ export default {
             }
         },
 
-        popMiniBoxStyle() {
+        miniBoxStyle() {
             return {
                 paddingLeft: this.scaleSize(12),
                 backgroundColor: this.themeColor == "#f8f8f8" ? "#A1A1A1" : "#404040"
@@ -320,8 +343,10 @@ export default {
             }
         },
 
-        videoStyle() {
-            let style = {}
+        rootStyle() {
+            const style = {
+                backgroundColor: this.themeColor,
+            }
             if (this.mini) {
                 style.width = this.scaleSize(160);
                 style.height = this.scaleSize(72);
@@ -335,8 +360,20 @@ export default {
                 style.right = "0";
                 style.left = "0";
             }
-            style.backgroundColor = this.themeColor;
             return style;
+        },
+
+        scrollerStyle() {
+            return {
+                top: `${this.safeAreaSize.top}px`,
+                bottom: `${this.safeAreaSize.bottom + 80}px`,
+            }
+        },
+
+        menuStyle() {
+            return {
+                bottom: `${this.safeAreaSize.bottom + 16}px`,
+            }
         },
 
         buttonPadding() {
