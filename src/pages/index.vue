@@ -3,6 +3,7 @@
         <web-view
             ref="web"
             class="flex"
+            :fullscreen="true"
             :hiddenDone="true"
             :transparency="true"
             :progressbarVisibility="false"

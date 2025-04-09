@@ -6,6 +6,7 @@ module.exports = {
 	"serviceUrl": "",
 	"homePage": "",
 	"homePageParams": {
+        statusBarType: "immersion",
 		statusBarColor: "systemBackgroundColor",
 		backgroundColor: "systemBackgroundColor",
 		softInputMode: "resize",
