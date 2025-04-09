@@ -694,16 +694,15 @@ static NSInteger is58InchScreen = -1;
         dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
     }
     
-    // 计算Weex像素单位的值
-    CGFloat topPx = 750 * 1.0 / [UIScreen mainScreen].bounds.size.width * topInset;
-    CGFloat bottomPx = 750 * 1.0 / [UIScreen mainScreen].bounds.size.width * bottomInset;
+    // 获取屏幕尺寸
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
     
-    // 返回包含顶部和底部安全区域高度的字典
+    // 返回包含顶部、底部安全区域高度和屏幕尺寸的字典
     return @{
         @"top": @(topInset),
         @"bottom": @(bottomInset),
-        @"topPx": @(topPx),
-        @"bottomPx": @(bottomPx)
+        @"width": @(screenSize.width),
+        @"height": @(screenSize.height)
     };
 }
 @end

@@ -35,6 +35,7 @@ import app.eeui.framework.R;
 public class BGASwipeBackHelper {
     private Activity mActivity;
     private Delegate mDelegate;
+    private Boolean mImmersion;
     private BGASwipeBackLayout mSwipeBackLayout;
 
     /**
@@ -52,10 +53,12 @@ public class BGASwipeBackHelper {
     /**
      * @param activity
      * @param delegate
+     * @param immersion
      */
-    public BGASwipeBackHelper(Activity activity, Delegate delegate) {
+    public BGASwipeBackHelper(Activity activity, Delegate delegate, Boolean immersion) {
         mActivity = activity;
         mDelegate = delegate;
+        mImmersion = immersion;
 
         initSwipeBackFinish();
     }
@@ -66,7 +69,7 @@ public class BGASwipeBackHelper {
     private void initSwipeBackFinish() {
         if (mDelegate.isSupportSwipeBack()) {
             mSwipeBackLayout = new BGASwipeBackLayout(mActivity);
-            mSwipeBackLayout.attachToActivity(mActivity);
+            mSwipeBackLayout.attachToActivity(mActivity, mImmersion);
             mSwipeBackLayout.setPanelSlideListener(new BGASwipeBackLayout.PanelSlideListener() {
                 @Override
                 public void onPanelSlide(View panel, float slideOffset) {

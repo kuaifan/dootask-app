@@ -7,10 +7,7 @@ import com.taobao.weex.utils.WXUtils;
 import app.eeui.framework.extend.module.utilcode.util.ScreenUtils;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.os.Build;
 import android.util.DisplayMetrics;
-import android.view.WindowManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,10 +77,9 @@ public class eeuiScreenUtils {
     /**
      * 获取安全区域高度
      * @param context 上下文
-     * @param weexInstance Weex实例，用于单位转换
      * @return 返回包含顶部和底部安全区域高度的Map
      */
-    public static Map<String, Object> getSafeAreaInsets(Context context, WXSDKInstance weexInstance) {
+    public static Map<String, Object> getSafeAreaInsets(Context context) {
         Map<String, Object> result = new HashMap<>();
         int statusBarHeight = 0;
         int navigationBarHeight = 0;
@@ -94,56 +90,23 @@ public class eeuiScreenUtils {
             statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
         }
 
-        // 获取导航栏高度（如果显示）
+        // 获取导航栏高度（无论是否显示）
         resourceId = context.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resourceId > 0 && isNavBarVisible(context)) {
+        if (resourceId > 0) {
             navigationBarHeight = context.getResources().getDimensionPixelSize(resourceId);
         }
+
+        // 获取屏幕尺寸
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int screenWidth = displayMetrics.widthPixels;
+        int screenHeight = displayMetrics.heightPixels;
 
         // 添加到结果Map中
         result.put("top", statusBarHeight);
         result.put("bottom", navigationBarHeight);
-
-        // 添加Weex像素单位的值
-        if (weexInstance != null) {
-            result.put("topPx", weexDp2pxFloat(weexInstance, statusBarHeight));
-            result.put("bottomPx", weexDp2pxFloat(weexInstance, navigationBarHeight));
-        }
+        result.put("width", screenWidth);
+        result.put("height", screenHeight);
 
         return result;
-    }
-
-    /**
-     * 判断导航栏是否可见
-     * @param context 上下文
-     * @return 导航栏是否可见
-     */
-    private static boolean isNavBarVisible(Context context) {
-        boolean hasNavigationBar = false;
-        Resources resources = context.getResources();
-        int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
-        if (id > 0) {
-            hasNavigationBar = resources.getBoolean(id);
-        }
-        
-        // 检查导航栏可见性
-        if (hasNavigationBar) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                // 某些设备上可能隐藏了导航栏
-                int displayCutoutMode = 0;
-                try {
-                    WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-                    DisplayMetrics dm = new DisplayMetrics();
-                    windowManager.getDefaultDisplay().getRealMetrics(dm);
-                    int realHeight = dm.heightPixels;
-                    windowManager.getDefaultDisplay().getMetrics(dm);
-                    int displayHeight = dm.heightPixels;
-                    return (realHeight - displayHeight) > 0;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return hasNavigationBar;
     }
 }

@@ -220,6 +220,10 @@ public class BGASwipeBackLayout extends ViewGroup {
      * 将该滑动返回控件添加到 Activity 上
      */
     void attachToActivity(Activity activity) {
+        this.attachToActivity(activity, false);
+    }
+
+    void attachToActivity(Activity activity, Boolean immersion) {
         mActivity = activity;
 
         setSliderFadeColor(Color.TRANSPARENT);
@@ -227,6 +231,10 @@ public class BGASwipeBackLayout extends ViewGroup {
         mShadowView = new BGASwipeBackShadowView(activity);
 
         addView(mShadowView, 0, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+        if (immersion) {
+            return;
+        }
 
         ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
         mContentView = decorView.getChildAt(0);

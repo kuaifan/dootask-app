@@ -992,7 +992,7 @@ public class WeexModule extends WXModule {
         if (callback == null) {
             return;
         }
-        Map<String, Object> result = eeuiScreenUtils.getSafeAreaInsets(mWXSDKInstance.getContext(), mWXSDKInstance);
+        Map<String, Object> result = eeuiScreenUtils.getSafeAreaInsets(mWXSDKInstance.getContext());
         result.put("status", "success");
         callback.invoke(result);
     }

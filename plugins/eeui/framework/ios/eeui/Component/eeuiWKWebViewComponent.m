@@ -579,7 +579,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
     _isDisabledUserLongClickSelect = [WXConvert BOOL:var];
 }
 
-//设置是否全屏显示（覆盖顶部状态栏和底部安全区域）
+//设置是否全屏显示（覆盖顶部状态栏和底部安全区域，仅支持ios，android无效）
 - (void)setFullscreen:(id)var
 {
     _isFullscreen = [WXConvert BOOL:var];

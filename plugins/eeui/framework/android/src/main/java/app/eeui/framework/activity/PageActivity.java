@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 import com.rabtman.wsmanager.WsManager;
 import com.rabtman.wsmanager.listener.WsStatusListener;
@@ -585,7 +586,7 @@ public class PageActivity extends AppCompatActivity {
     }
 
     /**
-     * 初始化默认视图
+     * 初始化状态栏
      */
     private void initStatusBar() {
         if ("immersion".equals(mPageInfo.getStatusBarType())) {
@@ -593,44 +594,50 @@ public class PageActivity extends AppCompatActivity {
             if (mPageInfo.getSoftInputMode().equals("auto")) {
                 mPageInfo.setSoftInputMode("nothing");
             }
-            ImmersionBar iBar = ImmersionBar.with(this);
-            if (mPageInfo.getStatusBarStyle() != null) {
-                iBar.statusBarDarkFont(!mPageInfo.getStatusBarStyle());
-            }
-            iBar.keyboardEnable(true);
-            iBar.keyboardMode(this.convertSoftInputMode(mPageInfo.getSoftInputMode()));
-            iBar.init();
+            ImmersionBar.with(this)
+                .statusBarDarkFont(mPageInfo.getStatusBarStyle() != null && !mPageInfo.getStatusBarStyle())
+                .keyboardMode(this.convertSoftInputMode(mPageInfo.getSoftInputMode()))
+                .keyboardEnable(true)
+                .transparentNavigationBar()
+                .navigationBarDarkIcon(true)
+                .init();
             return;
         }
         if ("fullscreen".equals(mPageInfo.getStatusBarType())) {
             //全屏
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             if (mPageInfo.getSoftInputMode().equals("auto")) {
                 mPageInfo.setSoftInputMode("nothing");
             }
-        } else {
-            //默认
-            if (mPageInfo.isSwipeBack() && mPageInfo.isSwipeColorBack() && Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-                StatusBarUtil.setColorForSwipeBack(this, Color.parseColor(mPageInfo.getStatusBarColor()), mPageInfo.getStatusBarAlpha());
-                KeyboardUtils.registerSoftInputChangedListener(this, (int height) -> {
-                    if (KeyboardUtils.isSoftInputVisible(this)) {
-                        KeyboardUtils.unregisterSoftInputChangedListener(this);
-                        isCancelColorForSwipeBack = true;
-                        StatusBarUtil.cancelColorForSwipeBack(this);
-                        StatusBarUtil.setColor(this, Color.parseColor(mPageInfo.getStatusBarColor()), mPageInfo.getStatusBarAlpha());
-                        if (mPageInfo.getStatusBarStyle() != null) {
-                            if (mPageInfo.getStatusBarStyle()) {
-                                StatusBarUtil.setDarkMode(this, isCancelColorForSwipeBack);
-                            } else {
-                                StatusBarUtil.setLightMode(this, isCancelColorForSwipeBack);
-                            }
+            ImmersionBar.with(this)
+                .statusBarDarkFont(mPageInfo.getStatusBarStyle() != null && !mPageInfo.getStatusBarStyle())
+                .keyboardMode(this.convertSoftInputMode(mPageInfo.getSoftInputMode()))
+                .keyboardEnable(true)
+                .navigationBarColorInt(Color.parseColor(mPageInfo.getStatusBarColor()))
+                .hideBar(BarHide.FLAG_HIDE_BAR)
+                .init();
+            return;
+        }
+        //默认
+        if (mPageInfo.isSwipeBack() && mPageInfo.isSwipeColorBack() && Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            StatusBarUtil.setColorForSwipeBack(this, Color.parseColor(mPageInfo.getStatusBarColor()), mPageInfo.getStatusBarAlpha());
+            KeyboardUtils.registerSoftInputChangedListener(this, (int height) -> {
+                if (KeyboardUtils.isSoftInputVisible(this)) {
+                    KeyboardUtils.unregisterSoftInputChangedListener(this);
+                    isCancelColorForSwipeBack = true;
+                    StatusBarUtil.cancelColorForSwipeBack(this);
+                    StatusBarUtil.setColor(this, Color.parseColor(mPageInfo.getStatusBarColor()), mPageInfo.getStatusBarAlpha());
+                    if (mPageInfo.getStatusBarStyle() != null) {
+                        if (mPageInfo.getStatusBarStyle()) {
+                            StatusBarUtil.setDarkMode(this, isCancelColorForSwipeBack);
+                        } else {
+                            StatusBarUtil.setLightMode(this, isCancelColorForSwipeBack);
                         }
                     }
-                });
-            } else {
-                isCancelColorForSwipeBack = true;
-                StatusBarUtil.setColor(this, Color.parseColor(mPageInfo.getStatusBarColor()), mPageInfo.getStatusBarAlpha());
-            }
+                }
+            });
+        } else {
+            isCancelColorForSwipeBack = true;
+            StatusBarUtil.setColor(this, Color.parseColor(mPageInfo.getStatusBarColor()), mPageInfo.getStatusBarAlpha());
         }
         //
         if (mPageInfo.getStatusBarStyle() != null) {
@@ -790,7 +797,7 @@ public class PageActivity extends AppCompatActivity {
      * 初始化滑动返回
      */
     private void initSwipeBackFinish() {
-        mSwipeBackHelper = new BGASwipeBackHelper(this, swipeBackDelegate());
+        mSwipeBackHelper = new BGASwipeBackHelper(this, swipeBackDelegate(), "immersion".equals(mPageInfo.getStatusBarType()));
         // 设置滑动返回是否可用。默认值为 true
         mSwipeBackHelper.setSwipeBackEnable(true);
         // 设置是否仅仅跟踪左侧边缘的滑动返回。默认值为 true
@@ -1460,10 +1467,19 @@ public class PageActivity extends AppCompatActivity {
         }
         mPageInfo.setStatusBarStyle(isLight);
         //
-        if (mPageInfo.getStatusBarStyle()) {
-            StatusBarUtil.setDarkMode(this, isCancelColorForSwipeBack);
-        } else {
-            StatusBarUtil.setLightMode(this, isCancelColorForSwipeBack);
+        switch (mPageInfo.getStatusBarType()) {
+            case "immersion":
+            case "fullscreen":
+                ImmersionBar.with(this).statusBarDarkFont(!mPageInfo.getStatusBarStyle()).init();
+                break;
+
+            default:
+                if (mPageInfo.getStatusBarStyle()) {
+                    StatusBarUtil.setDarkMode(this, isCancelColorForSwipeBack);
+                } else {
+                    StatusBarUtil.setLightMode(this, isCancelColorForSwipeBack);
+                }
+                break;
         }
     }
 
@@ -1476,7 +1492,11 @@ public class PageActivity extends AppCompatActivity {
             return;
         }
         mPageInfo.setStatusBarColor(color);
-        StatusBarUtil.setColor(this,Color.parseColor(color),0);
+        //
+        if ("fullscreen".equals(mPageInfo.getStatusBarType()) || "immersion".equals(mPageInfo.getStatusBarType())) {
+            return;
+        }
+        StatusBarUtil.setColor(this, Color.parseColor(color), 0);
     }
 
     /**

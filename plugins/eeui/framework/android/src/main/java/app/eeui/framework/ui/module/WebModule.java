@@ -900,7 +900,7 @@ public class WebModule {
         if (callback == null) {
             return;
         }
-        Map<String, Object> result = eeuiScreenUtils.getSafeAreaInsets(webView.getContext(), null);
+        Map<String, Object> result = eeuiScreenUtils.getSafeAreaInsets(webView.getContext());
         result.put("status", "success");
         eeui.MCallback(callback).invoke(result);
     }
