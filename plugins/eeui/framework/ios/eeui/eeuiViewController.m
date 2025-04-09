@@ -263,9 +263,9 @@ static int easyNavigationButtonTag = 8000;
     if ([_statusBarType isEqualToString:@"fullscreen"] || [_statusBarType isEqualToString:@"immersion"]) {
         _statusBar.hidden = YES;
         if ([_pageType isEqualToString:@"web"]) {
-            _webView.frame = CGRectMake(safeArea.left, 0 + plusY, self.view.frame.size.width - safeArea.left - safeArea.right, _weexHeight - plusY - safeArea.bottom);
+            _webView.frame = CGRectMake(safeArea.left, 0 + plusY, self.view.frame.size.width - safeArea.left - safeArea.right, _weexHeight - plusY);
         }else{
-            _instance.frame = CGRectMake(safeArea.left, 0 + plusY, self.view.frame.size.width - safeArea.left - safeArea.right, _weexHeight - plusY - safeArea.bottom);
+            _instance.frame = CGRectMake(safeArea.left, 0 + plusY, self.view.frame.size.width - safeArea.left - safeArea.right, _weexHeight - plusY);
         }
     } else {
         CGFloat top = 0;
