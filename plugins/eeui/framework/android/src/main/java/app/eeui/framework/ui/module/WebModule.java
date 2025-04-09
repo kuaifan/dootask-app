@@ -1,6 +1,5 @@
 package app.eeui.framework.ui.module;
 
-
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
@@ -9,10 +8,10 @@ import java.util.Map;
 import app.eeui.framework.extend.module.eeuiNavMask;
 import app.eeui.framework.extend.module.eeuiParse;
 import app.eeui.framework.extend.module.eeuiPhoto;
+import app.eeui.framework.extend.module.eeuiScreenUtils;
 import app.eeui.framework.extend.view.ExtendWebView;
 import app.eeui.framework.extend.view.webviewBridge.JsCallback;
 import app.eeui.framework.ui.eeui;
-
 
 public class WebModule {
 
@@ -892,6 +891,19 @@ public class WebModule {
 
     /****************************************************************************************/
     /****************************************************************************************/
+
+    /**
+     * 获取安全区域高度（顶部和底部）
+     * @param callback 回调
+     */
+    public static void getSafeAreaInsets(ExtendWebView webView, JsCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        Map<String, Object> result = eeuiScreenUtils.getSafeAreaInsets(webView.getContext(), null);
+        result.put("status", "success");
+        eeui.MCallback(callback).invoke(result);
+    }
 
     /**
      * 获取位置经纬度
