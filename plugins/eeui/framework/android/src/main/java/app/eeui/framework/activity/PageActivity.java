@@ -177,6 +177,10 @@ public class PageActivity extends AppCompatActivity {
     private boolean titleBarLeftNull = true;
     private String protocolOpenAppData = "";
 
+    // 键盘部分
+    private boolean isKeyboardOpen = false;
+    private int keyboardHeight = 0;
+
     /****************************************************************************************************/
     /****************************************************************************************************/
     /****************************************************************************************************/
@@ -583,6 +587,7 @@ public class PageActivity extends AppCompatActivity {
         //
         initStatusBar();
         initDefaultPageView();
+        windowInsetsListener();
     }
 
     /**
@@ -786,6 +791,31 @@ public class PageActivity extends AppCompatActivity {
             default:
                 finish();
         }
+    }
+
+    /**
+     * 键盘状态监听
+     */
+    private void windowInsetsListener() {
+        Map<String, Object> safeAreaResult = eeuiScreenUtils.getSafeAreaInsets(mBody.getContext());
+        int safeAreaTop = eeuiParse.parseInt(safeAreaResult.get("top"));
+        int safeAreaBottom = eeuiParse.parseInt(safeAreaResult.get("bottom"));
+        mBody.setOnApplyWindowInsetsListener((v, insets) -> {
+            int imeHeight = insets.getSystemWindowInsetBottom();
+            boolean isShow = imeHeight > safeAreaBottom;
+            if (isShow != isKeyboardOpen) {
+                isKeyboardOpen = isShow;
+                keyboardHeight = imeHeight - safeAreaBottom;
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("messageType", "keyboardStatus");
+                jsonObject.put("keyboardType", isKeyboardOpen ? "show" : "hide");
+                jsonObject.put("keyboardHeight", keyboardHeight);
+                jsonObject.put("safeAreaTop", safeAreaTop);
+                jsonObject.put("safeAreaBottom", safeAreaBottom);
+                PageActivity.this.onAppStatusListener(new PageStatus("page", "message", null, jsonObject));
+            }
+            return insets;
+        });
     }
 
     /****************************************************************************************************/
