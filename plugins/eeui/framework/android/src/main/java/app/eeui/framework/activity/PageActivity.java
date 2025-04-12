@@ -157,6 +157,7 @@ public class PageActivity extends AppCompatActivity {
     private View mPageInfoView;
     private View mPageLogView;
     private View mPageVersionUpdateView;
+    private int errorAutoReload1001 = 3;
 
     //申请权限部分
     private PermissionUtils mPermissionInstance;
@@ -990,11 +991,16 @@ public class PageActivity extends AppCompatActivity {
              */
             @Override
             public void onException(WXSDKInstance instance, String errCode, String errMsg) {
-                if (mWeexProgress != null) {
-                    mWeexProgress.setVisibility(View.GONE);
-                }
                 if (errCode == null) {
                     errCode = "";
+                }
+                if (errorAutoReload1001 > 0 && errCode.equals("-1001")) {
+                    errorAutoReload1001--;
+                    new Handler().postDelayed(() -> reload(), 1000);
+                    return;
+                }
+                if (mWeexProgress != null) {
+                    mWeexProgress.setVisibility(View.GONE);
                 }
                 //
                 Map<String, Object> retData = new HashMap<>();
