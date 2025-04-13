@@ -3,7 +3,7 @@
 //  ZLhowImgAndVideo
 //
 //  Created by ZhenwenLi on 2018/5/15.
-//  Copyright © 2018年 lizhenwen. All rights reserved.
+//  Copyright 2018年 lizhenwen. All rights reserved.
 //
 
 #import "ZLShowMultimedia.h"
@@ -71,6 +71,14 @@
     _pageLabel.font=[UIFont systemFontOfSize:20];
     _pageLabel.text=[NSString stringWithFormat:@"%ld / %lu",(long)self.currentIndex+1,(unsigned long)self.infos.count];
     _pageLabel.alpha=0;
+    
+    // 当只有一个视频时隐藏页码指示器
+    if (self.infos.count <= 1) {
+        _pageLabel.hidden = YES;
+    } else {
+        _pageLabel.hidden = NO;
+    }
+    
     [self.view addSubview:_pageLabel];
     
     

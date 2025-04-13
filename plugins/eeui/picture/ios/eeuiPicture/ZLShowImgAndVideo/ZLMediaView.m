@@ -3,7 +3,7 @@
 //  ZLhowImgAndVideo
 //
 //  Created by ZhenwenLi on 2018/5/15.
-//  Copyright © 2018年 lizhenwen. All rights reserved.
+//  Copyright 2018年 lizhenwen. All rights reserved.
 //
 
 #import "ZLMediaView.h"
@@ -698,7 +698,12 @@
 //            self.viewLogin.hidden = NO;
 //        }
 //        self.slider.bufferValue = totalBuffer/self.totalTime;
-        _mediaLoadingView.hidden=NO;
+        // 如果缓冲时间大于3秒或者播放已经开始，隐藏加载指示器
+        if (durationSeconds > 3 || _player.rate > 0) {
+            _mediaLoadingView.hidden = YES;
+        } else {
+            _mediaLoadingView.hidden = NO;
+        }
         _mediaLoadingView.progress=totalBuffer/CMTimeGetSeconds(playerItem.duration);
 //        if (totalBuffer>=CMTimeGetSeconds(playerItem.duration)) {
 //

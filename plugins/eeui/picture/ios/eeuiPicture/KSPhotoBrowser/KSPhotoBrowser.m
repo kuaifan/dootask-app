@@ -3,7 +3,7 @@
 //  KSPhotoBrowser
 //
 //  Created by Kyle Sun on 12/25/16.
-//  Copyright © 2016 Kyle Sun. All rights reserved.
+//  Copyright 2016 Kyle Sun. All rights reserved.
 //
 
 #import "KSPhotoBrowser.h"
@@ -593,6 +593,13 @@ static Class ImageViewClass = nil;
 
 - (void)configPageLabelWithPage:(NSUInteger)page {
     _pageLabel.text = [NSString stringWithFormat:@"%lu / %lu", page+1, _photoItems.count];
+    
+    // 当总页数为1时隐藏页码指示器
+    if (_photoItems.count <= 1) {
+        _pageLabel.hidden = YES;
+    } else {
+        _pageLabel.hidden = NO;
+    }
 }
 
 - (void)handlePanBegin {
