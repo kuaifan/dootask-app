@@ -20,7 +20,7 @@
                     <text class="more-item" :style="moreItemStyle" @click="itemClick('forward')">{{moreForwardText}}</text>
                     <div class="more-line" :style="moreLineStyle"></div>
                 </template>
-                <template v-if="browser">
+                <template v-if="canBrowser">
                     <text class="more-item" :style="moreItemStyle" @click="itemClick('browser')">{{moreBrowserText}}</text>
                     <div class="more-line" :style="moreLineStyle"></div>
                 </template>
@@ -67,14 +67,13 @@ export default {
     data() {
         return {
             url: app.config.params.url,
-            browser: !!app.config.params.browser,
-            titleFixed: !!app.config.params.titleFixed,
-            urlFixed: !!app.config.params.urlFixed,
-            showProgress: !!app.config.params.showProgress,
-            allowAccess: !!app.config.params.allowAccess,
-            hiddenDone: !!app.config.params.hiddenDone,
-            canGoBack: false,
-            canGoForward: false,
+            titleFixed: !!app.config.params.titleFixed,     // 是否固定标题
+            urlFixed: !!app.config.params.urlFixed,         // 是否固定url
+            showProgress: !!app.config.params.showProgress, // 是否显示进度条
+            allowAccess: !!app.config.params.allowAccess,   // 是否允许访问本地文件
+            hiddenDone: !!app.config.params.hiddenDone,     // 是否隐藏完成按钮
+            canGoBack: false,       // 是否可以后退
+            canGoForward: false,    // 是否可以前进
 
             windowWidth: parseInt(eeui.getVariate("windowWidth", "0")) || 430,
 
@@ -154,6 +153,11 @@ export default {
                 fontSize: this.scaleSize(26),
                 lineHeight: this.scaleSize(76),
             }
+        },
+
+        // 是否可以使用浏览器打开
+        canBrowser() {
+            return !this.leftExists(this.url, 'file:');
         }
     },
 
