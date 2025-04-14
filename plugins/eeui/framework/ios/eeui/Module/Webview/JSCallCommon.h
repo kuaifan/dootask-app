@@ -17,9 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void) viewDidUnload;
 - (BOOL) isJSChunk:(NSString*)JSText;
-- (void) onJSChunk:(NSString*)JSText callback:(void (^)(NSString *completeData))callback;
+- (void) onJSChunk:(WKWebView*)webView JSText:(NSString*)JSText callback:(void (^)(NSString *completeData))callback;
 - (BOOL) isJSCall:(NSString*)JSText;
-- (id) onJSCall:(WKWebView*)webView JSText:(NSString*)JSText;
+- (void) onJSCall:(WKWebView*)webView JSText:(NSString*)JSText callback:(void (^)(NSString *completeData))callback;
 - (void) setJSCallAssign:(WKWebView*)webView name:(NSString*)name bridge:(id)bridge;
 - (void) addRequireModule:(WKWebView*)webView;
 - (void) setJSCallAll:(id)webBridge webView:(WKWebView*)webView;

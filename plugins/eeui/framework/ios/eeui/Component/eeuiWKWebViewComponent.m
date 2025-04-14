@@ -464,15 +464,18 @@ WX_EXPORT_METHOD(@selector(goForward:))
 {
     if (_isEnableApi == YES && self.JSCall != nil) {
         if ([self.JSCall isJSChunk:prompt]) {
-            [self.JSCall onJSChunk:prompt callback:^(NSString *completeData) {
+            [self.JSCall onJSChunk:webView JSText:prompt callback:^(NSString *completeData) {
                 completionHandler(completeData);
             }];
             return;
         } else if ([self.JSCall isJSCall:prompt]) {
-            completionHandler([self.JSCall onJSCall:webView JSText:prompt]);
+            [self.JSCall onJSCall:webView JSText:prompt callback:^(NSString *completeData) {
+                completionHandler(completeData);
+            }];
             return;
         }
     }
+    
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:nil preferredStyle:UIAlertControllerStyleAlert];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) { }];
     [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
