@@ -14,6 +14,8 @@
 #import "NavigatorBridge.h"
 #import "NavigationBarBridge.h"
 
+static NSMutableDictionary *sessionDataCache;
+
 @implementation JSCallCommon
 
 - (instancetype) init
@@ -34,6 +36,53 @@
 {
     [self.AllClass removeAllObjects];
     [self.AllInit removeAllObjects];
+}
+
+- (BOOL) isJSChunk:(NSString*)JSText
+{
+    NSDictionary *data = [JSCallCommon dictionaryWithJsonString:JSText];
+    if (data[@"__chunked"]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void) onJSChunk:(NSString*)JSText callback:(void (^)(NSString *completeData))callback
+{
+    NSDictionary *data = [JSCallCommon dictionaryWithJsonString:JSText];
+    if (data == nil) {
+        return;
+    }
+    
+    BOOL last = [data[@"last"] boolValue];
+    NSString *session = data[@"session"];
+    NSString *chunk = data[@"chunk"];
+    
+    if (sessionDataCache == nil) {
+        sessionDataCache = [NSMutableDictionary dictionary];
+    }
+    
+    if (last == YES) {
+        // 获取之前缓存的数据
+        NSMutableString *cachedData = sessionDataCache[session];
+        if (cachedData) {
+            [cachedData appendString:chunk];
+            NSString *completeData = [cachedData copy];
+            [sessionDataCache removeObjectForKey:session];
+            callback(completeData);
+        } else {
+            callback(chunk);
+        }
+    } else {
+        // 缓存数据
+        NSMutableString *cachedData = sessionDataCache[session];
+        if (cachedData) {
+            [cachedData appendString:chunk];
+        } else {
+            cachedData = [NSMutableString stringWithString:chunk];
+            sessionDataCache[session] = cachedData;
+        }
+    }
 }
 
 - (BOOL) isJSCall:(NSString*)JSText
@@ -172,7 +221,7 @@
         return;
     }
 
-    NSString *javaScript = @";(function(b){console.log('eeuiModel initialization begin');if(b.__eeuiModel===true){return}b.__eeuiModel=true;var a={queue:[],callback:function(){var d=Array.prototype.slice.call(arguments,0);var c=d.shift();var e=d.shift();this.queue[c].apply(this,d)/*;if(!e){delete this.queue[c]}*/}};a.funcArray=function(){var f=Array.prototype.slice.call(arguments,0);if(f.length<1){throw'eeuiModel call error, message:miss method name'}var e=[];for(var h=1;h<f.length;h++){var c=f[h];var j=typeof c;e[e.length]=j;if(j=='function'){var d=a.queue.length;a.queue[d]=c;f[h]=d}}var g=JSON.parse(prompt(JSON.stringify({__identify:'eeuiModel',method:f.shift(),types:e,args:f})));if(g.code!=200){throw'eeui call error, code:'+g.code+', message:'+g.result}return g.result};Object.getOwnPropertyNames(a).forEach(function(d){var c=a[d];if(typeof c==='function'&&d!=='callback'){a[d]=function(){return c.apply(a,[d].concat(Array.prototype.slice.call(arguments,0)))}}});b.eeuiModel=a;console.log('eeuiModel initialization end')})(window);";
+    NSString *javaScript = @";(function(b){console.log('eeuiModel initialization begin');if(b.__eeuiModel===true){return}b.__eeuiModel=true;var a={queue:[],callback:function(){var d=Array.prototype.slice.call(arguments,0);var c=d.shift();var e=d.shift();this.queue[c].apply(this,d)}};a.funcArray=function(){var f=Array.prototype.slice.call(arguments,0);if(f.length<1){throw'eeuiModel call error, message:miss method name'}var e=[];for(var h=1;h<f.length;h++){var c=f[h];var j=typeof c;e[e.length]=j;if(j=='function'){var d=a.queue.length;a.queue[d]=c;f[h]=d}}var requestJson=JSON.stringify({__identify:'eeuiModel',method:f.shift(),types:e,args:f})var chunkSize=8000;var finalResponse={code:0}if(requestJson.length<=chunkSize){finalResponse=JSON.parse(prompt(requestJson))}else{var chunks=Math.ceil(requestJson.length/chunkSize);var session=Date.now()+'_'+Math.random().toString(36).substring(2,9);for(var i=0;i<chunks;i++){var start=i*chunkSize;var end=Math.min((i+1)*chunkSize,requestJson.length);var chunk=requestJson.substring(start,end);var chunkObj={__chunked:true,last:i===chunks-1,chunk:chunk,session:session};var chunkResponse=prompt(JSON.stringify(chunkObj));if(chunkObj.last){finalResponse=JSON.parse(chunkResponse)}}}if(finalResponse.code!=200){throw'eeui call error, code:'+finalResponse.code+', message:'+finalResponse.result}return finalResponse.result};Object.getOwnPropertyNames(a).forEach(function(d){var c=a[d];if(typeof c==='function'&&d!=='callback'){a[d]=function(){return c.apply(a,[d].concat(Array.prototype.slice.call(arguments,0)))}}});b.eeuiModel=a;console.log('eeuiModel initialization end')})(window);";
     javaScript = [javaScript stringByReplacingOccurrencesOfString:@"eeuiModel" withString:name];
     javaScript = [javaScript stringByReplacingOccurrencesOfString:@"a.funcArray=" withString:funcString];
 

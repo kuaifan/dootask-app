@@ -462,9 +462,16 @@ WX_EXPORT_METHOD(@selector(goForward:))
 // 输入框
 - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * _Nullable))completionHandler
 {
-    if (_isEnableApi == YES && self.JSCall != nil && [self.JSCall isJSCall:prompt]) {
-        completionHandler([self.JSCall onJSCall:webView JSText:prompt]);
-        return;
+    if (_isEnableApi == YES && self.JSCall != nil) {
+        if ([self.JSCall isJSChunk:prompt]) {
+            [self.JSCall onJSChunk:prompt callback:^(NSString *completeData) {
+                completionHandler(completeData);
+            }];
+            return;
+        } else if ([self.JSCall isJSCall:prompt]) {
+            completionHandler([self.JSCall onJSCall:webView JSText:prompt]);
+            return;
+        }
     }
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:nil preferredStyle:UIAlertControllerStyleAlert];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) { }];
