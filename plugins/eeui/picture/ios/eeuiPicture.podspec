@@ -23,6 +23,8 @@ Pod::Spec.new do |s|
 
   s.dependency 'WeexSDK'
   s.dependency 'eeui'
+  s.dependency 'GKPhotoBrowser/Core'
+  s.dependency 'GKPhotoBrowser/YY'
   s.dependency 'WeexPluginLoader', '~> 0.0.1.9.1'
 
 end

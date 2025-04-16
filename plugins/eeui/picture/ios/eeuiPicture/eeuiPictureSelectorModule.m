@@ -5,18 +5,19 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <AVFoundation/AVFoundation.h>
 #import "ZLShowMultimedia.h"
-#import "KSPhotoBrowser.h"
+#import "GKPhotoBrowser.h"
 #import <WeexPluginLoader/WeexPluginLoader.h>
 
-@interface eeuiPictureSelectorModule ()<TZImagePickerControllerDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UINavigationControllerDelegate>
+@interface eeuiPictureSelectorModule ()<TZImagePickerControllerDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UINavigationControllerDelegate,GKPhotoBrowserDelegate>
 
 @property (nonatomic, strong) UIImagePickerController *imagePickerVc;
-@property (strong, nonatomic) CLLocation *location;
+@property (nonatomic, strong) CLLocation *location;
 @property (nonatomic, strong) NSDictionary *params;
 @property (nonatomic, copy) WXModuleKeepAliveCallback callback;
 @property (nonatomic, strong) NSMutableArray *selectedPhotos;
 @property (nonatomic, strong) NSMutableArray *selectedAssets;
 @property (nonatomic, strong) NSString *pageName;
+@property (nonatomic, copy) WXModuleKeepAliveCallback currentPhotoCallback;
 
 @end
 
@@ -564,10 +565,7 @@ WX_EXPORT_METHOD(@selector(deleteCache))
 }
 
 // The picker should dismiss itself; when it dismissed these handle will be called.
-// You can also set autoDismiss to NO, then the picker don't dismiss itself.
-// If isOriginalPhoto is YES, user picked the original photo.
-// You can get original photo with asset, by the method [[TZImageManager manager] getOriginalPhotoWithAsset:completion:].
-// The UIImage Object in photos default width is 828px, you can set it by photoWidth property.
+// You can get the photos by block, the same as by delegate.
 // 这个照片选择器会自己dismiss，当选择器dismiss的时候，会执行下面的代理方法
 // 你也可以设置autoDismiss属性为NO，选择器就不会自己dismis了
 // 如果isSelectOriginalPhoto为YES，表明用户选择了原图
@@ -772,42 +770,46 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         }
         if (path != nil) {
             NSString *url = [path stringByReplacingOccurrencesOfString:@"bmiddle" withString:@"large"];
-            KSPhotoItem *item = nil;
+            GKPhoto *photo = [GKPhoto new];
             if ([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"] || [url hasPrefix:@"ftp://"]) {
+                photo.url = [NSURL URLWithString:url];
                 if (preview && [preview hasPrefix:@"data:"]) {
-                    UIImage *previewImage = nil;
                     NSString *base64String = preview;
                     if ([base64String containsString:@","]) {
                         base64String = [base64String componentsSeparatedByString:@","].lastObject;
                     }
                     NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64String options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                    previewImage = [UIImage imageWithData:imageData];
-                    item = [KSPhotoItem itemWithSourceView:nil thumbImage:previewImage imageUrl:[NSURL URLWithString:url]];
-                } else {
-                    item = [KSPhotoItem itemWithSourceView:nil imageUrl:[NSURL URLWithString:url]];
+                    photo.placeholderImage = [UIImage imageWithData:imageData];
                 }
             } else if ([url hasPrefix:@"file://"]) {
                 NSString *filePath = [url stringByReplacingOccurrencesOfString:@"file://" withString:@""];
                 UIImage *image = [UIImage imageWithContentsOfFile:filePath];
-                item = [KSPhotoItem itemWithSourceView:nil image:image];
+                photo.image = image;
             } else {
                 UIImage *image = [UIImage imageWithContentsOfFile:url];
                 if (!image) {
                     image = [UIImage imageNamed:url];
                 }
-                item = [KSPhotoItem itemWithSourceView:nil image:image];
+                photo.image = image;
             }
-            [items addObject:item];
+            [items addObject:photo];
         }
     }
-    KSPhotoBrowser *browser = [KSPhotoBrowser browserWithPhotoItems:items selectedIndex:index];
-    browser.dismissalStyle = KSPhotoBrowserInteractiveDismissalStyleScale;
-    browser.backgroundStyle = KSPhotoBrowserBackgroundStyleBlack;
-    browser.pageindicatorStyle = KSPhotoBrowserPageIndicatorStyleText;
-    browser.removeCallback = callback ? ^(NSInteger currentPage) {
-        callback(@{@"position":@(currentPage)}, YES);
-    } : 0;
-    [browser showFromViewController:[[DeviceUtil getTopviewControler] navigationController]];
+    
+    // 保存回调
+    if (callback) {
+        self.currentPhotoCallback = callback;
+    }
+    
+    // 创建浏览器并设置代理为自己
+    GKPhotoBrowser *browser = [GKPhotoBrowser photoBrowserWithPhotos:items currentIndex:index];
+    browser.showStyle = GKPhotoBrowserShowStyleNone;
+    browser.hideStyle = GKPhotoBrowserHideStyleZoomScale;
+    browser.hidesCountLabel = YES;
+    browser.isStatusBarShow = NO;
+    browser.delegate = self;
+    
+    [browser showFromVC:[[DeviceUtil getTopviewControler] navigationController]];
 }
 
 - (void)videoPreview:(NSString*)path
@@ -844,6 +846,87 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         }
     }
     [[DeviceUtil getTopviewControler] presentViewController:vc animated:YES completion:nil];
+}
+
+#pragma mark - GKPhotoBrowserDelegate
+- (void)photoBrowser:(GKPhotoBrowser *)browser didChangedIndex:(NSInteger)index {
+    if (self.currentPhotoCallback) {
+        self.currentPhotoCallback(@{@"position":@(index)}, YES);
+    }
+}
+
+- (void)photoBrowser:(GKPhotoBrowser *)browser longPressWithIndex:(NSInteger)index {
+    // 获取当前图片
+    GKPhoto *photo = browser.photos[index];
+    UIImage *image = photo.image;
+    
+    // 如果当前没有本地图片
+    if (!image) {
+        // 尝试从当前浏览器的photoView获取图片
+        GKPhotoView *photoView = browser.curPhotoView;
+        if (photoView) {
+            UIImageView *imageView = [photoView valueForKey:@"imageView"];
+            if (imageView && imageView.image) {
+                image = imageView.image;
+            }
+        }
+    }
+    
+    // 如果还是获取不到，使用占位图
+    if (!image && photo.placeholderImage) {
+        image = photo.placeholderImage;
+    }
+    
+    // 如果仍然没有图片，并且是网络图片，尝试获取
+    if (!image && photo.url) {
+        // 如果图片已经加载完成但image属性未设置
+        if (photo.finished) {
+            // 这种情况可能需要一些自定义逻辑获取图片
+            NSLog(@"图片已加载但未能获取到图片对象");
+        }
+    }
+    
+    // 如果仍然没有图片，显示提示
+    if (!image) {
+        NSLog(@"图片尚未加载完成，请稍后再试");
+        return;
+    }
+    
+    // 首先尝试使用系统UIActivityViewController
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // 使用系统分享菜单
+        [self showShareMenuWithImage:image inBrowser:browser];
+    });
+}
+
+- (void)showShareMenuWithImage:(UIImage *)image inBrowser:(GKPhotoBrowser *)browser {
+    // 创建一个简单的Controller用于承载UIActivityViewController
+    UIViewController *containerVC = [[UIViewController alloc] init];
+    containerVC.view.backgroundColor = [UIColor clearColor];
+    containerVC.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    containerVC.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    
+    // 先让GKPhotoBrowser展示这个透明的容器控制器
+    [browser presentViewController:containerVC animated:NO completion:^{
+        // 在容器控制器中展示系统分享菜单
+        NSArray *activityItems = @[image];
+        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
+        
+        // 设置iPad弹出位置
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            activityVC.popoverPresentationController.sourceView = containerVC.view;
+            activityVC.popoverPresentationController.sourceRect = CGRectMake(containerVC.view.bounds.size.width / 2, containerVC.view.bounds.size.height / 2, 1, 1);
+        }
+        
+        // 设置完成回调
+        activityVC.completionWithItemsHandler = ^(UIActivityType __nullable activityType, BOOL completed, NSArray * __nullable returnedItems, NSError * __nullable activityError) {
+            // 关闭容器控制器
+            [containerVC dismissViewControllerAnimated:NO completion:nil];
+        };
+        
+        // 显示活动视图控制器
+        [containerVC presentViewController:activityVC animated:YES completion:nil];
+    }];
 }
 
 @end
