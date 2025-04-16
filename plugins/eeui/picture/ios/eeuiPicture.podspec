@@ -18,13 +18,15 @@ Pod::Spec.new do |s|
   s.source_files  = "eeuiPicture", "**/**/*.{h,m,mm,c}"
   s.exclude_files = "Source/Exclude"
   s.resources = 'eeuiPicture/TZImagePickerController/TZImagePickerController.bundle'
+  s.resources = 'eeuiPicture/GKPhotoBrowser/Resources/GKPhotoBrowser.bundle'
   s.platform     = :ios, "8.0"
   s.requires_arc = true
 
   s.dependency 'WeexSDK'
   s.dependency 'eeui'
-  s.dependency 'GKPhotoBrowser/Core'
-  s.dependency 'GKPhotoBrowser/YY'
+  s.dependency 'GKSliderView'
+  s.dependency 'Masonry'
+  s.dependency 'YYWebImage'
   s.dependency 'WeexPluginLoader', '~> 0.0.1.9.1'
 
 end

@@ -6,6 +6,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "ZLShowMultimedia.h"
 #import "GKPhotoBrowser.h"
+#import "GKVideoProgressView.h"
 #import <WeexPluginLoader/WeexPluginLoader.h>
 
 @interface eeuiPictureSelectorModule ()<TZImagePickerControllerDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UINavigationControllerDelegate,GKPhotoBrowserDelegate>
@@ -754,16 +755,13 @@ WX_EXPORT_METHOD(@selector(deleteCache))
 
 - (void)picturePreview:(NSInteger)index paths:(NSArray*)paths callback:(WXModuleKeepAliveCallback)callback
 {
+    // 图片列表
     NSMutableArray *items = @[].mutableCopy;
     for (id dic in paths) {
         NSString *path = nil;
-        NSString *preview = nil;
         if ([dic isKindOfClass:[NSDictionary class]]) {
             if (dic[@"path"]) {
                 path = dic[@"path"];
-            }
-            if (dic[@"preview"]) {
-                preview = dic[@"preview"];
             }
         } else if ([dic isKindOfClass:[NSString class]]) {
             path = dic;
@@ -771,20 +769,8 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         if (path != nil) {
             NSString *url = [path stringByReplacingOccurrencesOfString:@"bmiddle" withString:@"large"];
             GKPhoto *photo = [GKPhoto new];
-            if ([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"] || [url hasPrefix:@"ftp://"]) {
+            if ([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"] || [url hasPrefix:@"ftp://"] || [url hasPrefix:@"file://"]) {
                 photo.url = [NSURL URLWithString:url];
-                if (preview && [preview hasPrefix:@"data:"]) {
-                    NSString *base64String = preview;
-                    if ([base64String containsString:@","]) {
-                        base64String = [base64String componentsSeparatedByString:@","].lastObject;
-                    }
-                    NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64String options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                    photo.placeholderImage = [UIImage imageWithData:imageData];
-                }
-            } else if ([url hasPrefix:@"file://"]) {
-                NSString *filePath = [url stringByReplacingOccurrencesOfString:@"file://" withString:@""];
-                UIImage *image = [UIImage imageWithContentsOfFile:filePath];
-                photo.image = image;
             } else {
                 UIImage *image = [UIImage imageWithContentsOfFile:url];
                 if (!image) {
@@ -806,31 +792,55 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         self.currentPhotoCallback = callback;
     }
     
-    // 创建浏览器并设置代理为自己
-    GKPhotoBrowser *browser = [GKPhotoBrowser photoBrowserWithPhotos:items currentIndex:index];
-    browser.showStyle = GKPhotoBrowserShowStyleNone;
-    browser.hideStyle = GKPhotoBrowserHideStyleZoomScale;
-    browser.hidesCountLabel = YES;
-    browser.hidesPageControl = items.count == 1;
-    browser.isStatusBarShow = NO;
-    browser.delegate = self;
+    // 配置
+    GKPhotoBrowserConfigure *configure = GKPhotoBrowserConfigure.defaultConfig;
+    configure.showStyle = GKPhotoBrowserShowStyleZoom;
+    configure.hideStyle = GKPhotoBrowserHideStyleZoomScale;
+    configure.hidesCountLabel = YES;
+    configure.hidesPageControl = items.count == 1;
+    configure.hidesSavedBtn = YES;
+    configure.isSingleTapDisabled = YES;
     
+    // 创建浏览器
+    GKPhotoBrowser *browser = [GKPhotoBrowser photoBrowserWithPhotos:items currentIndex:index];
+    browser.configure = configure;
+    browser.delegate = self;
     [browser showFromVC:[[DeviceUtil getTopviewControler] navigationController]];
 }
 
 - (void)videoPreview:(NSString*)path
 {
-    if (path.length > 0) {
-        ZLMediaInfo *info=[[ZLMediaInfo alloc]init];
-        info.isLocal = YES;
-        info.type = ZLMediaInfoTypeVideo;
-        info.url = path;
-
-        ZLShowMultimedia *zlShow = [[ZLShowMultimedia alloc]init];
-        zlShow.infos = @[info];
-        zlShow.currentIndex = 0;
-        [zlShow show];
+    if (path.length == 0) {
+        return;
     }
+    
+    // 创建视频列表
+    NSMutableArray *photos = [NSMutableArray new];
+    UIImage *transparentImage = [UIImage new];
+    GKPhoto *photo = [GKPhoto new];
+    photo.placeholderImage = transparentImage;
+    photo.videoUrl = [NSURL URLWithString:path];
+    photo.autoPlay = NO;
+    photo.isVideoClicked = YES;
+    [photos addObject:photo];
+    
+    // 配置
+    GKPhotoBrowserConfigure *configure = GKPhotoBrowserConfigure.defaultConfig;
+    configure.showStyle = GKPhotoBrowserShowStyleZoom;
+    configure.hideStyle = GKPhotoBrowserHideStyleZoomScale;
+    configure.hidesCountLabel = YES;
+    configure.hidesPageControl = YES;
+    configure.hidesSavedBtn = YES;
+    configure.isSingleTapDisabled = YES;
+    configure.isVideoPausedWhenDragged = NO;
+    [configure setupVideoProgressProtocol:[GKVideoProgressView new]];
+    configure.isVideoReplay = NO;
+    
+    // 创建浏览器
+    GKPhotoBrowser *browser = [GKPhotoBrowser photoBrowserWithPhotos:photos currentIndex:0];
+    browser.configure = configure;
+    browser.delegate = self;
+    [browser showFromVC:[[DeviceUtil getTopviewControler] navigationController]];
 }
 
 - (void)deleteCache
@@ -856,7 +866,20 @@ WX_EXPORT_METHOD(@selector(deleteCache))
 
 #pragma mark - GKPhotoBrowserDelegate
 
-- (void)photoBrowser:(GKPhotoBrowser *)browser didChangedIndex:(NSInteger)index {
+- (void)photoBrowser:(GKPhotoBrowser *)browser singleTapWithIndex:(NSInteger)index
+{
+    // 单击
+    GKPhoto *photo = browser.curPhoto;
+    if (photo.isVideo) {
+        browser.progressView.hidden = !browser.progressView.isHidden;
+    }else {
+        [browser dismiss];
+    }
+}
+
+- (void)photoBrowser:(GKPhotoBrowser *)browser didChangedIndex:(NSInteger)index
+{
+    // 调用回调
     if (self.currentPhotoCallback) {
         self.currentPhotoCallback(@{@"position":@(index)}, YES);
     }
