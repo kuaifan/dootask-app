@@ -758,10 +758,14 @@ WX_EXPORT_METHOD(@selector(deleteCache))
 {
     NSMutableArray *items = @[].mutableCopy;
     for (id dic in paths) {
-        NSString * path = nil;
+        NSString *path = nil;
+        NSString *preview = nil;
         if ([dic isKindOfClass:[NSDictionary class]]) {
             if (dic[@"path"]) {
                 path = dic[@"path"];
+            }
+            if (dic[@"preview"]) {
+                preview = dic[@"preview"];
             }
         } else if ([dic isKindOfClass:[NSString class]]) {
             path = dic;
@@ -770,7 +774,18 @@ WX_EXPORT_METHOD(@selector(deleteCache))
             NSString *url = [path stringByReplacingOccurrencesOfString:@"bmiddle" withString:@"large"];
             KSPhotoItem *item = nil;
             if ([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"] || [url hasPrefix:@"ftp://"]) {
-                item = [KSPhotoItem itemWithSourceView:nil imageUrl:[NSURL URLWithString:url]];
+                if (preview && [preview hasPrefix:@"data:"]) {
+                    UIImage *previewImage = nil;
+                    NSString *base64String = preview;
+                    if ([base64String containsString:@","]) {
+                        base64String = [base64String componentsSeparatedByString:@","].lastObject;
+                    }
+                    NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64String options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                    previewImage = [UIImage imageWithData:imageData];
+                    item = [KSPhotoItem itemWithSourceView:nil thumbImage:previewImage imageUrl:[NSURL URLWithString:url]];
+                } else {
+                    item = [KSPhotoItem itemWithSourceView:nil imageUrl:[NSURL URLWithString:url]];
+                }
             } else if ([url hasPrefix:@"file://"]) {
                 NSString *filePath = [url stringByReplacingOccurrencesOfString:@"file://" withString:@""];
                 UIImage *image = [UIImage imageWithContentsOfFile:filePath];
