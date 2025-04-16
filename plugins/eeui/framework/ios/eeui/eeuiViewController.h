@@ -95,4 +95,6 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 - (void)resetStatusBarColor:(NSString *)statusBarColor;
 - (void)resetBackgroundColor:(NSString *)backgroundColor;
 
+- (void)updateSetStatusBarStyle;
+
 @end

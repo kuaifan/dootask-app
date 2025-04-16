@@ -170,22 +170,8 @@ static int easyNavigationButtonTag = 8000;
         [UIApplication sharedApplication].statusBarHidden = NO;
     }
 
-    if (!self.isChildSubview) {
-        //状态栏样式
-        if (!self.isChildSubview) {
-            if ([_statusBarStyleCustom isEqualToString:@"1"]) {
-                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-            }else{
-                if (@available(iOS 13.0, *)) {
-                    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDarkContent];
-                } else {
-                    // Fallback on earlier versions
-                    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-                }
-
-            }
-        }
-    }
+    //状态栏样式
+    [self updateSetStatusBarStyle];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -214,21 +200,7 @@ static int easyNavigationButtonTag = 8000;
 
     [self updateStatus:@"pause"];
     [self lifeCycleEvent:LifeCyclePause];
-
-    if (!self.isChildSubview) {
-        //状态栏样式
-        if ([_statusBarStyleCustom isEqualToString:@"1"]) {
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-        }else{
-            if (@available(iOS 13.0, *)) {
-                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDarkContent];
-            } else {
-                // Fallback on earlier versions
-                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-            }
-
-        }
-    }
+    [self updateSetStatusBarStyle];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -446,6 +418,23 @@ static int easyNavigationButtonTag = 8000;
             return UIStatusBarStyleDarkContent;
         } else {
             return UIStatusBarStyleDefault;
+        }
+    }
+}
+
+//状态栏样式
+- (void)updateSetStatusBarStyle {
+    if (!self.isChildSubview) {
+        if ([_statusBarStyleCustom isEqualToString:@"1"]) {
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        }else{
+            if (@available(iOS 13.0, *)) {
+                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDarkContent];
+            } else {
+                // Fallback on earlier versions
+                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+            }
+
         }
     }
 }
