@@ -796,6 +796,11 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         }
     }
     
+    // 没有图片
+    if (items.count == 0) {
+        return;
+    }
+    
     // 保存回调
     if (callback) {
         self.currentPhotoCallback = callback;
@@ -806,6 +811,7 @@ WX_EXPORT_METHOD(@selector(deleteCache))
     browser.showStyle = GKPhotoBrowserShowStyleNone;
     browser.hideStyle = GKPhotoBrowserHideStyleZoomScale;
     browser.hidesCountLabel = YES;
+    browser.hidesPageControl = items.count == 1;
     browser.isStatusBarShow = NO;
     browser.delegate = self;
     
@@ -849,9 +855,22 @@ WX_EXPORT_METHOD(@selector(deleteCache))
 }
 
 #pragma mark - GKPhotoBrowserDelegate
+
 - (void)photoBrowser:(GKPhotoBrowser *)browser didChangedIndex:(NSInteger)index {
     if (self.currentPhotoCallback) {
         self.currentPhotoCallback(@{@"position":@(index)}, YES);
+    }
+}
+
+- (void)photoBrowser:(GKPhotoBrowser *)browser didDisappearAtIndex:(NSInteger)index
+{
+    // 恢复之前保存的状态栏样式
+    if ([[DeviceUtil getTopviewControler] isKindOfClass:[eeuiViewController class]]) {
+        eeuiViewController *vc = (eeuiViewController*)[DeviceUtil getTopviewControler];
+        if (vc != nil) {
+            [vc updateSetStatusBarStyle];
+            return;
+        }
     }
 }
 
