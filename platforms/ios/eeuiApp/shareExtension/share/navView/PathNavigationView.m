@@ -90,7 +90,8 @@
     NSString *title = [self.navArray[indexPath.row] name];
     CGFloat width = [title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size.width;
     
-    return CGSizeMake(width+29, 60);
+    // 固定高度为56，与搜索框一致
+    return CGSizeMake(width+29, 56);
 }
 
 #pragma mark - setter
@@ -98,6 +99,14 @@
     _navArray = navArray;
     
     [self.navItem reloadData];
+    
+    // 自动滚动到最后一个元素
+    if (navArray.count > 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSIndexPath *lastIndexPath = [NSIndexPath indexPathForItem:navArray.count - 1 inSection:0];
+            [self.navItem scrollToItemAtIndexPath:lastIndexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+        });
+    }
 }
 
 @end

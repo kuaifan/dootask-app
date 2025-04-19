@@ -47,9 +47,10 @@
 
 @end
 
-@interface ShareListViewController ()<UITableViewDelegate, UITableViewDataSource, NavigationViewDelegate>
+@interface ShareListViewController ()<UITableViewDelegate, UITableViewDataSource, NavigationViewDelegate, UISearchBarDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong)UITableView *tableView;
 @property (nonatomic, strong)NSArray<ChatModelData *> *showArray;
+@property (nonatomic, strong)NSArray<ChatModelData *> *originalArray; // 存储原始数据，用于搜索
 @property (nonatomic, strong)MMWormhole *shareWormhole;
 @property (nonatomic, strong)ChatModel *rootModel;
 
@@ -69,6 +70,9 @@
 @property (nonatomic, copy  )NSString *currentToken;
 @property (nonatomic, strong)dispatch_group_t currenGruop;
 @property (nonatomic, assign)BOOL isFile;
+@property (nonatomic, strong)UISearchBar *searchBar; // 搜索栏
+@property (nonatomic, strong)NSString *lastSearchKeyword; // 最后搜索的关键词
+
 @end
 
 @implementation ShareListViewController
@@ -94,7 +98,7 @@
     [self setupTableView];
     
     [SVProgressHUD setContainerView:self.view];
-    [SVProgressHUD setDefaultStyle:[self inDarkAppearance]? SVProgressHUDStyleLight: SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultStyle:[self inDarkAppearance]? SVProgressHUDStyleDark: SVProgressHUDStyleLight];
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
     // [SVProgressHUD setOffsetFromCenter:UIOffsetMake(0, -100)];
     
@@ -102,6 +106,16 @@
     //    [self showNav];
     [self getShareData];
     
+    // 添加点击手势，点击键盘以外区域关闭键盘
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
+    // 手势不会取消视图本身的触摸事件
+    tapGesture.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:tapGesture];
+}
+
+// 关闭键盘的方法
+- (void)dismissKeyboard {
+    [self.view endEditing:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -205,11 +219,45 @@
     [self.view addSubview:self.tableView];
     
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view).offset(70);
+        make.top.equalTo(self.view).offset(60); 
         make.left.right.bottom.equalTo(self.view);
         //        make.height.equalTo(@(self.view.frame.size.height - 70));
     }];
     [self.tableView layoutIfNeeded];
+    
+    // 创建搜索栏作为列表的头部视图（仅在根目录显示）
+    [self setupSearchBar];
+}
+
+// 设置搜索栏
+- (void)setupSearchBar {
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 56)];
+    self.searchBar.delegate = self;
+    self.searchBar.placeholder = NSLocalizedString(@"searchTitle", @"");
+    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    
+    // 修改搜索栏UI（适配暗黑模式）
+    if (@available(iOS 13.0, *)) {
+        self.searchBar.searchTextField.backgroundColor = [UIColor systemBackgroundColor];
+        UIColor *textColor = [self inDarkAppearance] ? [UIColor whiteColor] : [UIColor blackColor];
+        self.searchBar.searchTextField.textColor = textColor;
+    }
+    
+    // 将搜索栏设置为表格的头部视图（仅在根目录显示）
+    if (self.isRoot) {
+        self.tableView.tableHeaderView = self.searchBar;
+    }
+}
+
+// 显示或隐藏搜索框
+- (void)updateSearchBarVisibility {
+    if (self.isRoot) {
+        // 在根目录显示搜索框
+        self.tableView.tableHeaderView = self.searchBar;
+    } else {
+        // 在子目录隐藏搜索框
+        self.tableView.tableHeaderView = nil;
+    }
 }
 
 - (void)showReload{
@@ -414,7 +462,8 @@
 
 - (void)analyseData {
     
-    self.showArray = self.rootModel.data;
+    self.originalArray = self.rootModel.data; // 保存原始数据
+    self.showArray = self.originalArray;
     
     [self.tableView reloadData];
 }
@@ -430,20 +479,26 @@
     
     [self.tableHeaderView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.top.equalTo(self.view).offset(70);
-        make.height.equalTo(@60);
+        make.top.equalTo(self.view).offset(60); // 顶部偏移保持60
+        make.height.equalTo(@56); // 调整导航栏高度为56，与搜索栏相同
     }];
     [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view).offset(130);
+        make.top.equalTo(self.view).offset(116); // 60 + 56 = 116，使表格位置刚好在导航栏下方
     }];
+    
+    // 进入子目录时隐藏搜索框
+    [self updateSearchBarVisibility];
 }
 
 - (void)hideNav{
     [self.tableHeaderView removeFromSuperview];
     self.tableHeaderView = nil;
     [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view).offset(70);
+        make.top.equalTo(self.view).offset(60); // 从70减小到60，与setupTableView中的偏移保持一致
     }];
+    
+    // 返回根目录时显示搜索框
+    [self updateSearchBarVisibility];
 }
 
 - (void)goNext{
@@ -723,6 +778,8 @@
 //        [tableView reloadData];
         [self showNav];
         
+        // 进入子目录时隐藏搜索框
+        [self updateSearchBarVisibility];
     }
     
     [self checkEnable];
@@ -753,6 +810,10 @@
         [self showNav];
         [self.tableView reloadData];
     }
+    
+    // 更新搜索框可见性
+    [self updateSearchBarVisibility];
+    
     [self checkEnable];
 }
 
@@ -829,4 +890,148 @@
     return randomString;
 }
 
+#pragma mark - UIScrollViewDelegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    [self dismissKeyboard];
+}
+
+#pragma mark - UISearchBarDelegate
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if (searchText.length > 0) {
+        if (![searchText isEqualToString:self.lastSearchKeyword]) {
+            self.lastSearchKeyword = searchText;
+            // 当输入搜索内容时，发起带关键词的网络请求
+            [self searchWithKeyword:searchText];
+        }
+    } else {
+        // 如果搜索框为空，恢复原始数据
+        self.lastSearchKeyword = nil; // 重置最后搜索的关键词
+        if (self.isRoot) {
+            // 重新获取主列表数据
+            [self getMainList];
+        } else {
+            // 重新获取子目录数据
+            [self getSubList];
+        }
+    }
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
+    // 当点击搜索按钮时，检查是否与之前的搜索关键词相同
+    if (searchBar.text.length > 0 && ![searchBar.text isEqualToString:self.lastSearchKeyword]) {
+        self.lastSearchKeyword = searchBar.text;
+        [self searchWithKeyword:searchBar.text];
+    }
+}
+
+// 添加新方法：根据关键词进行搜索
+- (void)searchWithKeyword:(NSString *)keyword {
+    // 根据当前是在根目录还是子目录，选择不同的请求方式
+    if (self.isRoot) {
+        // 在根目录进行搜索
+        [self searchMainListWithKeyword:keyword];
+    } else {
+        // 在子目录进行搜索
+        [self searchSubListWithKeyword:keyword];
+    }
+}
+
+// 在主列表中搜索
+- (void)searchMainListWithKeyword:(NSString *)keyword {
+    NSString *chatUrl = [self.shareWormhole messageWithIdentifier:@"chatList"];
+    if (chatUrl.length < 5) {
+        return;
+    }
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    [SVProgressHUD show];
+    // 添加keyword参数到请求中
+    NSDictionary *params = @{
+        @"type": self.isFile ? @"file" : @"text",
+        @"key": keyword // 添加关键词参数
+    };
+    
+    [manager GET_EEUI:chatUrl parameters:params headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
+        
+        int ret = [responseObject[@"ret"] intValue];
+        NSString *msg = responseObject[@"msg"];
+        if (ret == 1) {
+            ChatModel *model = [ChatModel new];
+            [model mj_setKeyValues:responseObject];
+            self.rootModel = model;
+            [self analyseData];
+            [SVProgressHUD dismiss];
+        } else {
+            [SVProgressHUD dismissWithCompletion:^{
+                [SVProgressHUD showErrorWithStatus:msg];
+                [SVProgressHUD dismissWithDelay:2 completion:nil];
+            }];
+        }
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [SVProgressHUD dismissWithCompletion:^{
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"netWorkErrorTitle", @"")];
+            [SVProgressHUD dismissWithDelay:2 completion:nil];
+        }];
+    }];
+}
+
+// 在子列表中搜索
+- (void)searchSubListWithKeyword:(NSString *)keyword {
+    ChatModelData *subModel = self.IDArray.lastObject;
+    if (subModel == nil) {
+        return;
+    }
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    self.showArray = @[];
+    [SVProgressHUD show];
+    
+    // 添加keyword参数到请求中
+    NSDictionary *params = @{
+        @"token": self.currentToken,
+        @"key": keyword // 添加关键词参数
+    };
+    
+    [manager GET_EEUI:subModel.url parameters:params headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
+        
+        int ret = [responseObject[@"ret"] intValue];
+        NSString *msg = responseObject[@"msg"];
+        
+        if (ret == 1) {
+            NSMutableArray *tempArray = [NSMutableArray array];
+            for (NSDictionary *dic in responseObject[@"data"]) {
+                ChatModelData *model = [ChatModelData new];
+                [model mj_setKeyValues:dic];
+                [tempArray addObject:model];
+            }
+            
+            self.showArray = tempArray;
+            
+            [SVProgressHUD dismiss];
+        } else {
+            [SVProgressHUD dismissWithCompletion:^{
+                
+                [SVProgressHUD showErrorWithStatus:msg];
+                [SVProgressHUD dismissWithDelay:2 completion:nil];
+            }];
+        }
+        [self.tableView reloadData];
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        self.showArray = @[];
+        [SVProgressHUD dismissWithCompletion:^{
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"netWorkErrorTitle", @"")];
+            [SVProgressHUD dismissWithDelay:2 completion:nil];
+        }];
+        [self.tableView reloadData];
+    }];
+}
 @end
