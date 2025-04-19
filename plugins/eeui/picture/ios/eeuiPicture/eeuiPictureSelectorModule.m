@@ -799,7 +799,7 @@ WX_EXPORT_METHOD(@selector(deleteCache))
     configure.hidesCountLabel = YES;
     configure.hidesPageControl = items.count == 1;
     configure.hidesSavedBtn = YES;
-    configure.maxZoomScale = 5.0;
+    configure.maxZoomScale = 6.0;
     configure.isSingleTapDisabled = YES;
     
     // 创建浏览器
