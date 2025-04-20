@@ -72,6 +72,7 @@
 @property (nonatomic, assign)BOOL isFile;
 @property (nonatomic, strong)UISearchBar *searchBar; // 搜索栏
 @property (nonatomic, strong)NSString *lastSearchKeyword; // 最后搜索的关键词
+@property (nonatomic, strong)NSTimer *searchTimer; // 搜索防抖动定时器
 
 // 添加自定义语言属性
 @property (nonatomic, strong)NSBundle *languageBundle;
@@ -903,12 +904,15 @@
 
 #pragma mark - UISearchBarDelegate
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    // 取消之前的定时器
+    if (self.searchTimer) {
+        [self.searchTimer invalidate];
+        self.searchTimer = nil;
+    }
+    
     if (searchText.length > 0) {
-        if (![searchText isEqualToString:self.lastSearchKeyword]) {
-            self.lastSearchKeyword = searchText;
-            // 当输入搜索内容时，发起带关键词的网络请求
-            [self searchWithKeyword:searchText];
-        }
+        // 设置300毫秒的延迟
+        self.searchTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(performDelayedSearch:) userInfo:searchText repeats:NO];
     } else {
         // 如果搜索框为空，恢复原始数据
         self.lastSearchKeyword = nil; // 重置最后搜索的关键词
@@ -922,11 +926,26 @@
     }
 }
 
+// 添加延迟搜索方法
+- (void)performDelayedSearch:(NSTimer *)timer {
+    NSString *searchText = timer.userInfo;
+    if (![searchText isEqualToString:self.lastSearchKeyword]) {
+        self.lastSearchKeyword = searchText;
+        // 执行搜索
+        [self searchWithKeyword:searchText];
+    }
+}
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [searchBar resignFirstResponder];
     // 当点击搜索按钮时，检查是否与之前的搜索关键词相同
     if (searchBar.text.length > 0 && ![searchBar.text isEqualToString:self.lastSearchKeyword]) {
         self.lastSearchKeyword = searchBar.text;
+        // 取消可能存在的定时器
+        if (self.searchTimer) {
+            [self.searchTimer invalidate];
+            self.searchTimer = nil;
+        }
         [self searchWithKeyword:searchBar.text];
     }
 }
@@ -953,6 +972,10 @@
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     
     [SVProgressHUD show];
+    
+    // 保存当前搜索关键词用于后续验证
+    NSString *currentKeyword = keyword;
+    
     // 添加keyword参数到请求中
     NSDictionary *params = @{
         @"type": self.isFile ? @"file" : @"text",
@@ -962,6 +985,12 @@
     [manager GET_EEUI:chatUrl parameters:params headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
+        
+        // 检查关键词是否发生变化，如果变化则不更新UI
+        if (![currentKeyword isEqualToString:self.lastSearchKeyword]) {
+            [SVProgressHUD dismiss];
+            return;
+        }
         
         int ret = [responseObject[@"ret"] intValue];
         NSString *msg = responseObject[@"msg"];
@@ -998,6 +1027,9 @@
     self.showArray = @[];
     [SVProgressHUD show];
     
+    // 保存当前搜索关键词用于后续验证
+    NSString *currentKeyword = keyword;
+    
     // 添加keyword参数到请求中
     NSDictionary *params = @{
         @"token": self.currentToken,
@@ -1007,6 +1039,12 @@
     [manager GET_EEUI:subModel.url parameters:params headers:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
+        
+        // 检查关键词是否发生变化，如果变化则不更新UI
+        if (![currentKeyword isEqualToString:self.lastSearchKeyword]) {
+            [SVProgressHUD dismiss];
+            return;
+        }
         
         int ret = [responseObject[@"ret"] intValue];
         NSString *msg = responseObject[@"msg"];
