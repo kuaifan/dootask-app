@@ -26,11 +26,17 @@
 @implementation eeuiPictureSelectorModule
 
 WX_PlUGIN_EXPORT_MODULE(eeuiPicture, eeuiPictureSelectorModule)
+WX_EXPORT_METHOD(@selector(setLanguage:))
 WX_EXPORT_METHOD(@selector(create:callback:))
 WX_EXPORT_METHOD(@selector(compressImage:callback:))
 WX_EXPORT_METHOD(@selector(picturePreview:paths:callback:))
 WX_EXPORT_METHOD(@selector(videoPreview:))
 WX_EXPORT_METHOD(@selector(deleteCache))
+
+- (void)setLanguage:(NSString *)language
+{
+    [eeuiPictureLocalization setCurrentLanguage:language];
+}
 
 - (void)create:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
 {

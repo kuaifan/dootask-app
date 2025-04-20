@@ -8,15 +8,32 @@
 
 #import "eeuiPictureLocalization.h"
 
+// 用于存储用户设置的自定义语言
+static NSString *_customLanguage = nil;
+
 @implementation eeuiPictureLocalization
 
-+ (NSString *)localizedStringForKey:(NSString *)key {
-    // 尝试从eeuiPictureSelector.bundle获取本地化字符串
-    NSBundle *mainBundle = [NSBundle mainBundle];
-    NSString *bundlePath = [mainBundle pathForResource:@"eeuiPictureSelector" ofType:@"bundle"];
-    NSBundle *resourceBundle = bundlePath ? [NSBundle bundleWithPath:bundlePath] : mainBundle;
+// 获取支持的语言列表
++ (NSArray<NSString *> *)supportedLanguages {
+    return @[@"de", @"en-GB", @"en", @"fr", @"id", @"ja", @"ko", @"ru", @"zh-Hans", @"zh-Hant", @"zh-HK"];
+}
+
+// 设置当前使用的语言
++ (void)setCurrentLanguage:(NSString *)language {
+    if (language && ![self.supportedLanguages containsObject:language]) {
+        NSLog(@"警告：不支持的语言 '%@'，将使用默认语言", language);
+        language = nil;
+    }
+    _customLanguage = language;
+}
+
+// 获取当前使用的语言
++ (NSString *)currentLanguage {
+    if (_customLanguage) {
+        return _customLanguage;
+    }
     
-    // 获取当前系统语言
+    // 获取系统语言
     NSString *language = [NSLocale preferredLanguages].firstObject;
     // 简化语言代码，例如zh-Hans-CN变为zh-Hans
     if ([language containsString:@"-"]) {
@@ -38,13 +55,22 @@
         }
     }
     
-    // 支持的语言列表
-    NSArray *supportedLanguages = @[@"de", @"en-GB", @"en", @"id", @"ja", @"ko", @"zh-Hans", @"zh-Hant", @"zh-HK"];
-    
     // 如果当前语言不在支持列表中，默认使用英语
-    if (![supportedLanguages containsObject:language]) {
+    if (![self.supportedLanguages containsObject:language]) {
         language = @"en";
     }
+    
+    return language;
+}
+
++ (NSString *)localizedStringForKey:(NSString *)key {
+    // 尝试从eeuiPictureSelector.bundle获取本地化字符串
+    NSBundle *mainBundle = [NSBundle mainBundle];
+    NSString *bundlePath = [mainBundle pathForResource:@"eeuiPictureSelector" ofType:@"bundle"];
+    NSBundle *resourceBundle = bundlePath ? [NSBundle bundleWithPath:bundlePath] : mainBundle;
+    
+    // 获取当前语言
+    NSString *language = [self currentLanguage];
     
     // 尝试获取对应语言的本地化字符串
     NSString *localizedString = [resourceBundle localizedStringForKey:key value:nil table:nil];
@@ -222,6 +248,44 @@
             @"Settings": @"Settings"
         };
         
+        // 法语映射表
+        NSDictionary *frStrings = @{
+            @"SaveVideoToAlbum": @"Enregistrer la vidéo dans l'album",
+            @"Cancel": @"Annuler",
+            @"VideoSaved": @"La vidéo a été enregistrée dans l'album",
+            @"SaveVideoFailed": @"Échec de l'enregistrement de la vidéo",
+            @"VideoDownloadFailed": @"Échec du téléchargement de la vidéo",
+            @"CannotGetVideo": @"Impossible d'obtenir le fichier vidéo",
+            @"CannotGetVideoFromAlbum": @"Impossible d'obtenir la vidéo de l'album",
+            @"EmptyDownloadData": @"Les données téléchargées sont vides",
+            
+            // 相机权限相关
+            @"NoCameraAccess": @"Impossible d'utiliser l'appareil photo",
+            @"CameraAccessMessage": @"Veuillez autoriser l'accès à l'appareil photo dans \"Réglages - Confidentialité - Appareil photo\"",
+            @"NoPhotoLibraryAccess": @"Impossible d'accéder à la bibliothèque de photos",
+            @"PhotoLibraryAccessMessage": @"Veuillez autoriser l'accès à la bibliothèque de photos dans \"Réglages - Confidentialité - Photos\"",
+            @"Settings": @"Réglages"
+        };
+        
+        // 俄语映射表
+        NSDictionary *ruStrings = @{
+            @"SaveVideoToAlbum": @"Сохранить видео в альбоме",
+            @"Cancel": @"Отмена",
+            @"VideoSaved": @"Видео сохранено в альбоме",
+            @"SaveVideoFailed": @"Не удалось сохранить видео",
+            @"VideoDownloadFailed": @"Не удалось скачать видео",
+            @"CannotGetVideo": @"Не удалось получить видеофайл",
+            @"CannotGetVideoFromAlbum": @"Не удалось получить видео из альбома",
+            @"EmptyDownloadData": @"Скачанные данные пусты",
+            
+            // 相机权限相关
+            @"NoCameraAccess": @"Не удалось использовать камеру",
+            @"CameraAccessMessage": @"Пожалуйста, разрешите доступ к камере в \"Настройки - Конфиденциальность - Камера\"",
+            @"NoPhotoLibraryAccess": @"Не удалось получить доступ к библиотеке фотографий",
+            @"PhotoLibraryAccessMessage": @"Пожалуйста, разрешите доступ к библиотеке фотографий в \"Настройки - Конфиденциальность - Фотографии\"",
+            @"Settings": @"Настройки"
+        };
+        
         // 根据当前语言选择映射表
         NSDictionary *strings = defaultStrings;
         if ([language isEqualToString:@"zh-Hans"]) {
@@ -240,6 +304,10 @@
             strings = idStrings;
         } else if ([language isEqualToString:@"en-GB"]) {
             strings = enGBStrings;
+        } else if ([language isEqualToString:@"fr"]) {
+            strings = frStrings;
+        } else if ([language isEqualToString:@"ru"]) {
+            strings = ruStrings;
         }
         
         // 获取映射字符串

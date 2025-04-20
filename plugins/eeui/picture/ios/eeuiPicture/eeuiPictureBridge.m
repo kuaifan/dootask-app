@@ -23,6 +23,11 @@
     }
 }
 
+- (void)setLanguage:(NSString *)language
+{
+    [self.picture setLanguage:language];
+}
+
 - (void)create:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
 {
     [self.picture create:params callback:callback];

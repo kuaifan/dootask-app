@@ -237,6 +237,14 @@ public class eeuiPictureEntry {
     /***************************************************************************************************/
 
     /**
+     * 设置国际化语言（仅支持iOS，Android不支持）
+     * @param language 语言代码
+     */
+    public void setLanguage(String language) {
+        // TODO
+    }
+
+    /**
      * 打开相册
      * @param object
      * @param callback

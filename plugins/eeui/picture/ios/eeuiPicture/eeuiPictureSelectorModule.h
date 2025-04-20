@@ -3,6 +3,7 @@
 
 @interface eeuiPictureSelectorModule : NSObject <WXModuleProtocol>
 
+- (void)setLanguage:(NSString *)language;
 - (void)create:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback;
 - (void)compressImage:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback;
 - (void)picturePreview:(NSInteger)index paths:(NSArray*)paths callback:(WXModuleKeepAliveCallback)callback;
