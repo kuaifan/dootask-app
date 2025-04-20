@@ -40,12 +40,12 @@ dependencies {
     compileOnly project(":eeui")
     compileOnly "androidx.legacy:legacy-support-v4:${project.supportv4Version}"
     compileOnly "androidx.recyclerview:recyclerview:${project.recyclerviewVersion}"
-    compileOnly "androidx.appcompat:appcompat:${project.appcompatVersion}"
     compileOnly "com.google.android.material:material:${project.materialVersion}"
 
     compileOnly "de.hdodenhof:circleimageview:3.1.0"
 
     def rxhttp_version = '3.0.5'
+    implementation "androidx.appcompat:appcompat:${project.appcompatVersion}"
     implementation "com.squareup.okhttp3:okhttp:4.10.0"
     implementation "com.github.liujingxing.rxhttp:rxhttp:$rxhttp_version"
     annotationProcessor "com.github.liujingxing.rxhttp:rxhttp-compiler:$rxhttp_version" //生成RxHttp类，纯Java项目，请使用annotationProcessor代替kapt
