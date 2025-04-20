@@ -24,7 +24,8 @@
 
         <activity
             android:name=".activity.ShareActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/ShareActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />

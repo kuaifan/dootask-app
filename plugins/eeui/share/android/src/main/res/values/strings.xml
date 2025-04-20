@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">eeuiShare</string>
+    <string name="app_name" translatable="false">eeuiShare</string>
     <!--    "cancelTitle" = "取消";-->
     <string name="cancelTitle">Cancel</string>
     <!--    "sendTitle" = "發送至";-->
