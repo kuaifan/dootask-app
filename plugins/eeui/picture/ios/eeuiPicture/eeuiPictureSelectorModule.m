@@ -7,6 +7,7 @@
 #import "ZLShowMultimedia.h"
 #import "GKPhotoBrowser.h"
 #import "GKVideoProgressView.h"
+#import "eeuiPictureLocalization.h"
 #import <WeexPluginLoader/WeexPluginLoader.h>
 
 @interface eeuiPictureSelectorModule ()<TZImagePickerControllerDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UINavigationControllerDelegate,GKPhotoBrowserDelegate>
@@ -395,7 +396,7 @@ WX_EXPORT_METHOD(@selector(deleteCache))
     AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     if (authStatus == AVAuthorizationStatusRestricted || authStatus == AVAuthorizationStatusDenied) {
         // 无相机权限 做一个友好的提示
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法使用相机" message:@"请在iPhone的""设置-隐私-相机""中允许访问相机" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:[eeuiPictureLocalization localizedStringForKey:@"NoCameraAccess"] message:[eeuiPictureLocalization localizedStringForKey:@"CameraAccessMessage"] delegate:self cancelButtonTitle:[eeuiPictureLocalization localizedStringForKey:@"Cancel"] otherButtonTitles:[eeuiPictureLocalization localizedStringForKey:@"Settings"], nil];
         [alert show];
     } else if (authStatus == AVAuthorizationStatusNotDetermined) {
         // fix issue 466, 防止用户首次拍照拒绝授权时相机页黑屏
@@ -408,7 +409,7 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         }];
         // 拍照之前还需要检查相册权限
     } else if ([PHPhotoLibrary authorizationStatus] == 2) { // 已被拒绝，没有相册权限，将无法保存拍的照片
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"无法访问相册" message:@"请在iPhone的""设置-隐私-相册""中允许访问相册" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:[eeuiPictureLocalization localizedStringForKey:@"NoPhotoLibraryAccess"] message:[eeuiPictureLocalization localizedStringForKey:@"PhotoLibraryAccessMessage"] delegate:self cancelButtonTitle:[eeuiPictureLocalization localizedStringForKey:@"Cancel"] otherButtonTitles:[eeuiPictureLocalization localizedStringForKey:@"Settings"], nil];
         [alert show];
     } else if ([PHPhotoLibrary authorizationStatus] == 0) { // 未请求过相册权限
         [[TZImageManager manager] requestAuthorizationWithCompletion:^{
@@ -957,12 +958,12 @@ WX_EXPORT_METHOD(@selector(deleteCache))
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     // 添加保存视频选项
-    [alertController addAction:[UIAlertAction actionWithTitle:@"保存视频到相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:[eeuiPictureLocalization localizedStringForKey:@"SaveVideoToAlbum"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self saveVideoToAlbum:photo];
     }]];
     
     // 添加取消选项
-    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [alertController addAction:[UIAlertAction actionWithTitle:[eeuiPictureLocalization localizedStringForKey:@"Cancel"] style:UIAlertActionStyleCancel handler:nil]];
     
     // 在iPad上设置弹出位置
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -995,16 +996,16 @@ WX_EXPORT_METHOD(@selector(deleteCache))
                                 [loadingView hideLoadingView];
                                 
                                 if (success) {
-                                    [self showToast:@"视频已保存到相册" duration:1.5];
+                                    [self showToast:[eeuiPictureLocalization localizedStringForKey:@"VideoSaved"] duration:1.5];
                                 } else {
-                                    [self showToast:[NSString stringWithFormat:@"保存视频失败: %@", error.localizedDescription] duration:1.5];
+                                    [self showToast:[NSString stringWithFormat:@"%@: %@", [eeuiPictureLocalization localizedStringForKey:@"SaveVideoFailed"], error.localizedDescription] duration:1.5];
                                 }
                             });
                         }];
                     } else {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [loadingView hideLoadingView];
-                            [self showToast:[NSString stringWithFormat:@"视频下载失败: %@", error.localizedDescription] duration:1.5];
+                            [self showToast:[NSString stringWithFormat:@"%@: %@", [eeuiPictureLocalization localizedStringForKey:@"VideoDownloadFailed"], error.localizedDescription] duration:1.5];
                         });
                     }
                 }];
@@ -1016,9 +1017,9 @@ WX_EXPORT_METHOD(@selector(deleteCache))
                         [loadingView hideLoadingView];
                         
                         if (success) {
-                            [self showToast:@"视频已保存到相册" duration:1.5];
+                            [self showToast:[eeuiPictureLocalization localizedStringForKey:@"VideoSaved"] duration:1.5];
                         } else {
-                            [self showToast:[NSString stringWithFormat:@"保存视频失败: %@", error.localizedDescription] duration:1.5];
+                            [self showToast:[NSString stringWithFormat:@"%@: %@", [eeuiPictureLocalization localizedStringForKey:@"SaveVideoFailed"], error.localizedDescription] duration:1.5];
                         }
                     });
                 }];
@@ -1026,7 +1027,7 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [loadingView hideLoadingView];
-                [self showToast:@"无法获取视频文件" duration:1.5];
+                [self showToast:[eeuiPictureLocalization localizedStringForKey:@"CannotGetVideo"] duration:1.5];
             });
         }
     };
@@ -1043,14 +1044,14 @@ WX_EXPORT_METHOD(@selector(deleteCache))
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [loadingView hideLoadingView];
-                    [self showToast:@"无法从相册获取视频" duration:1.5];
+                    [self showToast:[eeuiPictureLocalization localizedStringForKey:@"CannotGetVideoFromAlbum"] duration:1.5];
                 });
             }
         }];
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
             [loadingView hideLoadingView];
-            [self showToast:@"无法获取视频文件" duration:1.5];
+            [self showToast:[eeuiPictureLocalization localizedStringForKey:@"CannotGetVideo"] duration:1.5];
         });
     }
 }
@@ -1087,7 +1088,7 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         
         if (!data) {
             if (completion) {
-                NSError *noDataError = [NSError errorWithDomain:@"DownloadError" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"下载的数据为空"}];
+                NSError *noDataError = [NSError errorWithDomain:@"DownloadError" code:-1 userInfo:@{NSLocalizedDescriptionKey: [eeuiPictureLocalization localizedStringForKey:@"EmptyDownloadData"]}];
                 completion(nil, noDataError);
             }
             return;
