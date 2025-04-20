@@ -5,13 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -53,6 +56,10 @@ public class ShareActivity extends AppCompatActivity  {
 
     private List<User> showList = new ArrayList<>();
     private List<User> mainList = new ArrayList<>();
+
+    // 搜索相关
+    private LinearLayout searchLayout;
+    private EditText searchEdit;
 
     //选中的目录
     private RecyclerView recyclerSelect;
@@ -110,6 +117,21 @@ public class ShareActivity extends AppCompatActivity  {
         recyclerView = findViewById(R.id.recycler_view);
         recyclerSelect = findViewById(R.id.recyclerSelect);
         recyclerLine = findViewById(R.id.recyclerLine);
+
+        searchLayout = findViewById(R.id.search_layout);
+        searchEdit = findViewById(R.id.search_edit);
+
+        // 移除TextWatcher，改为只使用按键搜索
+        searchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    performSearch();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         if (!init()) {
             return;
@@ -259,6 +281,19 @@ public class ShareActivity extends AppCompatActivity  {
         recyclerView.setLayoutManager(linearLayoutManager);
         chatAdapter = new ChatAdapter(ShareActivity.this, showList);
         recyclerView.setAdapter(chatAdapter);
+
+        // 添加RecyclerView滚动监听器
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                // 当列表开始滚动时，隐藏键盘并清除焦点
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    hideSoftKeyboard();
+                }
+            }
+        });
+
         chatAdapter.setOnItemListener(new ChatAdapter.OnItemListener() {
             @Override
             public void onClick(View view, int position, boolean isDir) {
@@ -273,13 +308,14 @@ public class ShareActivity extends AppCompatActivity  {
                     isUploadDir = true;
                     recyclerSelect.setVisibility(View.VISIBLE);
                     recyclerLine.setVisibility(View.VISIBLE);
+                    searchLayout.setVisibility(View.GONE); // 隐藏搜索框
                     showList.clear();
                     String childrenUrl = user.getUrl()+"&"+"token="+token;
                     getSubList(childrenUrl);
 
                     folderSelectList.add(user);
                     folderSelectAdapter.setData(folderSelectList);
-                    
+
                     // 滚动到最后一个项目
                     recyclerSelect.post(new Runnable() {
                         @Override
@@ -322,6 +358,7 @@ public class ShareActivity extends AppCompatActivity  {
                     isUploadDir = false;
                     recyclerSelect.setVisibility(View.GONE);
                     recyclerLine.setVisibility(View.GONE);
+                    searchLayout.setVisibility(View.VISIBLE); // 显示搜索框
                     showList.clear();
 //                    analyzeData();
 //                    getMainList();
@@ -363,15 +400,38 @@ public class ShareActivity extends AppCompatActivity  {
 
     @SuppressLint("CheckResult")
     private void getMainList(){
+        getMainList("");
+    }
+
+    @SuppressLint("CheckResult")
+    private void getMainList(String keyword){
         kProgressHUD = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setCancellable(true)
                 .show();
+
+        // 使用Uri.Builder构建URL，自动处理参数
+        Uri baseUri = Uri.parse(urlUser);
+        Uri.Builder uriBuilder = baseUri.buildUpon().clearQuery();
+
+        // 添加type参数（如果需要）
         if (isText) {
-            urlUser = urlUser +"&type=text";
+            uriBuilder.appendQueryParameter("type", "text");
         }
 
-        RxHttp.get(urlUser)
+        // 添加搜索关键词（如果有）
+        if (keyword != null && !keyword.isEmpty()) {
+            uriBuilder.appendQueryParameter("key", keyword);
+        }
+
+        // 添加其他参数
+        for (String paramName : baseUri.getQueryParameterNames()) {
+            if (!paramName.equals("type") && !paramName.equals("key")) {
+                uriBuilder.appendQueryParameter(paramName, baseUri.getQueryParameter(paramName));
+            }
+        }
+
+        RxHttp.get(uriBuilder.build().toString())
                 .toObservableString()
                 .observeOn(AndroidSchedulers.mainThread()) //指定在主线程回调
                 .subscribe(s -> {
@@ -383,8 +443,10 @@ public class ShareActivity extends AppCompatActivity  {
 
                         mainList = jsonObject.getJSONArray("data").toJavaList(User.class);
 
+                        showList.clear(); // 先清空原有数据
                         showList.addAll(mainList);
                         analyzeData();
+                        chatAdapter.notifyDataSetChanged(); // 通知适配器数据已更新
                         refreshLayout.setVisibility(View.GONE);
                     }else {
                         String msg = jsonObject.getString("msg");
@@ -548,5 +610,23 @@ public class ShareActivity extends AppCompatActivity  {
                 }
             }
         }, 1500);
+    }
+
+    private void performSearch() {
+        String searchKey = searchEdit.getText().toString().trim();
+        getMainList(searchKey);
+        // 搜索时隐藏键盘并清除焦点
+        hideSoftKeyboard();
+    }
+
+    private void hideSoftKeyboard() {
+        // 清除搜索框的焦点
+        searchEdit.clearFocus();
+
+        // 隐藏键盘
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(searchEdit.getWindowToken(), 0);
+        }
     }
 }

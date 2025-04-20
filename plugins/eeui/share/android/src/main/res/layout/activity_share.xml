@@ -5,42 +5,84 @@
     android:layout_height="match_parent"
     android:background="#F4F5F7"
     android:gravity="center">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:minHeight="56dp">
+        
+        <!-- 左侧返回按钮 -->
         <TextView
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:text="@string/cancelTitle"
             android:textSize="16dp"
             android:textColor="#4169E1"
-            android:padding="16dp"></TextView>
+            android:padding="16dp"/>
+            
+        <!-- 中间标题，始终居中 -->
         <TextView
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="@string/sendTitle"
-            android:gravity="center"
             android:textSize="18dp"
-            android:textColor="@android:color/black"></TextView>
+            android:textColor="@android:color/black"/>
+            
+        <!-- 右侧发送按钮 -->
         <TextView
             android:id="@+id/tv_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:text="@string/sendTitle"
             android:textSize="16dp"
             android:clickable="false"
-            android:padding="16dp"></TextView>
-    </LinearLayout>
+            android:padding="16dp"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#000000"
         android:alpha="0.1"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#F4F5F7">
+
+        <EditText
+            android:id="@+id/search_edit"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/search_background"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:hint="搜索"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14dp"
+            android:textColorHint="#9E9E9E"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#333333"
+            android:alpha="0.1"></LinearLayout>
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:paddingLeft="14dp"
         android:paddingRight="14dp"
