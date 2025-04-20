@@ -47,8 +47,16 @@
         android:id="@+id/recyclerSelect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#F2FFFFFF">
+        android:background="#F4F5F7">
     </androidx.recyclerview.widget.RecyclerView>
+    <LinearLayout
+        android:id="@+id/recyclerLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#333333"
+        android:alpha="0.1"
+        android:visibility="gone"
+        android:orientation="horizontal"></LinearLayout>
     <LinearLayout
         android:id="@+id/refreshLayout"
         android:visibility="gone"

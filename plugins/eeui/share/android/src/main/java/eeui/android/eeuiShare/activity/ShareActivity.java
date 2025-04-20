@@ -38,7 +38,6 @@ import eeui.android.eeuiShare.utils.UriUtils;
 import io.github.rupinderjeet.kprogresshud.KProgressHUD;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import rxhttp.wrapper.param.RxHttp;
-import rxhttp.wrapper.param.RxHttpFormParam;
 
 public class ShareActivity extends AppCompatActivity  {
 
@@ -57,6 +56,7 @@ public class ShareActivity extends AppCompatActivity  {
 
     //选中的目录
     private RecyclerView recyclerSelect;
+    private LinearLayout recyclerLine;
     private LinearLayoutManager linearLayoutManagerSelect;
     private FolderSelectAdapter folderSelectAdapter;
     //选中的目录列表数据
@@ -109,6 +109,7 @@ public class ShareActivity extends AppCompatActivity  {
         tvSend.setClickable(false);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerSelect = findViewById(R.id.recyclerSelect);
+        recyclerLine = findViewById(R.id.recyclerLine);
 
         if (!init()) {
             return;
@@ -271,6 +272,7 @@ public class ShareActivity extends AppCompatActivity  {
                     }
                     isUploadDir = true;
                     recyclerSelect.setVisibility(View.VISIBLE);
+                    recyclerLine.setVisibility(View.VISIBLE);
                     showList.clear();
                     String childrenUrl = user.getUrl()+"&"+"token="+token;
                     getSubList(childrenUrl);
@@ -311,6 +313,7 @@ public class ShareActivity extends AppCompatActivity  {
                 if (list.size() <= 1 ){
                     isUploadDir = false;
                     recyclerSelect.setVisibility(View.GONE);
+                    recyclerLine.setVisibility(View.GONE);
                     showList.clear();
 //                    analyzeData();
 //                    getMainList();
