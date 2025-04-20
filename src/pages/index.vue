@@ -33,7 +33,7 @@ const umengPush = app.requireModule("eeui/umengPush");
 const communication = app.requireModule("eeui/communication");
 const notifications = app.requireModule("eeui/notifications");
 const picture = app.requireModule("eeui/picture");
-const shareFile = app.requireModule("eeuiShareFiles");
+const shareFile = app.requireModule("eeui/shareFiles");
 
 export default {
     components: {Meetings},
@@ -241,18 +241,22 @@ export default {
                     break;
 
                 case 'picturePreview':
+                    message.language && picture.setLanguage(message.language)
                     picture.picturePreview(message.position, message.paths)
                     break;
 
                 case 'videoPreview':
+                    message.language && picture.setLanguage(message.language)
                     picture.videoPreview(message.path)
                     break;
 
                 // iOS 储存本地获取聊天消息
                 case 'userChatList':
                     if (WXEnvironment.platform.toLowerCase() === "ios") {
+                        message.language && shareFile.setShareStorage('language', message.language)
                         shareFile.setShareStorage('chatList', message.url)
                     } else {
+                        message.language && eeui.setCaches('language', message.language, 0)
                         eeui.setCaches('chatList', message.url, 0)
                     }
                     break;

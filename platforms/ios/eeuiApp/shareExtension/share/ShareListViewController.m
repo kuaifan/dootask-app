@@ -73,6 +73,9 @@
 @property (nonatomic, strong)UISearchBar *searchBar; // 搜索栏
 @property (nonatomic, strong)NSString *lastSearchKeyword; // 最后搜索的关键词
 
+// 添加自定义语言属性
+@property (nonatomic, strong)NSBundle *languageBundle;
+
 @end
 
 @implementation ShareListViewController
@@ -81,6 +84,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.shareWormhole = [[MMWormhole alloc] initWithApplicationGroupIdentifier:@"group.im.dootask" optionalDirectory:@"share"];
+    
+    // 从 Wormhole 获取语言设置并应用
+    [self setCustomLanguage:[self.shareWormhole messageWithIdentifier:@"language"]];
     
     //chatUrl dirUrl
     NSLog(@"shareMessage:%@",[self.shareWormhole messageWithIdentifier:@"chatList"]);
@@ -160,11 +166,11 @@
     [headerView addSubview:titleLabel];
     [headerView addSubview:rightButton];
     
-    [leftButton setTitle:NSLocalizedString(@"cancelTitle", @"") forState:UIControlStateNormal];
+    [leftButton setTitle:[self localizedStringForKey:@"cancelTitle"] forState:UIControlStateNormal];
     [leftButton addTarget:self action:@selector(cancelAction) forControlEvents:UIControlEventTouchUpInside];
     [leftButton setTitleColor:UIColor.systemBlueColor forState:UIControlStateNormal];
     
-    [rightButton setTitle:NSLocalizedString(@"sendTitle", @"") forState:UIControlStateNormal];
+    [rightButton setTitle:[self localizedStringForKey:@"sendTitle"] forState:UIControlStateNormal];
     [rightButton addTarget:self action:@selector(sendAction) forControlEvents:UIControlEventTouchUpInside];
     [rightButton setTitleColor:UIColor.systemBlueColor forState:UIControlStateNormal];
     [rightButton setTitleColor:UIColor.lightGrayColor forState:UIControlStateDisabled];
@@ -172,7 +178,7 @@
     rightButton.enabled = NO;
     
     self.comfirnButton = rightButton;
-    titleLabel.text = NSLocalizedString(@"sendTitle", @"");
+    titleLabel.text = [self localizedStringForKey:@"sendTitle"];
     
     [headerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.top.left.equalTo(self.view);
@@ -233,7 +239,7 @@
 - (void)setupSearchBar {
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 56)];
     self.searchBar.delegate = self;
-    self.searchBar.placeholder = NSLocalizedString(@"searchTitle", @"");
+    self.searchBar.placeholder = [self localizedStringForKey:@"searchTitle"];
     self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
     
     // 修改搜索栏UI（适配暗黑模式）
@@ -341,7 +347,7 @@
     // 当所有队列执行完成之后
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         if (self.shareArray.count == 0) {
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"emptyShareTitle", @"")];
+            [SVProgressHUD showErrorWithStatus:[self localizedStringForKey:@"emptyShareTitle"]];
             [SVProgressHUD dismissWithDelay:1.5 completion:^{
                 self.completionCallback(DootaskShareResultCancel);
             }];
@@ -356,7 +362,7 @@
 -(void)getMainList{
     NSString *chatUrl = [self.shareWormhole messageWithIdentifier:@"chatList"];
     if (chatUrl.length < 5) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"unLoginTitle", @"")];
+        [SVProgressHUD showErrorWithStatus:[self localizedStringForKey:@"unLoginTitle"]];
         [SVProgressHUD dismissWithDelay:2.5 completion:^{
             self.completionCallback(DootaskShareResultFail);
         }];
@@ -397,7 +403,7 @@
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismissWithCompletion:^{
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"netWorkErrorTitle", @"")];
+            [SVProgressHUD showErrorWithStatus:[self localizedStringForKey:@"netWorkErrorTitle"]];
             [SVProgressHUD dismissWithDelay:2 completion:^{
                 self.completionCallback(DootaskShareResultFail);
             }];
@@ -449,7 +455,7 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         self.showArray = @[];
         [SVProgressHUD dismissWithCompletion:^{
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"netWorkErrorTitle", @"")];
+            [SVProgressHUD showErrorWithStatus:[self localizedStringForKey:@"netWorkErrorTitle"]];
             [SVProgressHUD dismissWithDelay:2 completion:^{
 //                self.completionCallback(DootaskShareResultFail);
             }];
@@ -518,10 +524,10 @@
             }
         }
         if (select >= 1) {
-            [self.comfirnButton setTitle:[NSLocalizedString(@"sendTitle", @"") stringByAppendingFormat:@"(%d)",select] forState:UIControlStateNormal];
+            [self.comfirnButton setTitle:[[self localizedStringForKey:@"sendTitle"] stringByAppendingFormat:@"(%d)",select] forState:UIControlStateNormal];
             self.comfirnButton.enabled = YES;
         } else {
-            [self.comfirnButton setTitle:NSLocalizedString(@"sendTitle", @"") forState:UIControlStateNormal];
+            [self.comfirnButton setTitle:[self localizedStringForKey:@"sendTitle"] forState:UIControlStateNormal];
             self.comfirnButton.enabled = NO;
         }
     } else {
@@ -554,7 +560,7 @@
     dispatch_group_async(group, queue, ^{
         for (ShareContent *model in self.shareArray) {
             if (model.isDir) {
-                [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"folderUnsupportTitle", @"")];
+                [SVProgressHUD showInfoWithStatus:[self localizedStringForKey:@"folderUnsupportTitle"]];
                 [SVProgressHUD dismissWithDelay:1 completion:^{
                     self.completionCallback(DootaskShareResultSuccess);
                 }];
@@ -609,7 +615,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             CGFloat lastProgress = [self getTotalPercent];
             NSLog(@"总体进度:%f",lastProgress);
-            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f", NSLocalizedString(@"sendingTitle", @""), MIN(lastProgress*100, 99)] stringByAppendingString: @"%"]];
+            [SVProgressHUD showProgress:lastProgress status:[[NSString stringWithFormat:@"%@%.0f", [self localizedStringForKey:@"sendingTitle"], MIN(lastProgress*100, 99)] stringByAppendingString: @"%"]];
             
         });
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject, NSInteger resCode, NSDictionary * _Nonnull resHeader) {
@@ -662,16 +668,16 @@
     NSString *msg;
     DootaskShareResult result;
     if (fail == 0) {
-        msg = NSLocalizedString(@"sendSuccessTitle", @"");
+        msg = [self localizedStringForKey:@"sendSuccessTitle"];
         [SVProgressHUD showSuccessWithStatus:msg];
         result = DootaskShareResultSuccess;
     } else if (success == 0) {
-        msg = NSLocalizedString(@"sendFailTitle", @"");
+        msg = [self localizedStringForKey:@"sendFailTitle"];
         [SVProgressHUD showErrorWithStatus:msg];
         result = DootaskShareResultFail;
     }else  {
         
-        msg = [NSString stringWithFormat:@"%d%@,%d%@", success, NSLocalizedString(@"successTotal", @""), fail, NSLocalizedString(@"failTotal", @"")];
+        msg = [NSString stringWithFormat:@"%d%@,%d%@", success, [self localizedStringForKey:@"successTotal"], fail, [self localizedStringForKey:@"failTotal"]];
         [SVProgressHUD showInfoWithStatus:msg];
         result = DootaskShareResultSuccess;
     }
@@ -765,7 +771,7 @@
     } else {
         if (self.isRoot) {
             ChatModelData *rootData = [ChatModelData new];
-            rootData.name = NSLocalizedString(@"allTitle", @"");
+            rootData.name = [self localizedStringForKey:@"allTitle"];
             rootData.type = @"root";
             
             [self.IDArray addObject:rootData];
@@ -974,7 +980,7 @@
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismissWithCompletion:^{
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"netWorkErrorTitle", @"")];
+            [SVProgressHUD showErrorWithStatus:[self localizedStringForKey:@"netWorkErrorTitle"]];
             [SVProgressHUD dismissWithDelay:2 completion:nil];
         }];
     }];
@@ -1028,10 +1034,41 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         self.showArray = @[];
         [SVProgressHUD dismissWithCompletion:^{
-            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"netWorkErrorTitle", @"")];
+            [SVProgressHUD showErrorWithStatus:[self localizedStringForKey:@"netWorkErrorTitle"]];
             [SVProgressHUD dismissWithDelay:2 completion:nil];
         }];
         [self.tableView reloadData];
     }];
 }
+
+// 添加自定义语言属性设置方法
+- (void)setCustomLanguage:(NSString *)language {
+    // 验证语言参数是否有效
+    if (!language || ![language isKindOfClass:[NSString class]] || language.length == 0) {
+        NSLog(@"没有找到有效的语言设置，不调整语言");
+        return;
+    }
+    
+    // 获取语言包路径
+    NSString *languageBundlePath = [[NSBundle mainBundle] pathForResource:language ofType:@"lproj"];
+    
+    // 如果语言包路径存在，则设置语言包
+    if (languageBundlePath) {
+        self.languageBundle = [NSBundle bundleWithPath:languageBundlePath];
+        NSLog(@"使用自定义语言: %@", language);
+    } else {
+        // 如果语言包路径不存在，则使用系统默认语言包
+        self.languageBundle = [NSBundle mainBundle];
+        NSLog(@"找不到语言包: %@，回退到系统默认语言", language);
+    }
+}
+
+// 添加获取本地化字符串的方法
+- (NSString *)localizedStringForKey:(NSString *)key {
+    if (self.languageBundle) {
+        return [self.languageBundle localizedStringForKey:key value:@"" table:nil];
+    }
+    return NSLocalizedString(key, @"");
+}
+
 @end

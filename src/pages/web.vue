@@ -255,10 +255,12 @@ export default {
         onReceiveMessage({message}) {
             switch (message.action) {
                 case 'picturePreview':
+                    message.language && picture.setLanguage(message.language)
                     picture.picturePreview(message.position, message.paths)
                     break;
 
                 case 'videoPreview':
+                    message.language && picture.setLanguage(message.language)
                     picture.videoPreview(message.path)
                     break;
 
