@@ -103,6 +103,16 @@
 
 /* Begin PBXFileReference section */
 		21618EA4FE8A980870624E1A /* libPods-eeuiAppUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-eeuiAppUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A0DC3272DB4E115008D986B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		3A0DC3282DB4E116008D986B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
+		3A0DC3292DB4E116008D986B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ChatCell.strings; sourceTree = "<group>"; };
+		3A0DC32A2DB4E116008D986B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MainInterface.strings; sourceTree = "<group>"; };
+		3A0DC32B2DB4E116008D986B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3A0DC32C2DB4E126008D986B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		3A0DC32D2DB4E127008D986B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
+		3A0DC32E2DB4E127008D986B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/ChatCell.strings; sourceTree = "<group>"; };
+		3A0DC32F2DB4E127008D986B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/MainInterface.strings; sourceTree = "<group>"; };
+		3A0DC3302DB4E127008D986B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3AE14375282DB85800B5E14E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		3AE14378282E153500B5E14E /* UMDevice.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UMDevice.framework; path = ../../../../../Downloads/UMDevice.framework; sourceTree = "<group>"; };
 		4DD47481746A33D998BAC3E1 /* Pods-dootask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dootask.debug.xcconfig"; path = "Pods/Target Support Files/Pods-dootask/Pods-dootask.debug.xcconfig"; sourceTree = "<group>"; };
@@ -583,6 +593,8 @@
 				de,
 				"zh-HK",
 				"en-GB",
+				fr,
+				ru,
 			);
 			mainGroup = B21356272124045E00EDD991;
 			productRefGroup = B21356312124045E00EDD991 /* Products */;
@@ -649,9 +661,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -688,9 +704,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -723,9 +743,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DooTask/Pods-DooTask-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -807,6 +831,8 @@
 				ADC4466D2A32CBEA0082503B /* de */,
 				ADC4467B2A3354F70082503B /* zh-HK */,
 				ADE036A92A36BC3A00A76B4F /* en-GB */,
+				3A0DC32A2DB4E116008D986B /* fr */,
+				3A0DC32F2DB4E127008D986B /* ru */,
 			);
 			name = MainInterface.storyboard;
 			sourceTree = "<group>";
@@ -823,6 +849,8 @@
 				ADC4466C2A32CBE90082503B /* de */,
 				ADC4467A2A3354F70082503B /* zh-HK */,
 				ADE036A82A36BC3900A76B4F /* en-GB */,
+				3A0DC3292DB4E116008D986B /* fr */,
+				3A0DC32E2DB4E127008D986B /* ru */,
 			);
 			name = ChatCell.xib;
 			sourceTree = "<group>";
@@ -839,6 +867,8 @@
 				ADC4466E2A32CBEA0082503B /* de */,
 				ADC4467C2A3354F80082503B /* zh-HK */,
 				ADE036AA2A36BC3A00A76B4F /* en-GB */,
+				3A0DC32B2DB4E116008D986B /* fr */,
+				3A0DC3302DB4E127008D986B /* ru */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -855,6 +885,8 @@
 				ADC4466B2A32CBE90082503B /* de */,
 				ADC446792A3354F70082503B /* zh-HK */,
 				ADE036A72A36BC3900A76B4F /* en-GB */,
+				3A0DC3282DB4E116008D986B /* fr */,
+				3A0DC32D2DB4E127008D986B /* ru */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -871,6 +903,8 @@
 				ADC4466A2A32CBE90082503B /* de */,
 				ADC446782A3354F60082503B /* zh-HK */,
 				ADE036A62A36BC3900A76B4F /* en-GB */,
+				3A0DC3272DB4E115008D986B /* fr */,
+				3A0DC32C2DB4E126008D986B /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  eeuiApp
+
+  Created by Hitosea-005 on 2023/6/9.
+  
+*/
+"cancelTitle" = "Отмена";
+"sendTitle" = "Отправка в";
+"sendingTitle" = "Отправка";
+"sendingSuccessTitle" = "Отправка успешна";
+"sendingFailTitle" = "Ошибка отправки";
+"unLoginTitle" = "Пожалуйста, войдите в систему и используйте";
+"emptyShareTitle" = "Невозможно получить данные для обмена";
+"netWorkErrorTitle" = "Ошибка сети";
+"folderUnsupportTitle" = "Загрузка папок в настоящее время не поддерживается";
+"allTitle" = "Все";
+"successTotal" = "Загрузка файла выполнена успешно";
+"failTotal" = "Ошибка загрузки файла";
+"searchTitle" = "Поиск";

@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  eeuiApp
+
+  Created by Hitosea-005 on 2023/6/9.
+  
+*/
+"cancelTitle" = "Annuler";
+"sendTitle" = "Envoyer à";
+"sendingTitle" = "Envoi en cours";
+"sendingSuccessTitle" = "Envoi réussi";
+"sendingFailTitle" = "Échec de l'envoi";
+"unLoginTitle" = "Veuillez vous connecter et utiliser";
+"emptyShareTitle" = "Impossible d'obtenir les données de partage";
+"netWorkErrorTitle" = "Exception de réseau";
+"folderUnsupportTitle" = "Le téléchargement de dossier n'est pas pris en charge pour le moment";
+"allTitle" = "Tous";
+"successTotal" = "Le téléchargement du fichier a réussi";
+"failTotal" = "Le téléchargement du fichier a échoué";
+"searchTitle" = "Rechercher";
