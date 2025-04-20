@@ -899,8 +899,17 @@ WX_EXPORT_METHOD(@selector(deleteCache))
 }
 
 - (void)photoBrowser:(GKPhotoBrowser *)browser longPressWithIndex:(NSInteger)index {
-    // 获取当前图片
+    // 获取当前图片或视频
     GKPhoto *photo = browser.photos[index];
+    
+    // 判断是否为视频
+    if (photo.isVideo) {
+        // 处理视频长按事件
+        [self handleVideoLongPress:photo inBrowser:browser];
+        return;
+    }
+    
+    // 以下是处理图片的原有逻辑
     UIImage *image = photo.image;
     
     // 如果当前没有本地图片
@@ -942,6 +951,172 @@ WX_EXPORT_METHOD(@selector(deleteCache))
     });
 }
 
+// 处理视频长按事件
+- (void)handleVideoLongPress:(GKPhoto *)photo inBrowser:(GKPhotoBrowser *)browser {
+    // 创建UIAlertController
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    // 添加保存视频选项
+    [alertController addAction:[UIAlertAction actionWithTitle:@"保存视频到相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self saveVideoToAlbum:photo];
+    }]];
+    
+    // 添加取消选项
+    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    
+    // 在iPad上设置弹出位置
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        alertController.popoverPresentationController.sourceView = browser.view;
+        alertController.popoverPresentationController.sourceRect = CGRectMake(browser.view.bounds.size.width / 2, browser.view.bounds.size.height / 2, 1, 1);
+    }
+    
+    // 显示菜单
+    [browser presentViewController:alertController animated:YES completion:nil];
+}
+
+// 保存视频到相册
+- (void)saveVideoToAlbum:(GKPhoto *)photo {
+    // 创建并显示加载指示器
+    GKLoadingView *loadingView = [GKLoadingView loadingViewWithFrame:CGRectMake(0, 0, 80, 80) style:GKLoadingStyleIndeterminate];
+    loadingView.center = [UIApplication sharedApplication].keyWindow.center;
+    [loadingView startLoading];
+    [[UIApplication sharedApplication].keyWindow addSubview:loadingView];
+    
+    void (^saveVideoBlock)(NSURL *videoURL) = ^(NSURL *videoURL) {
+        if (videoURL) {
+            // 检查URL是否为远程URL
+            if ([videoURL.scheme hasPrefix:@"http"]) {
+                // 是远程URL，需要先下载到本地临时目录
+                [self downloadVideoFromURL:videoURL completion:^(NSURL *localURL, NSError *error) {
+                    if (localURL) {
+                        [self saveLocalVideoToAlbum:localURL completion:^(BOOL success, NSError *error) {
+                            // 隐藏加载指示器
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [loadingView hideLoadingView];
+                                
+                                if (success) {
+                                    [self showToast:@"视频已保存到相册" duration:1.5];
+                                } else {
+                                    [self showToast:[NSString stringWithFormat:@"保存视频失败: %@", error.localizedDescription] duration:1.5];
+                                }
+                            });
+                        }];
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [loadingView hideLoadingView];
+                            [self showToast:[NSString stringWithFormat:@"视频下载失败: %@", error.localizedDescription] duration:1.5];
+                        });
+                    }
+                }];
+            } else {
+                // 本地URL，直接保存
+                [self saveLocalVideoToAlbum:videoURL completion:^(BOOL success, NSError *error) {
+                    // 隐藏加载指示器
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [loadingView hideLoadingView];
+                        
+                        if (success) {
+                            [self showToast:@"视频已保存到相册" duration:1.5];
+                        } else {
+                            [self showToast:[NSString stringWithFormat:@"保存视频失败: %@", error.localizedDescription] duration:1.5];
+                        }
+                    });
+                }];
+            }
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [loadingView hideLoadingView];
+                [self showToast:@"无法获取视频文件" duration:1.5];
+            });
+        }
+    };
+    
+    // 首先检查视频URL
+    if (photo.videoUrl) {
+        saveVideoBlock(photo.videoUrl);
+    } 
+    // 如果没有视频URL，检查视频资源
+    else if (photo.videoAsset) {
+        [photo getVideo:^(NSURL * _Nullable url, NSError * _Nullable error) {
+            if (url) {
+                saveVideoBlock(url);
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [loadingView hideLoadingView];
+                    [self showToast:@"无法从相册获取视频" duration:1.5];
+                });
+            }
+        }];
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [loadingView hideLoadingView];
+            [self showToast:@"无法获取视频文件" duration:1.5];
+        });
+    }
+}
+
+// 将本地视频保存到相册（添加回调）
+- (void)saveLocalVideoToAlbum:(NSURL *)localURL completion:(void(^)(BOOL success, NSError *error))completion {
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        [PHAssetChangeRequest creationRequestForAssetFromVideoAtFileURL:localURL];
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        if (success) {
+            NSLog(@"视频已成功保存到相册");
+        } else {
+            NSLog(@"保存视频失败: %@", error);
+        }
+        
+        if (completion) {
+            completion(success, error);
+        }
+    }];
+}
+
+// 从远程URL下载视频到本地临时目录
+- (void)downloadVideoFromURL:(NSURL *)url completion:(void (^)(NSURL *localURL, NSError *error))completion {
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    
+    [[session dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error) {
+            if (completion) {
+                completion(nil, error);
+            }
+            return;
+        }
+        
+        if (!data) {
+            if (completion) {
+                NSError *noDataError = [NSError errorWithDomain:@"DownloadError" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"下载的数据为空"}];
+                completion(nil, noDataError);
+            }
+            return;
+        }
+        
+        // 创建临时文件路径
+        NSString *tempDir = NSTemporaryDirectory();
+        NSString *fileName = [NSString stringWithFormat:@"video_%@.mp4", [[NSUUID UUID] UUIDString]];
+        NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+        
+        // 将数据写入临时文件
+        NSError *writeError = nil;
+        [data writeToURL:fileURL options:NSDataWritingAtomic error:&writeError];
+        
+        if (writeError) {
+            if (completion) {
+                completion(nil, writeError);
+            }
+            return;
+        }
+        
+        if (completion) {
+            completion(fileURL, nil);
+        }
+    }] resume];
+}
+
+// 显示图片系统分享菜单
 - (void)showShareMenuWithImage:(UIImage *)image inBrowser:(GKPhotoBrowser *)browser {
     // 创建一个简单的Controller用于承载UIActivityViewController
     UIViewController *containerVC = [[UIViewController alloc] init];
@@ -969,6 +1144,50 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         
         // 显示活动视图控制器
         [containerVC presentViewController:activityVC animated:YES completion:nil];
+    }];
+}
+
+// 显示提示信息
+- (void)showToast:(NSString *)message duration:(NSTimeInterval)duration {
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    if (!window) return;
+    
+    UILabel *toastLabel = [[UILabel alloc] init];
+    toastLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+    toastLabel.textColor = [UIColor whiteColor];
+    toastLabel.textAlignment = NSTextAlignmentCenter;
+    toastLabel.font = [UIFont systemFontOfSize:16];
+    toastLabel.text = message;
+    toastLabel.numberOfLines = 0;
+    toastLabel.layer.cornerRadius = 10;
+    toastLabel.clipsToBounds = YES;
+    toastLabel.alpha = 0;
+    
+    [window addSubview:toastLabel];
+    
+    // 计算尺寸
+    CGSize maxSize = CGSizeMake(window.bounds.size.width - 80, window.bounds.size.height / 2);
+    CGSize textSize = [message boundingRectWithSize:maxSize
+                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                         attributes:@{NSFontAttributeName: toastLabel.font}
+                                            context:nil].size;
+    
+    CGFloat labelWidth = textSize.width + 40;
+    CGFloat labelHeight = textSize.height + 20;
+    
+    toastLabel.frame = CGRectMake((window.bounds.size.width - labelWidth) / 2,
+                                  window.bounds.size.height - 100 - labelHeight,
+                                  labelWidth, labelHeight);
+    
+    // 显示动画
+    [UIView animateWithDuration:0.3 animations:^{
+        toastLabel.alpha = 1;
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.3 delay:duration options:0 animations:^{
+            toastLabel.alpha = 0;
+        } completion:^(BOOL finished) {
+            [toastLabel removeFromSuperview];
+        }];
     }];
 }
 
