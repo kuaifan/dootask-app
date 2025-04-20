@@ -81,20 +81,10 @@ public class eeuiScreenUtils {
      */
     public static Map<String, Object> getSafeAreaInsets(Context context) {
         Map<String, Object> result = new HashMap<>();
-        int statusBarHeight = 0;
-        int navigationBarHeight = 0;
 
-        // 获取状态栏高度
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
-        }
-
-        // 获取导航栏高度（无论是否显示）
-        resourceId = context.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            navigationBarHeight = context.getResources().getDimensionPixelSize(resourceId);
-        }
+        // 获取状态栏、导航栏高度
+        int statusBarHeight = eeuiNavMask.getStatusBarHeight(context);
+        int navigationBarHeight = eeuiNavMask.getNavigationBarHeight(context);
 
         // 获取屏幕尺寸
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();

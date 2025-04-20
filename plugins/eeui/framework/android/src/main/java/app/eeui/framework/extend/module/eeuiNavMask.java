@@ -267,7 +267,7 @@ public class eeuiNavMask {
      * @param context 上下文
      * @return 状态栏高度（像素）
      */
-    private static int getStatusBarHeight(Context context) {
+    public static int getStatusBarHeight(Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
@@ -281,7 +281,7 @@ public class eeuiNavMask {
      * @param context 上下文
      * @return 导航栏高度（像素）
      */
-    private static int getNavigationBarHeight(Context context) {
+    public static int getNavigationBarHeight(Context context) {
         if (context == null) {
             return 0;
         }
@@ -300,24 +300,8 @@ public class eeuiNavMask {
             Activity activity = (Activity) context;
             Window window = activity.getWindow();
 
-            // 尝试通过窗口标志判断
-            View decorView = window.getDecorView();
-            int flags = decorView.getSystemUiVisibility();
-
-            // 检查导航栏是否隐藏
-            boolean navBarHidden = (flags & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
-
-            // 如果系统标志说明导航栏被隐藏，则认为没有导航栏
-            if (navBarHidden) {
+            if (!isNavBarVisible(window)) {
                 hasNavigationBar = false;
-            }
-
-            // Android P (API 28) 及以上，检查是否有缺口（刘海屏）
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                if (window.getAttributes().layoutInDisplayCutoutMode ==
-                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES) {
-                    hasNavigationBar = true;
-                }
             }
         }
 
@@ -353,6 +337,36 @@ public class eeuiNavMask {
         }
 
         return 0;
+    }
+
+    /**
+     * 判断 Navigation Bar 是否可见
+     * @param window {@link Window}
+     * @return {@code true} yes, {@code false} no
+     */
+    public static boolean isNavBarVisible(final Window window) {
+        if (window != null) {
+            boolean   isVisible = false;
+            ViewGroup decorView = (ViewGroup) window.getDecorView();
+            for (int i = 0, len = decorView.getChildCount(); i < len; i++) {
+                final View child = decorView.getChildAt(i);
+                final int  id    = child.getId();
+                if (id != View.NO_ID) {
+                    String resourceEntryName = Resources.getSystem().getResourceEntryName(id);
+                    if ("navigationBarBackground".equals(resourceEntryName)
+                        && child.getVisibility() == View.VISIBLE) {
+                        isVisible = true;
+                        break;
+                    }
+                }
+            }
+            if (isVisible) {
+                int visibility = decorView.getSystemUiVisibility();
+                isVisible = (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
+            }
+            return isVisible;
+        }
+        return false;
     }
 
     /**
