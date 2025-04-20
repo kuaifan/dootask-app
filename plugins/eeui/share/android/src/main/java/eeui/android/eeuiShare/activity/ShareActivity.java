@@ -279,6 +279,14 @@ public class ShareActivity extends AppCompatActivity  {
 
                     folderSelectList.add(user);
                     folderSelectAdapter.setData(folderSelectList);
+                    
+                    // 滚动到最后一个项目
+                    recyclerSelect.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerSelect.smoothScrollToPosition(folderSelectList.size() - 1);
+                        }
+                    });
                 }else {
                     isUploadDir = false;
                     if (user.isSelect()){
