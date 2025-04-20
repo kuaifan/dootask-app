@@ -954,15 +954,15 @@ WX_EXPORT_METHOD(@selector(deleteCache))
     // 创建UIAlertController
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
+    // 添加保存图片选项
+    [alertController addAction:[UIAlertAction actionWithTitle:[eeuiPictureLocalization localizedStringForKey:@"SaveImageToAlbum"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    }]];
+    
     // 添加分享选项
     [alertController addAction:[UIAlertAction actionWithTitle:[eeuiPictureLocalization localizedStringForKey:@"Share"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         // 使用系统分享菜单
         [self showShareMenuWithImage:image inBrowser:browser];
-    }]];
-    
-    // 添加保存图片选项
-    [alertController addAction:[UIAlertAction actionWithTitle:[eeuiPictureLocalization localizedStringForKey:@"SaveImageToAlbum"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
     }]];
     
     // 添加取消选项
