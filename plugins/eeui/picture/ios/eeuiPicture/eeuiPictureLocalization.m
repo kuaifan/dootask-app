@@ -80,6 +80,10 @@ static NSString *_customLanguage = nil;
         // 默认英文映射表
         NSDictionary *defaultStrings = @{
             @"SaveVideoToAlbum": @"Save Video",
+            @"Share": @"Share",
+            @"SaveImageToAlbum": @"Save Image",
+            @"ImageSaved": @"Image saved to album",
+            @"SaveImageFailed": @"Failed to save image",
             @"Cancel": @"Cancel",
             @"VideoSaved": @"Video saved to album",
             @"SaveVideoFailed": @"Failed to save video",
@@ -99,6 +103,10 @@ static NSString *_customLanguage = nil;
         // 中文映射表
         NSDictionary *zhHansStrings = @{
             @"SaveVideoToAlbum": @"保存视频到相册",
+            @"Share": @"分享",
+            @"SaveImageToAlbum": @"保存图片到相册",
+            @"ImageSaved": @"图片已保存到相册",
+            @"SaveImageFailed": @"保存图片失败",
             @"Cancel": @"取消",
             @"VideoSaved": @"视频已保存到相册",
             @"SaveVideoFailed": @"保存视频失败",
@@ -118,6 +126,10 @@ static NSString *_customLanguage = nil;
         // 繁体中文映射表
         NSDictionary *zhHantStrings = @{
             @"SaveVideoToAlbum": @"保存視頻到相冊",
+            @"Share": @"分享",
+            @"SaveImageToAlbum": @"保存圖片到相冊",
+            @"ImageSaved": @"圖片已保存到相冊",
+            @"SaveImageFailed": @"保存圖片失敗",
             @"Cancel": @"取消",
             @"VideoSaved": @"視頻已保存到相冊",
             @"SaveVideoFailed": @"保存視頻失敗",
@@ -137,6 +149,10 @@ static NSString *_customLanguage = nil;
         // 香港繁体映射表
         NSDictionary *zhHKStrings = @{
             @"SaveVideoToAlbum": @"儲存影片至相簿",
+            @"Share": @"分享",
+            @"SaveImageToAlbum": @"儲存圖片至相簿",
+            @"ImageSaved": @"圖片已儲存至相簿",
+            @"SaveImageFailed": @"儲存圖片失敗",
             @"Cancel": @"取消",
             @"VideoSaved": @"影片已儲存至相簿",
             @"SaveVideoFailed": @"儲存影片失敗",
@@ -156,6 +172,10 @@ static NSString *_customLanguage = nil;
         // 日语映射表
         NSDictionary *jaStrings = @{
             @"SaveVideoToAlbum": @"ビデオをアルバムに保存",
+            @"Share": @"シェア",
+            @"SaveImageToAlbum": @"画像をアルバムに保存",
+            @"ImageSaved": @"画像がアルバムに保存されました",
+            @"SaveImageFailed": @"画像の保存に失敗しました",
             @"Cancel": @"キャンセル",
             @"VideoSaved": @"ビデオがアルバムに保存されました",
             @"SaveVideoFailed": @"ビデオの保存に失敗しました",
@@ -175,6 +195,10 @@ static NSString *_customLanguage = nil;
         // 韩语映射表
         NSDictionary *koStrings = @{
             @"SaveVideoToAlbum": @"앨범에 비디오 저장",
+            @"Share": @"공유",
+            @"SaveImageToAlbum": @"앨범에 이미지 저장",
+            @"ImageSaved": @"이미지가 앨범에 저장되었습니다",
+            @"SaveImageFailed": @"이미지 저장에 실패했습니다",
             @"Cancel": @"취소",
             @"VideoSaved": @"비디오가 앨범에 저장되었습니다",
             @"SaveVideoFailed": @"비디오 저장 실패",
@@ -194,6 +218,10 @@ static NSString *_customLanguage = nil;
         // 德语映射表
         NSDictionary *deStrings = @{
             @"SaveVideoToAlbum": @"Video im Album speichern",
+            @"Share": @"Teilen",
+            @"SaveImageToAlbum": @"Bild im Album speichern",
+            @"ImageSaved": @"Bild wurde im Album gespeichert",
+            @"SaveImageFailed": @"Fehler beim Speichern des Bildes",
             @"Cancel": @"Abbrechen",
             @"VideoSaved": @"Video wurde im Album gespeichert",
             @"SaveVideoFailed": @"Video konnte nicht gespeichert werden",
@@ -213,6 +241,10 @@ static NSString *_customLanguage = nil;
         // 印尼语映射表
         NSDictionary *idStrings = @{
             @"SaveVideoToAlbum": @"Simpan Video ke Album",
+            @"Share": @"Bagikan",
+            @"SaveImageToAlbum": @"Simpan Gambar ke Album",
+            @"ImageSaved": @"Gambar telah disimpan ke album",
+            @"SaveImageFailed": @"Gagal menyimpan gambar",
             @"Cancel": @"Batal",
             @"VideoSaved": @"Video telah disimpan ke album",
             @"SaveVideoFailed": @"Gagal menyimpan video",
@@ -232,6 +264,10 @@ static NSString *_customLanguage = nil;
         // 英国英语映射表
         NSDictionary *enGBStrings = @{
             @"SaveVideoToAlbum": @"Save Video to Album",
+            @"Share": @"Share",
+            @"SaveImageToAlbum": @"Save Image to Album",
+            @"ImageSaved": @"Image saved to album",
+            @"SaveImageFailed": @"Failed to save image",
             @"Cancel": @"Cancel",
             @"VideoSaved": @"Video saved to album",
             @"SaveVideoFailed": @"Failed to save video",
@@ -251,6 +287,10 @@ static NSString *_customLanguage = nil;
         // 法语映射表
         NSDictionary *frStrings = @{
             @"SaveVideoToAlbum": @"Enregistrer la vidéo dans l'album",
+            @"Share": @"Partager",
+            @"SaveImageToAlbum": @"Enregistrer l'image dans l'album",
+            @"ImageSaved": @"L'image a été enregistrée dans l'album",
+            @"SaveImageFailed": @"Échec de l'enregistrement de l'image",
             @"Cancel": @"Annuler",
             @"VideoSaved": @"La vidéo a été enregistrée dans l'album",
             @"SaveVideoFailed": @"Échec de l'enregistrement de la vidéo",
@@ -270,6 +310,10 @@ static NSString *_customLanguage = nil;
         // 俄语映射表
         NSDictionary *ruStrings = @{
             @"SaveVideoToAlbum": @"Сохранить видео в альбоме",
+            @"Share": @"Поделиться",
+            @"SaveImageToAlbum": @"Сохранить изображение в альбоме",
+            @"ImageSaved": @"Изображение сохранено в альбоме",
+            @"SaveImageFailed": @"Не удалось сохранить изображение",
             @"Cancel": @"Отмена",
             @"VideoSaved": @"Видео сохранено в альбоме",
             @"SaveVideoFailed": @"Не удалось сохранить видео",

@@ -951,11 +951,31 @@ WX_EXPORT_METHOD(@selector(deleteCache))
         return;
     }
     
-    // 首先尝试使用系统UIActivityViewController
-    dispatch_async(dispatch_get_main_queue(), ^{
+    // 创建UIAlertController
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    // 添加分享选项
+    [alertController addAction:[UIAlertAction actionWithTitle:[eeuiPictureLocalization localizedStringForKey:@"Share"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         // 使用系统分享菜单
         [self showShareMenuWithImage:image inBrowser:browser];
-    });
+    }]];
+    
+    // 添加保存图片选项
+    [alertController addAction:[UIAlertAction actionWithTitle:[eeuiPictureLocalization localizedStringForKey:@"SaveImageToAlbum"] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    }]];
+    
+    // 添加取消选项
+    [alertController addAction:[UIAlertAction actionWithTitle:[eeuiPictureLocalization localizedStringForKey:@"Cancel"] style:UIAlertActionStyleCancel handler:nil]];
+    
+    // 在iPad上设置弹出位置
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        alertController.popoverPresentationController.sourceView = browser.view;
+        alertController.popoverPresentationController.sourceRect = CGRectMake(browser.view.bounds.size.width / 2, browser.view.bounds.size.height / 2, 1, 1);
+    }
+    
+    // 显示菜单
+    [browser presentViewController:alertController animated:YES completion:nil];
 }
 
 // 处理视频长按事件
@@ -1196,6 +1216,15 @@ WX_EXPORT_METHOD(@selector(deleteCache))
             [toastLabel removeFromSuperview];
         }];
     }];
+}
+
+// 保存图片完成回调
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
+    if (error) {
+        [self showToast:[NSString stringWithFormat:@"%@: %@", [eeuiPictureLocalization localizedStringForKey:@"SaveImageFailed"], error.localizedDescription] duration:1.5];
+    } else {
+        [self showToast:[eeuiPictureLocalization localizedStringForKey:@"ImageSaved"] duration:1.5];
+    }
 }
 
 @end
