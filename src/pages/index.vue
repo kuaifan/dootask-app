@@ -340,6 +340,7 @@ export default {
                 },
                 headers: {
                     token: this.appMessage.token,
+                    language: this.appMessage.language,
                 }
             }, result => {
                 console.log(result);
