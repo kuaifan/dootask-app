@@ -444,6 +444,24 @@ public class WebModule {
         return myApp().isDebug(webView.getContext());
     }
 
+    /**
+     * 获取设备详细信息
+     * @param webView
+     * @param callback
+     */
+    public static void getDeviceInfo(ExtendWebView webView, JsCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        myApp().getDeviceInfo(webView.getContext(), data -> {
+            try {
+                callback.apply(data);
+            } catch (JsCallback.JsCallbackException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 

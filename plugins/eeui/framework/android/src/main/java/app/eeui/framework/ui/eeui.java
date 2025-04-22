@@ -73,6 +73,7 @@ import app.eeui.framework.extend.module.utilcode.util.DeviceUtils;
 import app.eeui.framework.extend.module.utilcode.util.FileUtils;
 import app.eeui.framework.extend.module.utilcode.util.PermissionUtils;
 import app.eeui.framework.extend.module.utilcode.utilcodeModule;
+import app.eeui.framework.extend.utils.ShellUtils;
 import app.eeui.framework.extend.view.loading.LoadingDialog;
 import app.eeui.framework.extend.view.webviewBridge.JsCallback;
 import app.eeui.framework.ui.component.a.A;
@@ -1201,6 +1202,43 @@ public class eeui {
      */
     public boolean isDebug(Context context) {
         return BuildConfig.DEBUG;
+    }
+
+    /**
+     * 获取设备详细信息
+     * @param context
+     * @param mCallback
+     */
+    public void getDeviceInfo(Context context, ResultCallback<Map<String, Object>> mCallback) {
+        final Map<String, Object> result = new HashMap<>();
+        result.put("status", "success");
+        result.put("manufacturer", android.os.Build.MANUFACTURER);
+        result.put("brand", android.os.Build.BRAND);
+        result.put("model", android.os.Build.MODEL);
+
+        // 具体型号名称
+        ShellUtils.CommandResult res = ShellUtils.execCmd("get prop ro.product.name", false);
+        if (res.isSuccess3()) {
+            result.put("modelName", res.successMsg);
+        } else {
+            result.put("modelName", android.os.Build.MODEL);
+        }
+
+        // Android没有类似iOS的设备名称，这里设置为空字符串
+        result.put("deviceName", "");
+        result.put("systemName", "Android");
+        result.put("systemVersion", android.os.Build.VERSION.RELEASE);
+
+        // 返回格式说明：
+        // status: 状态码，例如："success"
+        // manufacturer: 制造商，例如："Samsung"、"Xiaomi"、"HUAWEI"
+        // brand: 品牌，例如："samsung"、"Redmi"、"HONOR"
+        // model: 设备类型，例如："SM-G9980"、"Redmi Note 12 Pro"
+        // modelName: 具体型号名称，例如："Galaxy S23 Ultra"、"Redmi Note 12 Pro"
+        // deviceName: Android平台返回空字符串
+        // systemName: 操作系统名称："Android"
+        // systemVersion: 操作系统版本，例如："13"、"14"
+        mCallback.onReceiveResult(result);
     }
 
     /****************************************************************************************/

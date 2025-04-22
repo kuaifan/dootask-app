@@ -490,6 +490,17 @@ public class WeexModule extends WXModule {
         return myApp().isDebug(mWXSDKInstance.getContext());
     }
 
+    /**
+     * 获取设备详细信息
+     */
+    @JSMethod
+    public void getDeviceInfo(JSCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        myApp().getDeviceInfo(mWXSDKInstance.getContext(), callback::invoke);
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 

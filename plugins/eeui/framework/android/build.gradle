@@ -56,4 +56,7 @@ dependencies {
 
     // 权限请求框架：https://github.com/getActivity/XXPermissions
     implementation 'com.github.getActivity:XXPermissions:18.2'
+    
+    // 设备名称库：https://github.com/jaredrummler/AndroidDeviceNames
+    implementation 'com.jaredrummler:android-device-names:2.1.1'
 }
