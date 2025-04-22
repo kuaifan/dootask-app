@@ -72,4 +72,6 @@ static NSMutableDictionary * mAppboardWifi;
 + (NSString *) webCommonStyle;
 
 + (BOOL)isNotchedScreen;
+
++ (NSString *)getDeviceModelName;
 @end

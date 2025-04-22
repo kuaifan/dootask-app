@@ -541,6 +541,32 @@
     [self getImeiAsync:callback];
 }
 
+- (void)getDeviceInfo:(WXModuleCallback)callback
+{
+    if (callback == nil) {
+        return;
+    }
+    
+    UIDevice *device = [UIDevice currentDevice];
+    NSString *modelName = [DeviceUtil getDeviceModelName];
+    
+    NSString *deviceName = device.name;
+    if (@available(iOS 16.0, *)) {
+        deviceName = @"";
+    }
+    
+    callback(@{
+        @"status": @"success",      // 状态码，例如："success"
+        @"manufacturer": @"Apple",  // 制造商，例如："Apple"
+        @"brand": @"Apple",         // 品牌，例如："Apple"
+        @"model": device.model,     // 设备类型，例如："iPhone"、"iPad"、"iPod touch"
+        @"modelName": modelName,    // 具体型号名称，例如："iPhone 13 Pro Max"、"iPad Air (5th generation)"
+        @"deviceName": deviceName,  // 用户设置的设备名称，例如："张三的iPhone"、"公司的iPad"（iOS 16+仅返回空）
+        @"systemName": device.systemName,     // 操作系统名称，例如："iOS"、"iPadOS"
+        @"systemVersion": device.systemVersion // 操作系统版本，例如："17.4.1"
+    });
+}
+
 - (NSInteger)getSDKVersionCode
 {
     NSString* phoneVersion = [[UIDevice currentDevice] systemVersion];
