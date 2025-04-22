@@ -472,7 +472,10 @@
     self.originalArray = self.rootModel.data; // 保存原始数据
     self.showArray = self.originalArray;
     
-    [self.tableView reloadData];
+    // 确保在主线程更新UI
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
 }
 
 - (void)showNav{
@@ -745,6 +748,15 @@
     
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ChatCell"];
     
+    // 添加安全检查，防止数组越界崩溃
+    if (self.showArray.count == 0 || indexPath.row >= self.showArray.count) {
+        // 返回空白cell避免崩溃
+        cell.userNickLabel.text = @"";
+        cell.userNameLabel.text = @"";
+        cell.selectImageView.image = nil;
+        return cell;
+    }
+    
     ChatModelData *model = self.showArray[indexPath.row];
     if (![model.type isEqualToString:@"children"]){
         if (!model.select) {
@@ -794,7 +806,8 @@
 }
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.showArray.count;
+    // 添加安全检查，避免返回错误的行数
+    return self.showArray ? self.showArray.count : 0;
 }
 
 #pragma mark -

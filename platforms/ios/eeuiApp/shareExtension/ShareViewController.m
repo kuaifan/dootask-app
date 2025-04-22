@@ -91,9 +91,21 @@
     [self dismissViewControllerAnimated:true completion:^{
         [self.presentingViewController dismissViewControllerAnimated:false completion:nil];
         
-        // FIXME: Share extension memory usage increase when launched several times and then crash due to some memory leaks.
-        // For now, we force the share extension to exit and free memory.
-        [NSException raise:@"Kill the app extension" format:@"Free memory used by share extension"];
+        // 使用正常的方式完成扩展并退出，避免崩溃
+        [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+        
+        // 强制清理内存
+        [[NSURLCache sharedURLCache] removeAllCachedResponses];
+        if (@available(iOS 13.0, *)) {
+            [NSProcessInfo.processInfo performExpiringActivityWithReason:@"Cleanup" usingBlock:^(BOOL expired) {
+                exit(0); // 正常退出进程
+            }];
+        } else {
+            // iOS 13之前的版本
+            dispatch_async(dispatch_get_main_queue(), ^{
+                exit(0);
+            });
+        }
     }];
 }
 
