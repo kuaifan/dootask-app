@@ -53,10 +53,4 @@ dependencies {
     compileOnly "org.apache.weex:sdk_legacy:${project.weex_sdkLibVersion}"
     compileOnly "com.taobao.android:weexplugin-processor:${project.weex_processorVersion}"
     compileOnly "com.google.code.gson:gson:${project.googleGsonVersion}"
-
-    // 权限请求框架：https://github.com/getActivity/XXPermissions
-    implementation 'com.github.getActivity:XXPermissions:18.2'
-    
-    // 设备名称库：https://github.com/jaredrummler/AndroidDeviceNames
-    implementation 'com.jaredrummler:android-device-names:2.1.1'
 }

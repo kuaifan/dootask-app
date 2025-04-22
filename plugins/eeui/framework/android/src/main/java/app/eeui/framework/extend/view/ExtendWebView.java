@@ -17,9 +17,9 @@ import android.os.Environment;
 import android.os.Message;
 import android.provider.MediaStore;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
+
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +31,6 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.hjq.permissions.OnPermissionCallback;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
 import com.taobao.weex.bridge.JSCallback;
 
 import java.io.File;
@@ -49,6 +46,7 @@ import app.eeui.framework.extend.bean.WebCallBean;
 import app.eeui.framework.extend.module.eeuiCommon;
 import app.eeui.framework.extend.module.eeuiMap;
 import app.eeui.framework.extend.module.eeuiParse;
+import app.eeui.framework.extend.module.utilcode.constant.PermissionConstants;
 import app.eeui.framework.extend.module.utilcode.util.PermissionUtils;
 import app.eeui.framework.extend.view.webviewBridge.InjectedChromeClient;
 import app.eeui.framework.ui.module.WebModule;
@@ -460,21 +458,17 @@ public class ExtendWebView extends WebView {
      * 检查拍照权限
      */
     private void checkPermission() {
-        XXPermissions.with(getContext())
-            // 申请单个权限
-            .permission(Permission.CAMERA)
-            .request(new OnPermissionCallback() {
+        Context context = getContext();
+        PermissionUtils.permission(PermissionConstants.CAMERA)
+            .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(context, shouldRequest, "相机"))
+            .callback(new PermissionUtils.FullCallback() {
                 @Override
-                public void onGranted(@NonNull List<String> permissions, boolean allGranted) {
-                    if (!allGranted) {
-//                            toast("获取部分权限成功，但部分权限未正常授予");
-                        return;
-                    }
+                public void onGranted(List<String> permissionsGranted) {
                     openCarcme();
                 }
 
                 @Override
-                public void onDenied(@NonNull List<String> permissions, boolean doNotAskAgain) {
+                public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
                     if (mUploadMessage != null) {
                         mUploadMessage.onReceiveValue(null);
                         mUploadMessage = null;
@@ -483,64 +477,17 @@ public class ExtendWebView extends WebView {
                         mUploadMessagesAboveL.onReceiveValue(null);
                         mUploadMessagesAboveL = null;
                     }
-
-                    if (doNotAskAgain) {
-                        // 如果是被永久拒绝就跳转到应用权限系统设置页面
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-                        builder.setTitle("权限申请");
-                        builder.setMessage("在设置-本应用-权限中开启相机权限，以正常使用拍照功能");
-                        builder.setCancelable(true);
-
-                        builder.setPositiveButton("去设置",new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                XXPermissions.startPermissionActivity(getContext(), permissions);
-                            }
-
-                        });
-
-                        builder.setNeutralButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-
-                        });
-
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-                        alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.parseColor("#000000"));
-                        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#4169E1"));
-                    } else {
-//                            toast("获取录音和日历权限失败");
-                        Toast.makeText(getContext(), "相机权限已被拒绝", Toast.LENGTH_SHORT).show();
+                    if (!permissionsDeniedForever.isEmpty()) {
+                        PermissionUtils.showOpenAppSettingDialog(context, "相机");
                     }
                 }
-            });
+            }).request();
     }
     /**
      * 【图片上传部分】打开照相机
      */
     private void openCarcme() {
         File vFile = new File(getContext().getExternalFilesDir(DIRECTORY_DCIM),System.currentTimeMillis() + ".png");
-//        String imagePaths = Environment.getExternalStorageDirectory().getPath() + "/BigMoney/Images/" + (System.currentTimeMillis() + ".jpg");
-//        // 必须确保文件夹路径存在，否则拍照后无法完成回调
-//        File vFile = new File(imagePaths);
-//        if (!vFile.exists()) {
-//            File vDirPath = vFile.getParentFile();
-//            boolean res = vDirPath.mkdirs();
-//            if (!res) {
-//                return;
-//            }
-//        } else {
-//            if (vFile.exists()) {
-//                boolean res = vFile.delete();
-//                if (!res) {
-//                    return;
-//                }
-//            }
-//        }
         //
         cameraUri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".provider", vFile);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
