@@ -806,8 +806,10 @@ WX_EXPORT_METHOD(@selector(deleteCache))
     configure.hidesCountLabel = YES;
     configure.hidesPageControl = items.count == 1;
     configure.hidesSavedBtn = YES;
-    configure.maxZoomScale = 6.0;
     configure.isSingleTapDisabled = YES;
+    configure.isFullWidthForLandScape = NO;
+    configure.isFollowSystemRotation = YES;
+    configure.maxZoomScale = 6.0;
     
     // 创建浏览器
     GKPhotoBrowser *browser = [GKPhotoBrowser photoBrowserWithPhotos:items currentIndex:index];
@@ -840,9 +842,11 @@ WX_EXPORT_METHOD(@selector(deleteCache))
     configure.hidesPageControl = YES;
     configure.hidesSavedBtn = YES;
     configure.isSingleTapDisabled = YES;
+    configure.isFullWidthForLandScape = NO;
+    configure.isFollowSystemRotation = YES;
     configure.isVideoPausedWhenDragged = NO;
-    [configure setupVideoProgressProtocol:[GKVideoProgressView new]];
     configure.isVideoReplay = NO;
+    [configure setupVideoProgressProtocol:[GKVideoProgressView new]];
     
     // 创建浏览器
     GKPhotoBrowser *browser = [GKPhotoBrowser photoBrowserWithPhotos:photos currentIndex:0];
