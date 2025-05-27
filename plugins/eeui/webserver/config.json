@@ -1,0 +1,5 @@
+{
+	"desc": "将本地文件起一个web服务",
+	"requireFormatName": "eeuiWebserver",
+	"requireName": "eeui/webserver"
+}

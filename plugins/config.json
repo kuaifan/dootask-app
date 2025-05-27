@@ -39,6 +39,11 @@
 			"requireName": "eeui/Agoro",
 			"name": "eeui/agoro",
 			"url": "http://eeui.cdn.gmjfw.com/uploads/plugins/1/agoro/08e83a8fe7a5a8c2d5559241790120aa.zip"
+		},
+		"eeui/webserver": {
+			"requireName": "eeui/webserver",
+			"name": "eeui/webserver",
+			"url": "local"
 		}
 	}
 }

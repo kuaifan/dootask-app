@@ -34,6 +34,7 @@ const communication = app.requireModule("eeui/communication");
 const notifications = app.requireModule("eeui/notifications");
 const picture = app.requireModule("eeui/picture");
 const shareFile = app.requireModule("eeui/shareFiles");
+const webServer = app.requireModule("eeui/webserver");
 
 export default {
     components: {Meetings},
@@ -75,6 +76,7 @@ export default {
     appActive() {
         const javascript = `if (typeof window.__onAppActive === "function"){window.__onAppActive()}`;
         this.$refs.web.setJavaScript(javascript);
+        this.startWebServer(false);
     },
 
     // APP进入后台：App从【前台】切换至【后台】时触发
@@ -148,7 +150,7 @@ export default {
             }
         });
 
-        this.$refs.web.setUrl(eeui.rewriteUrl('../public/index.html'));
+        this.startWebServer(true)
     },
 
     computed: {
@@ -163,6 +165,24 @@ export default {
     },
 
     methods: {
+        /**
+         * 启动Web服务器
+         * @param refresh
+         */
+        async startWebServer(refresh) {
+            const status = await (new Promise(resolve => webServer.getServerStatus(resolve)));
+            console.log(status);
+
+            if (!status.isRunning) {
+                const result = await (new Promise(resolve => webServer.startWebServer(eeui.rewriteUrl('../public'), 22222, resolve)));
+                console.log(result);
+            }
+
+            if (refresh) {
+                this.$refs.web.setUrl(`http://localhost:22222/`);
+            }
+        },
+
         /**
          * 初始化主题
          * @param themeName

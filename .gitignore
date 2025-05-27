@@ -18,3 +18,4 @@ platforms/ios/eeuiApp/bundlejs/eeui/appboard
 platforms/ios/eeuiApp/bundlejs/eeui/public
 platforms/ios/eeuiApp/bundlejs/eeui/pages
 src/public
+.gradle

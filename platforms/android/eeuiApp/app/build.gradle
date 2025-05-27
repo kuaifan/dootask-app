@@ -101,4 +101,5 @@ dependencies {
     implementation project(":eeuiShareFiles")
     implementation project(":eeuiShare")
     implementation project(":eeuiAgoro")
+    implementation project(":eeuiWebserver")
 }

@@ -14,6 +14,7 @@ def common
     
     pod 'eeuiShare', :path => '../../../plugins/eeui/share/ios'
     pod 'eeuiAgoro', :path => '../../../plugins/eeui/agoro/ios'
+    pod 'eeuiWebserver', :path => '../../../plugins/eeui/webserver/ios'
 end
 
 def share

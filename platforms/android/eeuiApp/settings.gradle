@@ -29,3 +29,6 @@ project (":eeuiShare").projectDir = new File("../../../plugins/eeui/share/androi
 
 include ":eeuiAgoro"
 project (":eeuiAgoro").projectDir = new File("../../../plugins/eeui/agoro/android")
+
+include ":eeuiWebserver"
+project (":eeuiWebserver").projectDir = new File("../../../plugins/eeui/webserver/android")
