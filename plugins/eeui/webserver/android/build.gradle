@@ -35,4 +35,7 @@ dependencies {
     compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
     //
     compileOnly project(":eeui")
+    
+    // NanoHTTPD for HTTP server functionality
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
 }
