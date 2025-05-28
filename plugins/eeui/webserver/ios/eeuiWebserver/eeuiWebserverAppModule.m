@@ -21,21 +21,33 @@ static GCDWebServer *sharedWebServer = nil;
 @synthesize weexInstance;
 
 WX_PlUGIN_EXPORT_MODULE(eeuiWebserver, eeuiWebserverAppModule)
-WX_EXPORT_METHOD(@selector(startWebServer:port:callback:))
+WX_EXPORT_METHOD(@selector(startWebServer:callback:))
 WX_EXPORT_METHOD(@selector(stopWebServer:))
 WX_EXPORT_METHOD(@selector(getServerStatus:))
 WX_EXPORT_METHOD(@selector(getLocalIPAddress:))
 
 //启动本地HTTP服务器
-- (void)startWebServer:(NSString*)directoryPath port:(id)port callback:(WXModuleKeepAliveCallback)callback
+- (void)startWebServer:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
+    NSString *directoryPath = @"";
+    NSUInteger portNumber = 0;
+    NSString *indexFile = @"index.html";
+    NSString *keepalivePath = @"/__keepalive__";
+
+    // 解析参数
+    if ([params isKindOfClass:[NSDictionary class]]) {
+        directoryPath = params[@"path"] ? [WXConvert NSString:params[@"path"]] : @"";
+        portNumber = params[@"port"] ? [WXConvert NSInteger:params[@"port"]] : 0;
+        indexFile = params[@"index"] ? [WXConvert NSString:params[@"index"]] : @"index.html";
+        keepalivePath = params[@"keepalive"] ? [WXConvert NSString:params[@"keepalive"]] : @"/__keepalive__";
+    }else{
+        directoryPath = [WXConvert NSString:params];
+    }
+
     // 去掉 "file://" 前缀
     if ([directoryPath hasPrefix:@"file://"]) {
         directoryPath = [directoryPath substringFromIndex:7];
     }
-
-    // 转换端口号
-    NSUInteger portNumber = [WXConvert NSInteger:port];
 
     // 检查是否已有运行的服务器
     if (sharedWebServer) {
@@ -80,17 +92,17 @@ WX_EXPORT_METHOD(@selector(getLocalIPAddress:))
     // 添加目录处理器
     [sharedWebServer addGETHandlerForBasePath:@"/"
                                directoryPath:directoryPath
-                               indexFilename:@"index.html"
+                               indexFilename:indexFile
                                     cacheAge:3600
                           allowRangeRequests:YES];
     
     // 添加Keep-Alive心跳接口
     [sharedWebServer addHandlerForMethod:@"GET"
-                                   path:@"/__keepalive__"
+                                   path:keepalivePath
                            requestClass:[GCDWebServerRequest class]
                            processBlock:^GCDWebServerResponse *(GCDWebServerRequest* request) {
         NSDictionary* response = @{
-            @"status": @"alive",
+            @"status": @"success",
             @"timestamp": @([[NSDate date] timeIntervalSince1970])
         };
         NSData* jsonData = [NSJSONSerialization dataWithJSONObject:response options:0 error:nil];
@@ -230,7 +242,7 @@ WX_EXPORT_METHOD(@selector(getLocalIPAddress:))
     
     freeifaddrs(interfaces);
     
-    if (address == nil || address.length == 0) {
+    if (address == nil || address.length == 0 || [address isEqualToString:@"error"]) {
         callback(@{
             @"status": @"error",
             @"message": @"获取本地IP地址失败"

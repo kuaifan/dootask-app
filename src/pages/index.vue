@@ -174,7 +174,10 @@ export default {
             console.log(status);
 
             if (status.status !== "success") {
-                const result = await (new Promise(resolve => webServer.startWebServer(eeui.rewriteUrl('../public'), 22222, resolve)));
+                const result = await (new Promise(resolve => webServer.startWebServer({
+                    path: eeui.rewriteUrl('../public'),
+                    port: 22222
+                }, resolve)));
                 console.log(result);
             }
 
