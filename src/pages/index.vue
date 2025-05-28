@@ -151,7 +151,7 @@ export default {
             }
         });
 
-        this.startWebServer(true)
+        this.startWebServer(true, 3)
     },
 
     computed: {
@@ -170,7 +170,7 @@ export default {
          * 启动Web服务器
          * @param init  // 是否初始化，如果是初始化则设置WebView的URL
          */
-        async startWebServer(init) {
+        async startWebServer(init, retry = 0) {
             const status = await (new Promise(resolve => webServer.getServerStatus(resolve)));
             console.log(status);
 
@@ -180,6 +180,17 @@ export default {
                     port: this.webServerPort
                 }, resolve)));
                 console.log(result);
+                // 重试机制
+                if (result.status !== "success" || result.port === 0) {
+                    console.log("启动Web服务器失败");
+                    if (retry > 0) {
+                        console.log("准备重新启动Web服务器...");
+                        setTimeout(() => {
+                            this.startWebServer(init, retry - 1)
+                        }, 1000)
+                        return;
+                    }
+                }
             }
 
             if (init) {
