@@ -54,15 +54,12 @@ WX_EXPORT_METHOD(@selector(getLocalIPAddress:))
         @try {
             if ([sharedWebServer isRunning]) {
                 // 服务器已存在，返回已存在状态和服务信息
-                NSString *serverURL = sharedWebServer.serverURL.absoluteString;
-                NSUInteger port = sharedWebServer.port;
                 
                 if (callback != nil) {
                     callback(@{
                         @"status": @"exists",
                         @"message": @"服务器已存在",
-                        @"url": serverURL,
-                        @"port": @(port)
+                        @"port": @(sharedWebServer.port)
                     }, NO);
                 }
                 return;
@@ -113,15 +110,11 @@ WX_EXPORT_METHOD(@selector(getLocalIPAddress:))
     BOOL success = [sharedWebServer startWithPort:portNumber bonjourName:nil];
     
     if (success) {
-        NSString *serverURL = sharedWebServer.serverURL.absoluteString;
-        NSUInteger port = sharedWebServer.port;
-        
         if (callback != nil) {
             callback(@{
                 @"status": @"success",
                 @"message": @"服务器启动成功",
-                @"url": serverURL,
-                @"port": @(port)
+                @"port": @(sharedWebServer.port)
             }, NO);
         }
     } else {
@@ -173,16 +166,10 @@ WX_EXPORT_METHOD(@selector(getLocalIPAddress:))
 - (void)getServerStatus:(WXModuleKeepAliveCallback)callback
 {
     BOOL isRunning = NO;
-    NSString *serverURL = nil;
-    NSUInteger port = 0;
     
     if (sharedWebServer) {
         @try {
             isRunning = [sharedWebServer isRunning];
-            if (isRunning) {
-                serverURL = sharedWebServer.serverURL.absoluteString;
-                port = sharedWebServer.port;
-            }
         } @catch (NSException *exception) {
             NSLog(@"获取服务器状态时出错: %@", exception);
             isRunning = NO;
@@ -193,12 +180,11 @@ WX_EXPORT_METHOD(@selector(getLocalIPAddress:))
         return;
     }
     
-    if (isRunning && serverURL) {
+    if (isRunning) {
         callback(@{
             @"status": @"success",
             @"message": @"服务器正在运行",
-            @"url": serverURL,
-            @"port": @(port)
+            @"port": @(sharedWebServer.port)
         }, NO);
     } else {
         callback(@{

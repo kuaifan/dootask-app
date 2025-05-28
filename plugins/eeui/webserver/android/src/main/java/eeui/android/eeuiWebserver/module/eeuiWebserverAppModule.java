@@ -73,13 +73,9 @@ public class eeuiWebserverAppModule extends WXModuleBase {
         if (sharedWebServer != null) {
             try {
                 if (sharedWebServer.isAlive()) {
-                    // 服务器已存在，返回已存在状态和服务信息
-                    String serverURL = "http://" + getLocalIPAddress() + ":" + sharedWebServer.getListeningPort() + "/";
-
                     JSONObject result = new JSONObject();
                     result.put("status", "exists");
                     result.put("message", "服务器已存在");
-                    result.put("url", serverURL);
                     result.put("port", sharedWebServer.getListeningPort());
                     callback.invoke(result);
                     return;
@@ -130,12 +126,9 @@ public class eeuiWebserverAppModule extends WXModuleBase {
             }
             sharedWebServer.start();
 
-            String serverURL = "http://" + getLocalIPAddress() + ":" + sharedWebServer.getListeningPort() + "/";
-
             JSONObject result = new JSONObject();
             result.put("status", "success");
             result.put("message", "服务器启动成功");
-            result.put("url", serverURL);
             result.put("port", sharedWebServer.getListeningPort());
             callback.invoke(result);
 
@@ -191,27 +184,20 @@ public class eeuiWebserverAppModule extends WXModuleBase {
         }
 
         boolean isRunning = false;
-        String serverURL = "";
-        int port = 0;
 
         if (sharedWebServer != null) {
             try {
                 isRunning = sharedWebServer.isAlive();
-                if (isRunning) {
-                    port = sharedWebServer.getListeningPort();
-                    serverURL = "http://" + getLocalIPAddress() + ":" + port + "/";
-                }
             } catch (Exception e) {
                 isRunning = false;
             }
         }
 
         JSONObject result = new JSONObject();
-        if (isRunning && !serverURL.isEmpty()) {
+        if (isRunning) {
             result.put("status", "success");
             result.put("message", "服务器正在运行");
-            result.put("url", serverURL);
-            result.put("port", port);
+            result.put("port", sharedWebServer.getListeningPort());
         } else {
             result.put("status", "error");
             result.put("message", "服务器未运行");
@@ -231,7 +217,7 @@ public class eeuiWebserverAppModule extends WXModuleBase {
         String ipAddress = getLocalIPAddress();
 
         JSONObject result = new JSONObject();
-        if (ipAddress == null || ipAddress.isEmpty() || ipAddress.equals("error")) {
+        if (ipAddress.isEmpty() || ipAddress.equals("error")) {
             result.put("status", "error");
             result.put("message", "获取本地IP地址失败");
         } else {
@@ -410,12 +396,12 @@ public class eeuiWebserverAppModule extends WXModuleBase {
             if (lastDot == -1) {
                 return "application/octet-stream"; // 没有扩展名
             }
-            
+
             String extension = fileName.substring(lastDot + 1).toLowerCase(Locale.US);
-            
+
             // 使用系统内置的MIME类型映射
             String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-            
+
             // 如果系统找不到对应的MIME类型，返回默认值
             return mimeType != null ? mimeType : "application/octet-stream";
         }

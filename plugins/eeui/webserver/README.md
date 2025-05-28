@@ -73,7 +73,6 @@ webserver.startWebServer({
 {
     status: "success",
     message: "服务器启动成功", 
-    url: "http://192.168.1.100:8080/",
     port: 8080
 }
 
@@ -81,7 +80,6 @@ webserver.startWebServer({
 {
     status: "exists",
     message: "服务器已存在",
-    url: "http://192.168.1.100:8080/", 
     port: 8080
 }
 
@@ -133,7 +131,6 @@ webserver.getServerStatus((result) => {
 {
     status: "success",
     message: "服务器正在运行",
-    url: "http://192.168.1.100:8080/",
     port: 8080
 }
 
@@ -183,10 +180,10 @@ webserver.startWebServer({
     port: 8080
 }, (result) => {
     if (result.status === "success" || result.status === "exists") {
-        console.log("服务器运行在:", result.url);
+        console.log("服务器运行在:", result.port);
         
         // 心跳检查
-        fetch(result.url + "__keepalive__")
+        fetch("http://192.168.1.100:" + result.port + "/__keepalive__")
             .then(response => response.json())
             .then(data => console.log("心跳检查:", data));
     } else {
