@@ -44,6 +44,7 @@ export default {
             uniqueId: '',
             resumeNum: 0,
             appMessage: {},
+            webServerPort: 22223,
 
             windowWidth: parseInt(eeui.getVariate("windowWidth", "0")) || 430,
             safeAreaSize: {top: 0, bottom: 0, data: null},
@@ -167,22 +168,23 @@ export default {
     methods: {
         /**
          * 启动Web服务器
-         * @param refresh
+         * @param init  // 是否初始化，如果是初始化则设置WebView的URL
          */
-        async startWebServer(refresh) {
+        async startWebServer(init) {
             const status = await (new Promise(resolve => webServer.getServerStatus(resolve)));
             console.log(status);
 
             if (status.status !== "success") {
                 const result = await (new Promise(resolve => webServer.startWebServer({
                     path: eeui.rewriteUrl('../public'),
-                    port: 22222
+                    port: this.webServerPort
                 }, resolve)));
                 console.log(result);
             }
 
-            if (refresh) {
-                this.$refs.web.setUrl(`http://localhost:22222/`);
+            if (init) {
+                eeui.setCachesString("appWebServerPort", this.webServerPort, 0);
+                this.$refs.web.setUrl(`http://localhost:${this.webServerPort}/`);
             }
         },
 
