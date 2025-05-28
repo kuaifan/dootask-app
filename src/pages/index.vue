@@ -173,7 +173,7 @@ export default {
             const status = await (new Promise(resolve => webServer.getServerStatus(resolve)));
             console.log(status);
 
-            if (!status.isRunning) {
+            if (status.status !== "success") {
                 const result = await (new Promise(resolve => webServer.startWebServer(eeui.rewriteUrl('../public'), 22222, resolve)));
                 console.log(result);
             }

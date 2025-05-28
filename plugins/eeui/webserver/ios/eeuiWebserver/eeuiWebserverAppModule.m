@@ -24,6 +24,7 @@ WX_PlUGIN_EXPORT_MODULE(eeuiWebserver, eeuiWebserverAppModule)
 WX_EXPORT_METHOD(@selector(startWebServer:port:callback:))
 WX_EXPORT_METHOD(@selector(stopWebServer:))
 WX_EXPORT_METHOD(@selector(getServerStatus:))
+WX_EXPORT_METHOD(@selector(getLocalIPAddress:))
 
 //启动本地HTTP服务器
 - (void)startWebServer:(NSString*)directoryPath port:(id)port callback:(WXModuleKeepAliveCallback)callback
@@ -36,16 +37,28 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
     // 转换端口号
     NSUInteger portNumber = [WXConvert NSInteger:port];
 
-    // 安全检查：先停止旧的服务器
+    // 检查是否已有运行的服务器
     if (sharedWebServer) {
         @try {
             if ([sharedWebServer isRunning]) {
-                [sharedWebServer stop];
+                // 服务器已存在，返回已存在状态和服务信息
+                NSString *serverURL = sharedWebServer.serverURL.absoluteString;
+                NSUInteger port = sharedWebServer.port;
+                
+                if (callback != nil) {
+                    callback(@{
+                        @"status": @"exists",
+                        @"message": @"服务器已存在",
+                        @"url": serverURL,
+                        @"port": @(port)
+                    }, NO);
+                }
+                return;
             }
         } @catch (NSException *exception) {
-            NSLog(@"停止旧服务器时出错: %@", exception);
+            NSLog(@"检查旧服务器时出错: %@", exception);
+            sharedWebServer = nil;
         }
-        sharedWebServer = nil;
     }
     
     // 检查目录是否存在
@@ -54,7 +67,7 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
     if (![fileManager fileExistsAtPath:directoryPath isDirectory:&isDirectory] || !isDirectory) {
         if (callback != nil) {
             callback(@{
-                @"success": @NO,
+                @"status": @"error",
                 @"message": @"指定的目录不存在或不是有效目录"
             }, NO);
         }
@@ -73,7 +86,7 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
     
     // 添加Keep-Alive心跳接口
     [sharedWebServer addHandlerForMethod:@"GET"
-                                   path:@"/_keepalive"
+                                   path:@"/__keepalive__"
                            requestClass:[GCDWebServerRequest class]
                            processBlock:^GCDWebServerResponse *(GCDWebServerRequest* request) {
         NSDictionary* response = @{
@@ -89,23 +102,20 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
     
     if (success) {
         NSString *serverURL = sharedWebServer.serverURL.absoluteString;
-        NSString *localIP = [self getLocalIPAddress];
         NSUInteger port = sharedWebServer.port;
         
         if (callback != nil) {
             callback(@{
-                @"success": @YES,
+                @"status": @"success",
                 @"message": @"服务器启动成功",
                 @"url": serverURL,
-                @"ip": localIP ?: @"",
-                @"port": @(port),
-                @"keepaliveUrl": [NSString stringWithFormat:@"%@_keepalive", serverURL]
+                @"port": @(port)
             }, NO);
         }
     } else {
         if (callback != nil) {
             callback(@{
-                @"success": @NO,
+                @"status": @"error",
                 @"message": @"启动服务器失败，端口可能被占用"
             }, NO);
         }
@@ -129,19 +139,21 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
         }
         sharedWebServer = nil;
     }
+
+    if (callback == nil) {
+        return;
+    }
     
-    if (callback != nil) {
-        if (wasRunning) {
-            callback(@{
-                @"success": @YES,
-                @"message": @"服务器已停止"
-            }, NO);
-        } else {
-            callback(@{
-                @"success": @NO,
-                @"message": @"服务器未运行"
-            }, NO);
-        }
+    if (wasRunning) {
+        callback(@{
+            @"status": @"success",
+            @"message": @"服务器已停止"
+        }, NO);
+    } else {
+        callback(@{
+            @"status": @"error",
+            @"message": @"服务器未运行"
+        }, NO);
     }
 }
 
@@ -164,28 +176,34 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
             isRunning = NO;
         }
     }
+
+    if (callback == nil) {
+        return;
+    }
     
-    if (callback != nil) {
-        if (isRunning && serverURL) {
-            NSString *localIP = [self getLocalIPAddress];
-            callback(@{
-                @"isRunning": @YES,
-                @"url": serverURL,
-                @"ip": localIP ?: @"",
-                @"port": @(port)
-            }, NO);
-        } else {
-            callback(@{
-                @"isRunning": @NO
-            }, NO);
-        }
+    if (isRunning && serverURL) {
+        callback(@{
+            @"status": @"success",
+            @"message": @"服务器正在运行",
+            @"url": serverURL,
+            @"port": @(port)
+        }, NO);
+    } else {
+        callback(@{
+            @"status": @"error",
+            @"message": @"服务器未运行"
+        }, NO);
     }
 }
 
 //获取本地IP地址
-- (NSString*)getLocalIPAddress
+- (void) getLocalIPAddress:(WXModuleKeepAliveCallback)callback
 {
-    NSString *address = @"error";
+    if (callback == nil) {
+        return;
+    }
+
+    NSString *address = @"";
     struct ifaddrs *interfaces = NULL;
     struct ifaddrs *temp_addr = NULL;
     int success = 0;
@@ -211,7 +229,19 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
     }
     
     freeifaddrs(interfaces);
-    return address;
+    
+    if (address == nil || address.length == 0) {
+        callback(@{
+            @"status": @"error",
+            @"message": @"获取本地IP地址失败"
+        }, NO);
+    } else {
+        callback(@{
+            @"status": @"success",
+            @"message": @"获取本地IP地址成功",
+            @"ip": address
+        }, NO);
+    }
 }
 
 @end

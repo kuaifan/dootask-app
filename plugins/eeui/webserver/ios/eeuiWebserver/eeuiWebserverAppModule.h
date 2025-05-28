@@ -9,6 +9,4 @@
 
 @interface eeuiWebserverAppModule : NSObject <WXModuleProtocol>
 
-// 移除实例变量，改用静态变量
-
 @end
