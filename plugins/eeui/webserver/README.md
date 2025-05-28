@@ -4,13 +4,19 @@
 
 ## 安装
 
-```bash
-eeui plugin install webserver
+```shell script
+eeui plugin install eeui/webserver
+```
+
+## 卸载
+
+```shell script
+eeui plugin uninstall eeui/webserver
 ```
 
 ## 引入模块
 
-```javascript
+```js
 const webserver = app.requireModule("eeui/webserver");
 ```
 
@@ -215,4 +221,68 @@ webserver.stopWebServer((result) => {
 2. 路径支持自动去除 `file://` 前缀
 3. **推荐使用 `eeui.rewriteUrl()` 将相对路径转换为完整路径**
 4. 所有方法都使用统一的响应格式，通过 `status` 字段判断结果
-5. 心跳接口默认路径为 `/__keepalive__`，返回服务器状态和时间戳 
+5. 心跳接口默认路径为 `/__keepalive__`，返回服务器状态和时间戳
+
+## 支持的文件类型
+
+插件支持丰富的MIME类型：
+
+### 📱 **技术实现**
+- **iOS**: 使用 `GCDWebServer` 内置MIME类型处理  
+- **Android**: 使用 `MimeTypeMap.getSingleton()` 系统级映射
+
+### ✅ **覆盖范围**
+系统内置MIME类型映射支持**数百种**文件格式，包括但不限于：
+
+### 📄 **常用Web文件**
+- **HTML**: `.html`, `.htm`
+- **JavaScript**: `.js`, `.mjs`  
+- **CSS**: `.css`
+- **JSON**: `.json`
+- **XML**: `.xml`
+- **文本**: `.txt`
+
+### 🖼️ **图片格式**
+- **常用**: `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.webp`
+- **图标**: `.ico`, `.bmp`
+- **专业**: `.tiff`, `.raw` 等
+
+### 🎵 **音频格式**
+- **常用**: `.mp3`, `.wav`, `.ogg`, `.m4a`
+- **专业**: `.flac`, `.aac`, `.wma` 等
+
+### 🎬 **视频格式**
+- **常用**: `.mp4`, `.webm`, `.mov`, `.avi`
+- **高清**: `.mkv`, `.flv`, `.wmv` 等
+
+### 🔤 **字体文件**
+- **Web字体**: `.ttf`, `.otf`, `.woff`, `.woff2`, `.eot`
+
+### 📋 **文档类型**
+- **PDF**: `.pdf`
+- **Office**: `.doc`, `.docx`, `.xls`, `.xlsx`, `.ppt`, `.pptx`
+- **开放文档**: `.odt`, `.ods`, `.odp` 等
+
+### 📦 **压缩文件**
+- **常用**: `.zip`, `.tar`, `.gz`, `.rar`, `.7z`
+
+### 🔧 **开发文件**
+- **配置**: `.yml`, `.yaml`, `.toml`, `.ini`
+- **数据**: `.csv`, `.tsv`
+- **代码**: `.py`, `.java`, `.cpp`, `.go` 等
+
+### 🎯 **优势特点**
+
+#### ✅ **系统级支持**
+- 自动跟随系统更新获得新的MIME类型支持
+- 保证了最高的准确性和兼容性
+
+#### ✅ **性能优良**  
+- 系统优化的查找算法
+- 无需维护庞大的映射表
+
+#### ✅ **全面覆盖**
+- 支持数百种文件类型
+- 包括最新的文件格式
+
+> **注意**: 如果系统无法识别某种文件类型，会自动返回 `application/octet-stream` 作为默认类型。 

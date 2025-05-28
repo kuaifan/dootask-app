@@ -3,12 +3,17 @@ package eeui.android.eeuiWebserver.module;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.webkit.MimeTypeMap;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.taobao.weex.annotation.JSMethod;
@@ -47,8 +52,20 @@ public class eeuiWebserverAppModule extends WXModuleBase {
             directoryPath = (String) params;
         }
 
-        // 去掉 "file://" 前缀
-        if (directoryPath.startsWith("file://")) {
+        // 处理路径前缀
+        boolean isAssetsPath = false;
+        String assetPath = "";
+
+        if (directoryPath.startsWith("file:///android_asset/")) {
+            isAssetsPath = true;
+            assetPath = directoryPath.substring(22);
+        } else if (directoryPath.startsWith("file://assets/")) {
+            isAssetsPath = true;
+            assetPath = directoryPath.substring(14);
+        } else if (directoryPath.startsWith("file:///assets/")) {
+            isAssetsPath = true;
+            assetPath = directoryPath.substring(15);
+        } else if (directoryPath.startsWith("file://")) {
             directoryPath = directoryPath.substring(7);
         }
 
@@ -58,7 +75,7 @@ public class eeuiWebserverAppModule extends WXModuleBase {
                 if (sharedWebServer.isAlive()) {
                     // 服务器已存在，返回已存在状态和服务信息
                     String serverURL = "http://" + getLocalIPAddress() + ":" + sharedWebServer.getListeningPort() + "/";
-                    
+
                     JSONObject result = new JSONObject();
                     result.put("status", "exists");
                     result.put("message", "服务器已存在");
@@ -74,22 +91,47 @@ public class eeuiWebserverAppModule extends WXModuleBase {
         }
 
         // 检查目录是否存在
-        File directory = new File(directoryPath);
-        if (!directory.exists() || !directory.isDirectory()) {
-            JSONObject result = new JSONObject();
-            result.put("status", "error");
-            result.put("message", "指定的目录不存在或不是有效目录");
-            callback.invoke(result);
-            return;
+        if (!isAssetsPath) {
+            File directory = new File(directoryPath);
+            if (!directory.exists() || !directory.isDirectory()) {
+                JSONObject result = new JSONObject();
+                result.put("status", "error");
+                result.put("message", "指定的目录不存在或不是有效目录");
+                callback.invoke(result);
+                return;
+            }
+        } else {
+            // 对于assets路径，检查是否能访问
+            try {
+                AssetManager assetManager = getContext().getAssets();
+                String[] files = assetManager.list(assetPath);
+                if (files == null) {
+                    JSONObject result = new JSONObject();
+                    result.put("status", "error");
+                    result.put("message", "指定的assets目录不存在或不是有效目录");
+                    callback.invoke(result);
+                    return;
+                }
+            } catch (IOException e) {
+                JSONObject result = new JSONObject();
+                result.put("status", "error");
+                result.put("message", "无法访问assets目录: " + e.getMessage());
+                callback.invoke(result);
+                return;
+            }
         }
 
         try {
             // 创建并启动服务器
-            sharedWebServer = new WebServer(port, directoryPath, indexFile, keepalivePath);
+            if (isAssetsPath) {
+                sharedWebServer = new WebServer(port, getContext().getAssets(), assetPath, indexFile, keepalivePath);
+            } else {
+                sharedWebServer = new WebServer(port, directoryPath, indexFile, keepalivePath);
+            }
             sharedWebServer.start();
 
             String serverURL = "http://" + getLocalIPAddress() + ":" + sharedWebServer.getListeningPort() + "/";
-            
+
             JSONObject result = new JSONObject();
             result.put("status", "success");
             result.put("message", "服务器启动成功");
@@ -115,7 +157,7 @@ public class eeuiWebserverAppModule extends WXModuleBase {
         }
 
         boolean wasRunning = false;
-        
+
         if (sharedWebServer != null) {
             try {
                 wasRunning = sharedWebServer.isAlive();
@@ -187,7 +229,7 @@ public class eeuiWebserverAppModule extends WXModuleBase {
         }
 
         String ipAddress = getLocalIPAddress();
-        
+
         JSONObject result = new JSONObject();
         if (ipAddress == null || ipAddress.isEmpty() || ipAddress.equals("error")) {
             result.put("status", "error");
@@ -226,11 +268,11 @@ public class eeuiWebserverAppModule extends WXModuleBase {
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 int ipAddress = wifiInfo.getIpAddress();
                 if (ipAddress != 0) {
-                    return String.format("%d.%d.%d.%d",
-                            (ipAddress & 0xff),
-                            (ipAddress >> 8 & 0xff),
-                            (ipAddress >> 16 & 0xff),
-                            (ipAddress >> 24 & 0xff));
+                    return String.format(Locale.US, "%d.%d.%d.%d",
+                        (ipAddress & 0xff),
+                        (ipAddress >> 8 & 0xff),
+                        (ipAddress >> 16 & 0xff),
+                        (ipAddress >> 24 & 0xff));
                 }
             }
 
@@ -258,18 +300,33 @@ public class eeuiWebserverAppModule extends WXModuleBase {
         private final String rootDirectory;
         private final String indexFile;
         private final String keepalivePath;
+        private final AssetManager assetManager;
+        private final boolean isAssetsMode;
 
+        // 文件系统模式构造函数
         public WebServer(int port, String rootDirectory, String indexFile, String keepalivePath) {
             super(port);
             this.rootDirectory = rootDirectory;
             this.indexFile = indexFile;
             this.keepalivePath = keepalivePath;
+            this.assetManager = null;
+            this.isAssetsMode = false;
+        }
+
+        // Assets模式构造函数
+        public WebServer(int port, AssetManager assetManager, String assetPath, String indexFile, String keepalivePath) {
+            super(port);
+            this.rootDirectory = assetPath;
+            this.indexFile = indexFile;
+            this.keepalivePath = keepalivePath;
+            this.assetManager = assetManager;
+            this.isAssetsMode = true;
         }
 
         @Override
         public Response serve(IHTTPSession session) {
             String uri = session.getUri();
-            
+
             // 处理keep-alive心跳请求
             if (keepalivePath.equals(uri)) {
                 JSONObject response = new JSONObject();
@@ -278,6 +335,50 @@ public class eeuiWebserverAppModule extends WXModuleBase {
                 return newFixedLengthResponse(Response.Status.OK, "application/json", response.toString());
             }
 
+            if (isAssetsMode) {
+                return serveFromAssets(uri);
+            } else {
+                return serveFromFileSystem(uri);
+            }
+        }
+
+        private Response serveFromAssets(String uri) {
+            try {
+                String assetPath = rootDirectory + uri;
+                if (assetPath.endsWith("/")) {
+                    assetPath += indexFile;
+                }
+
+                // 移除开头的斜杠
+                if (assetPath.startsWith("/")) {
+                    assetPath = assetPath.substring(1);
+                }
+
+                InputStream inputStream = assetManager.open(assetPath);
+                return newChunkedResponse(Response.Status.OK, getMimeType(assetPath), inputStream);
+
+            } catch (IOException e) {
+                // 如果直接路径失败，尝试添加index文件
+                try {
+                    String indexPath = rootDirectory + uri;
+                    if (!indexPath.endsWith("/")) {
+                        indexPath += "/";
+                    }
+                    indexPath += indexFile;
+                    if (indexPath.startsWith("/")) {
+                        indexPath = indexPath.substring(1);
+                    }
+
+                    InputStream inputStream = assetManager.open(indexPath);
+                    return newChunkedResponse(Response.Status.OK, getMimeType(indexPath), inputStream);
+
+                } catch (IOException e2) {
+                    return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "404 Not Found");
+                }
+            }
+        }
+
+        private Response serveFromFileSystem(String uri) {
             // 处理静态文件请求
             String filePath = rootDirectory + uri;
             File file = new File(filePath);
@@ -295,32 +396,28 @@ public class eeuiWebserverAppModule extends WXModuleBase {
             }
 
             try {
-                return newChunkedResponse(Response.Status.OK, getMimeType(file.getName()), 
+                return newChunkedResponse(Response.Status.OK, getMimeType(file.getName()),
                     new java.io.FileInputStream(file));
             } catch (IOException e) {
-                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "text/plain", 
+                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "text/plain",
                     "500 Internal Server Error");
             }
         }
 
         private String getMimeType(String fileName) {
-            if (fileName.endsWith(".html") || fileName.endsWith(".htm")) {
-                return "text/html";
-            } else if (fileName.endsWith(".js")) {
-                return "application/javascript";
-            } else if (fileName.endsWith(".css")) {
-                return "text/css";
-            } else if (fileName.endsWith(".json")) {
-                return "application/json";
-            } else if (fileName.endsWith(".png")) {
-                return "image/png";
-            } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
-                return "image/jpeg";
-            } else if (fileName.endsWith(".gif")) {
-                return "image/gif";
-            } else {
-                return "application/octet-stream";
+            // 获取文件扩展名
+            int lastDot = fileName.lastIndexOf('.');
+            if (lastDot == -1) {
+                return "application/octet-stream"; // 没有扩展名
             }
+            
+            String extension = fileName.substring(lastDot + 1).toLowerCase(Locale.US);
+            
+            // 使用系统内置的MIME类型映射
+            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+            
+            // 如果系统找不到对应的MIME类型，返回默认值
+            return mimeType != null ? mimeType : "application/octet-stream";
         }
     }
 }
