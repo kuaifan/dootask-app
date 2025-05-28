@@ -9,6 +9,6 @@
 
 @interface eeuiWebserverAppModule : NSObject <WXModuleProtocol>
 
-@property (nonatomic, strong) GCDWebServer *webServer;
+// 移除实例变量，改用静态变量
 
 @end

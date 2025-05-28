@@ -9,6 +9,9 @@
 #import <ifaddrs.h>
 #import <arpa/inet.h>
 
+// 使用静态变量保存webServer，避免app重启时丢失
+static GCDWebServer *sharedWebServer = nil;
+
 @interface eeuiWebserverAppModule ()
 
 @end
@@ -33,15 +36,16 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
     // 转换端口号
     NSUInteger portNumber = [WXConvert NSInteger:port];
 
-    // 检查服务器是否已经在运行
-    if (self.webServer && self.webServer.isRunning) {
-        if (callback != nil) {
-            callback(@{
-                @"success": @NO,
-                @"message": @"服务器已经在运行中"
-            }, NO);
+    // 安全检查：先停止旧的服务器
+    if (sharedWebServer) {
+        @try {
+            if ([sharedWebServer isRunning]) {
+                [sharedWebServer stop];
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"停止旧服务器时出错: %@", exception);
         }
-        return;
+        sharedWebServer = nil;
     }
     
     // 检查目录是否存在
@@ -58,17 +62,17 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
     }
     
     // 创建并配置WebServer
-    self.webServer = [[GCDWebServer alloc] init];
+    sharedWebServer = [[GCDWebServer alloc] init];
     
     // 添加目录处理器
-    [self.webServer addGETHandlerForBasePath:@"/"
+    [sharedWebServer addGETHandlerForBasePath:@"/"
                                directoryPath:directoryPath
                                indexFilename:@"index.html"
                                     cacheAge:3600
                           allowRangeRequests:YES];
     
     // 添加Keep-Alive心跳接口
-    [self.webServer addHandlerForMethod:@"GET"
+    [sharedWebServer addHandlerForMethod:@"GET"
                                    path:@"/_keepalive"
                            requestClass:[GCDWebServerRequest class]
                            processBlock:^GCDWebServerResponse *(GCDWebServerRequest* request) {
@@ -81,12 +85,12 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
     }];
     
     // 尝试启动服务器
-    BOOL success = [self.webServer startWithPort:portNumber bonjourName:nil];
+    BOOL success = [sharedWebServer startWithPort:portNumber bonjourName:nil];
     
     if (success) {
-        NSString *serverURL = self.webServer.serverURL.absoluteString;
+        NSString *serverURL = sharedWebServer.serverURL.absoluteString;
         NSString *localIP = [self getLocalIPAddress];
-        NSUInteger port = self.webServer.port;
+        NSUInteger port = sharedWebServer.port;
         
         if (callback != nil) {
             callback(@{
@@ -112,18 +116,27 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
 //停止HTTP服务器
 - (void)stopWebServer:(WXModuleKeepAliveCallback)callback
 {
-    if (self.webServer && self.webServer.isRunning) {
-        [self.webServer stop];
-        self.webServer = nil;
-        
-        if (callback != nil) {
+    BOOL wasRunning = NO;
+    
+    if (sharedWebServer) {
+        @try {
+            wasRunning = [sharedWebServer isRunning];
+            if (wasRunning) {
+                [sharedWebServer stop];
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"停止服务器时出错: %@", exception);
+        }
+        sharedWebServer = nil;
+    }
+    
+    if (callback != nil) {
+        if (wasRunning) {
             callback(@{
                 @"success": @YES,
                 @"message": @"服务器已停止"
             }, NO);
-        }
-    } else {
-        if (callback != nil) {
+        } else {
             callback(@{
                 @"success": @NO,
                 @"message": @"服务器未运行"
@@ -135,21 +148,33 @@ WX_EXPORT_METHOD(@selector(getServerStatus:))
 //获取服务器状态
 - (void)getServerStatus:(WXModuleKeepAliveCallback)callback
 {
-    if (self.webServer && self.webServer.isRunning) {
-        NSString *serverURL = self.webServer.serverURL.absoluteString;
-        NSString *localIP = [self getLocalIPAddress];
-        NSUInteger port = self.webServer.port;
-        
-        if (callback != nil) {
+    BOOL isRunning = NO;
+    NSString *serverURL = nil;
+    NSUInteger port = 0;
+    
+    if (sharedWebServer) {
+        @try {
+            isRunning = [sharedWebServer isRunning];
+            if (isRunning) {
+                serverURL = sharedWebServer.serverURL.absoluteString;
+                port = sharedWebServer.port;
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"获取服务器状态时出错: %@", exception);
+            isRunning = NO;
+        }
+    }
+    
+    if (callback != nil) {
+        if (isRunning && serverURL) {
+            NSString *localIP = [self getLocalIPAddress];
             callback(@{
                 @"isRunning": @YES,
                 @"url": serverURL,
                 @"ip": localIP ?: @"",
                 @"port": @(port)
             }, NO);
-        }
-    } else {
-        if (callback != nil) {
+        } else {
             callback(@{
                 @"isRunning": @NO
             }, NO);
