@@ -157,7 +157,7 @@ export default {
 
         // 是否可以使用浏览器打开
         canBrowser() {
-            return !this.leftExists(this.url, 'file:');
+            return !this.isLocalHost(this.url);
         }
     },
 

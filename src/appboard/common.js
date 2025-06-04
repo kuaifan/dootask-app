@@ -547,5 +547,22 @@ Vue.mixin({
                 }, listenerName);
             });
         },
+
+        /**
+         * 判断是否是本地URL
+         * @param url
+         * @returns {boolean}
+         */
+        isLocalHost(url) {
+            if (!url) {
+                return false
+            }
+            try {
+                const uri = new URL(url)
+                return uri.hostname == "localhost"
+            } catch (e) {
+                return false
+            }
+        }
     }
 });
