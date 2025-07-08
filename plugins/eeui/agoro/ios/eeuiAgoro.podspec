@@ -23,5 +23,5 @@ Pod::Spec.new do |s|
   s.dependency 'WeexSDK'
   s.dependency 'eeui'
   s.dependency 'WeexPluginLoader', '~> 0.0.1.9.1'
-  s.dependency 'AgoraRtcEngine_iOS', '4.5.1'
+  s.dependency 'AgoraRtcEngine_iOS', '4.5.2'
 end
