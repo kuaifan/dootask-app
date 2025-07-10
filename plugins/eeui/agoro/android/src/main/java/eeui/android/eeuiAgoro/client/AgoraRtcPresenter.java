@@ -6,11 +6,13 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.bridge.JSCallback;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
+
+import app.eeui.framework.extend.module.utilcode.util.PermissionUtils;
+import app.eeui.framework.extend.module.utilcode.constant.PermissionConstants;
 import io.agora.rtc2.ChannelMediaOptions;
 import io.agora.rtc2.Constants;
 import io.agora.rtc2.IRtcEngineEventHandler;
@@ -69,24 +71,22 @@ public class AgoraRtcPresenter {
 
     public void blindLocal(Context context, final int uid){
         if (!isLeaveChannel){
-            //Permission.Group.STORAGE,
-            boolean hasPermissions = AndPermission.hasPermissions(context, Permission.Group.STORAGE, Permission.Group.MICROPHONE, Permission.Group.CAMERA);
-            Log.d(TAG,"hasPermissions="+hasPermissions);
-            if (hasPermissions){
-                setupLocalVideo(uid);
-            }else {
-                AndPermission.with(context)
-                        .runtime()
-                        .permission(Permission.Group.STORAGE, Permission.Group.MICROPHONE, Permission.Group.CAMERA )
-                        .onGranted( permissions -> {
-                            // Permissions Granted
-                            setupLocalVideo(uid);
-                        }).onDenied(permissions ->{
-                            // 判断用户是不是不再显示权限弹窗了，若不再显示的话进入权限设置页
-                            Log.d(TAG,"权限已被拒绝,需到设置页面进行手动设置权限！");
-                        }).start();
-            }
-        }else {
+             PermissionUtils.permission(PermissionConstants.STORAGE, PermissionConstants.MICROPHONE, PermissionConstants.CAMERA)
+                .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(context, shouldRequest, "麦克风、相机、存储"))
+                .callback(new PermissionUtils.FullCallback() {
+                    @Override
+                    public void onGranted(List<String> permissionsGranted) {
+                        setupLocalVideo(uid);
+                    }
+
+                    @Override
+                    public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
+                        if (!permissionsDeniedForever.isEmpty()) {
+                            PermissionUtils.showOpenAppSettingDialog(context, "麦克风、相机、存储");
+                        }
+                    }
+                }).request();
+        } else {
             isLeaveChannel = false;
         }
 

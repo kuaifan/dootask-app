@@ -44,6 +44,5 @@ dependencies {
     //
     compileOnly project(":eeui")
     implementation 'io.agora.rtc:lite-sdk:4.5.2'
-    implementation 'com.yanzhenjie:permission:2.0.2'
     implementation 'org.greenrobot:eventbus:3.3.1'
 }
