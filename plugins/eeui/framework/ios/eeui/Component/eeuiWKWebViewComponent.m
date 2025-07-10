@@ -54,6 +54,8 @@ NSString * const WKProcessPoolDidCrashNotification = @"WKProcessPoolDidCrashNoti
 @property (strong, nonatomic) YHWebViewProgressView *progressView;
 
 @property (nonatomic, assign) BOOL isRemoveObserver;
+@property (nonatomic, assign) BOOL isShowingSnapshot;
+@property (nonatomic, strong) UIImageView *snapshotImageView;
 
 @end
 
@@ -93,6 +95,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
         _isFullscreen = NO;
         _isHeightChanged = [events containsObject:@"heightChanged"];
         _isReceiveMessage = [events containsObject:@"receiveMessage"];
+        _isShowingSnapshot = NO;
 
         for (NSString *key in styles.allKeys) {
             [self dataKey:key value:styles[key] isUpdate:NO];
@@ -273,6 +276,13 @@ WX_EXPORT_METHOD(@selector(goForward:))
     }
     [webView addObserver:self forKeyPath:@"URL" options:NSKeyValueObservingOptionNew context:nil];
     [webView addObserver:self forKeyPath:@"title" options:NSKeyValueObservingOptionNew context:nil];
+    
+    // 初始化快照视图
+    [self setupSnapshotView];
+    
+    // 添加应用生命周期监听
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 - (void) viewWillUnload
@@ -302,6 +312,12 @@ WX_EXPORT_METHOD(@selector(goForward:))
         [webView removeObserver:self forKeyPath:@"title" context:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         [self.progressView outWkWebView:webView];
+        
+        // 清理快照视图
+        if (_snapshotImageView) {
+            [_snapshotImageView removeFromSuperview];
+            _snapshotImageView = nil;
+        }
     }
 }
 
@@ -416,6 +432,13 @@ WX_EXPORT_METHOD(@selector(goForward:))
         [self.JSCall setJSCallAll:self webView:webView];
         [self.JSCall addRequireModule:webView];
     }
+    
+    // 页面加载完成后隐藏快照
+    if (_isShowingSnapshot) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self hideSnapshot];
+        });
+    }
 }
 
 //网页加载错误
@@ -438,10 +461,110 @@ WX_EXPORT_METHOD(@selector(goForward:))
     return nil;
 }
 
+// 初始化快照视图
+- (void)setupSnapshotView
+{
+    if (!_snapshotImageView) {
+        _snapshotImageView = [[UIImageView alloc] init];
+        _snapshotImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _snapshotImageView.backgroundColor = [UIColor whiteColor];
+        _snapshotImageView.clipsToBounds = YES;
+        _snapshotImageView.hidden = YES;
+        [self.view addSubview:_snapshotImageView];
+        
+        // 设置约束，让快照视图覆盖整个WebView
+        _snapshotImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        if (@available(iOS 9.0, *)) {
+            [NSLayoutConstraint activateConstraints:@[
+                [_snapshotImageView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+                [_snapshotImageView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+                [_snapshotImageView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+                [_snapshotImageView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor]
+            ]];
+        }
+    }
+}
+
+// 生成快照
+- (void)takeSnapshotInternal
+{
+    eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
+    if (@available(iOS 11.0, *)) {
+        WKSnapshotConfiguration *config = [[WKSnapshotConfiguration alloc] init];
+        config.rect = webView.bounds;
+        
+        [webView takeSnapshotWithConfiguration:config completionHandler:^(UIImage *snapshotImage, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (snapshotImage && !error) {
+                    NSLog(@"快照生成成功");
+                    self->_snapshotImageView.image = snapshotImage;
+                } else {
+                    NSLog(@"快照生成失败");
+                }
+            });
+        }];
+    }
+}
+
+// 显示快照
+- (void)showSnapshot
+{
+    if (_snapshotImageView.image) {
+        _snapshotImageView.hidden = NO;
+        _isShowingSnapshot = YES;
+        NSLog(@"显示WebView快照");
+    }
+}
+
+// 隐藏快照
+- (void)hideSnapshot
+{
+    if (_isShowingSnapshot) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self->_snapshotImageView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            self->_snapshotImageView.hidden = YES;
+            self->_snapshotImageView.alpha = 1.0;
+            self->_isShowingSnapshot = NO;
+            NSLog(@"隐藏WebView快照");
+        }];
+    }
+}
+
+// 应用即将失去焦点
+- (void)applicationWillResignActive:(NSNotification *)notification
+{
+    [self takeSnapshotInternal];
+}
+
+// 应用重新获得焦点
+- (void)applicationDidBecomeActive:(NSNotification *)notification
+{
+    [self showSnapshot];
+    eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
+    [webView evaluateJavaScript:@"document.readyState" completionHandler:^(id result, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error && result && [result isEqualToString:@"complete"]) {
+                [self hideSnapshot];
+            }
+        });
+    }];
+}
+
 // Web内存过大，进程终止
 - (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView API_AVAILABLE(macosx(10.11), ios(9.0))
 {
-    [webView reload];
+    [self showSnapshot];
+
+    UIAlertController * alertController = [UIAlertController
+                                           alertControllerWithTitle:@"WKWebView"
+                                           message: @"WebView进程终止，请点击确认重新加载"
+                                           preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
+        [webView reload];
+    }]];
+    [[DeviceUtil getTopviewControler] presentViewController:alertController animated:YES completion:nil];
 }
 
 // 在收到响应后，决定是否跳转

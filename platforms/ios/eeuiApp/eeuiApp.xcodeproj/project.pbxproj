@@ -1116,6 +1116,7 @@
 				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/eeuiApp/PrefixHeader.pch";
 				INFOPLIST_FILE = eeuiApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1152,6 +1153,7 @@
 				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/eeuiApp/PrefixHeader.pch";
 				INFOPLIST_FILE = eeuiApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
