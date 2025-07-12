@@ -555,16 +555,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
 - (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView API_AVAILABLE(macosx(10.11), ios(9.0))
 {
     [self showSnapshot];
-
-    UIAlertController * alertController = [UIAlertController
-                                           alertControllerWithTitle:@"WKWebView"
-                                           message: @"WebView进程终止，请点击确认重新加载"
-                                           preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
-        [webView reload];
-    }]];
-    [[DeviceUtil getTopviewControler] presentViewController:alertController animated:YES completion:nil];
+    [webView reload];
 }
 
 // 在收到响应后，决定是否跳转
