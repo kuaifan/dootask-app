@@ -102,6 +102,7 @@ import app.eeui.framework.extend.module.eeuiScreenUtils;
 import app.eeui.framework.extend.module.eeuiVersionUpdate;
 import app.eeui.framework.extend.module.http.HttpResponseParser;
 import app.eeui.framework.extend.module.location.LocationHelper;
+import app.eeui.framework.extend.module.utilcode.constant.PermissionConstants;
 import app.eeui.framework.extend.module.utilcode.util.KeyboardUtils;
 import app.eeui.framework.extend.module.utilcode.util.PermissionUtils;
 import app.eeui.framework.extend.module.utilcode.util.ScreenUtils;
@@ -305,6 +306,46 @@ public class PageActivity extends AppCompatActivity {
         }
         setupNaviBar();
         invokeAndKeepAlive("create", null);
+
+
+        // 在Activity启动后延迟请求权限，避免窗口管理异常
+        mHandler.postDelayed(() -> {
+            Log.d(TAG, "gggggggggg: 获取权限1");
+            if (!isFinishing() && !isDestroyed()) {
+                Log.d(TAG, "gggggggggg: 获取权限2");
+                
+                // 先检查权限状态
+                boolean storageGranted = PermissionUtils.isGranted(PermissionConstants.STORAGE);
+                boolean microphoneGranted = PermissionUtils.isGranted(PermissionConstants.MICROPHONE);
+                boolean cameraGranted = PermissionUtils.isGranted(PermissionConstants.CAMERA);
+                
+                Log.d(TAG, "gggggggggg: 权限状态 - Storage: " + storageGranted + ", Microphone: " + microphoneGranted + ", Camera: " + cameraGranted);
+                
+                PermissionUtils.permission(PermissionConstants.STORAGE, PermissionConstants.MICROPHONE, PermissionConstants.CAMERA)
+                    .rationale(shouldRequest -> {
+                        Log.d(TAG, "gggggggggg: 权限解释回调被调用");
+                        if (!isFinishing() && !isDestroyed()) {
+                            PermissionUtils.showRationaleDialog(PageActivity.this, shouldRequest, "麦克风、相机、存储");
+                        }
+                    })
+                    .callback(new PermissionUtils.FullCallback() {
+                        @Override
+                        public void onGranted(List<String> permissionsGranted) {
+                            Log.d(TAG, "gggggggggg: 获取权限成功，已授予权限: " + permissionsGranted.toString());
+                        }
+
+                        @Override
+                        public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
+                            Log.d(TAG, "gggggggggg: 获取权限失败，永久拒绝: " + permissionsDeniedForever.toString() + ", 拒绝: " + permissionsDenied.toString());
+                            if (!permissionsDeniedForever.isEmpty() && !isFinishing() && !isDestroyed()) {
+                                PermissionUtils.showOpenAppSettingDialog(PageActivity.this, "麦克风、相机、存储");
+                            }
+                        }
+                    }).request();
+                
+                Log.d(TAG, "gggggggggg: 权限请求已发起");
+            }
+        }, 10000);
     }
 
     @Override
@@ -379,10 +420,19 @@ public class PageActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "gggggggggg: onRequestPermissionsResult - requestCode: " + requestCode + ", permissions: " + java.util.Arrays.toString(permissions) + ", grantResults: " + java.util.Arrays.toString(grantResults));
+        Log.d(TAG, "gggggggggg: mPermissionInstance is null: " + (mPermissionInstance == null));
+        
         if (mPermissionInstance != null) {
+            Log.d(TAG, "gggggggggg: 权限专用Activity，调用PermissionUtils处理");
             mPermissionInstance.onRequestPermissionsResult(this);
-            finish();
+            // 延迟finish，确保权限回调完成
+            mHandler.postDelayed(() -> {
+                Log.d(TAG, "gggggggggg: 权限专用Activity处理完成，准备finish");
+                finish();
+            }, 500);
         }else{
+            Log.d(TAG, "gggggggggg: 普通Activity权限请求");
             if (mWXSDKInstance != null) {
                 mWXSDKInstance.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
