@@ -72,7 +72,7 @@ public class AgoraRtcPresenter {
     public void blindLocal(Context context, final int uid){
         if (!isLeaveChannel){
              PermissionUtils.permission(PermissionConstants.STORAGE, PermissionConstants.MICROPHONE, PermissionConstants.CAMERA)
-                .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(context, shouldRequest, "麦克风、相机、存储"))
+                .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(context, shouldRequest, "麦克风、相机、存储/媒体"))
                 .callback(new PermissionUtils.FullCallback() {
                     @Override
                     public void onGranted(List<String> permissionsGranted) {
@@ -82,7 +82,7 @@ public class AgoraRtcPresenter {
                     @Override
                     public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
                         if (!permissionsDeniedForever.isEmpty()) {
-                            PermissionUtils.showOpenAppSettingDialog(context, "麦克风、相机、存储");
+                            PermissionUtils.showOpenAppSettingDialog(context, "麦克风、相机、存储/媒体");
                         }
                     }
                 }).request();
