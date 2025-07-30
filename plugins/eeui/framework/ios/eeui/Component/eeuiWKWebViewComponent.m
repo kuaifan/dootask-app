@@ -73,6 +73,9 @@ WX_EXPORT_METHOD(@selector(canGoBack:))
 WX_EXPORT_METHOD(@selector(goBack:))
 WX_EXPORT_METHOD(@selector(canGoForward:))
 WX_EXPORT_METHOD(@selector(goForward:))
+WX_EXPORT_METHOD(@selector(createSnapshot:))
+WX_EXPORT_METHOD(@selector(showSnapshot))
+WX_EXPORT_METHOD(@selector(hideSnapshot))
 
 - (instancetype)initWithRef:(NSString *)ref type:(NSString *)type styles:(NSDictionary *)styles attributes:(NSDictionary *)attributes events:(NSArray *)events weexInstance:(WXSDKInstance *)weexInstance
 {
@@ -181,7 +184,6 @@ WX_EXPORT_METHOD(@selector(goForward:))
 }
 
 // 处理通知
-
 - (void)handleWKProcessPoolDidCrashNotification:(NSNotification *)notification {
     // 处理 GPU 进程崩溃异常
     UIAlertController * alertController = [UIAlertController
@@ -279,10 +281,6 @@ WX_EXPORT_METHOD(@selector(goForward:))
     
     // 初始化快照视图
     [self setupSnapshotView];
-    
-    // 添加应用生命周期监听
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 - (void) viewWillUnload
@@ -432,13 +430,6 @@ WX_EXPORT_METHOD(@selector(goForward:))
         [self.JSCall setJSCallAll:self webView:webView];
         [self.JSCall addRequireModule:webView];
     }
-    
-    // 页面加载完成后隐藏快照
-    if (_isShowingSnapshot) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self hideSnapshot];
-        });
-    }
 }
 
 //网页加载错误
@@ -486,7 +477,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
 }
 
 // 生成快照
-- (void)takeSnapshotInternal
+- (void)createSnapshot:(WXModuleKeepAliveCallback)callback
 {
     eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
     if (@available(iOS 11.0, *)) {
@@ -496,10 +487,12 @@ WX_EXPORT_METHOD(@selector(goForward:))
         [webView takeSnapshotWithConfiguration:config completionHandler:^(UIImage *snapshotImage, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (snapshotImage && !error) {
-                    NSLog(@"快照生成成功");
+                    NSLog(@"生成WebView快照成功");
                     self->_snapshotImageView.image = snapshotImage;
+                    callback(@(YES), NO);
                 } else {
-                    NSLog(@"快照生成失败");
+                    NSLog(@"生成WebView快照失败");
+                    callback(@(NO), NO);
                 }
             });
         }];
@@ -531,30 +524,9 @@ WX_EXPORT_METHOD(@selector(goForward:))
     }
 }
 
-// 应用即将失去焦点
-- (void)applicationWillResignActive:(NSNotification *)notification
-{
-    [self takeSnapshotInternal];
-}
-
-// 应用重新获得焦点
-- (void)applicationDidBecomeActive:(NSNotification *)notification
-{
-    [self showSnapshot];
-    eeuiWKWebView *webView = (eeuiWKWebView*)self.view;
-    [webView evaluateJavaScript:@"document.readyState" completionHandler:^(id result, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!error && result && [result isEqualToString:@"complete"]) {
-                [self hideSnapshot];
-            }
-        });
-    }];
-}
-
 // Web内存过大，进程终止
 - (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView API_AVAILABLE(macosx(10.11), ios(9.0))
 {
-    [self showSnapshot];
     [webView reload];
 }
 

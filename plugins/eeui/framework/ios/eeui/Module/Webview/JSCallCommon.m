@@ -217,7 +217,10 @@ static NSMutableDictionary *sessionDataCache;
                   [fname isEqualToString:@"setHapticBackEnabled"] ||
                   [fname isEqualToString:@"setDisabledUserLongClickSelect"] ||
                   [fname isEqualToString:@"setScrollEnabled"] ||
-                  [fname isEqualToString:@"sendMessage"])) {
+                  [fname isEqualToString:@"sendMessage"] ||
+                  [fname isEqualToString:@"createSnapshot"] ||
+                  [fname isEqualToString:@"showSnapshot"] ||
+                  [fname isEqualToString:@"hideSnapshot"])) {
                 continue;
             }
         }

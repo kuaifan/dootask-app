@@ -397,4 +397,28 @@ public class WebView extends WXVContainer<ViewGroup> {
             callback.invoke(canForward);
         }
     }
+
+    /**
+     * 创建快照（仅支持ios，android无效）
+     */
+    @JSMethod
+    public void createSnapshot(JSCallback callback) {
+        //
+    }
+
+    /**
+     * 显示快照（仅支持ios，android无效）
+     */
+    @JSMethod
+    public void showSnapshot() {
+        //
+    }
+
+    /**
+     * 隐藏快照（仅支持ios，android无效）
+     */
+    @JSMethod
+    public void hideSnapshot() {
+        //
+    }
 }
