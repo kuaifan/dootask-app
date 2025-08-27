@@ -32,6 +32,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "io.github.lucksiege:pictureselector:v2.7.3-rc10"
     implementation "com.github.bumptech.glide:glide:4.14.2"
+    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer:8.4.0'
     //
     compileOnly "androidx.legacy:legacy-support-v4:${project.supportv4Version}"
     compileOnly "androidx.appcompat:appcompat:${project.appcompatVersion}"

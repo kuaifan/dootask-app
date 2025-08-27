@@ -8,6 +8,13 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.net.Uri;
+import android.view.View;
+import android.webkit.URLUtil;
+import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+import android.app.Dialog;
+import android.view.ViewGroup;
+import android.view.Window;
 
 import androidx.core.content.ContextCompat;
 
@@ -468,7 +475,79 @@ public class eeuiPictureEntry {
      * @param path
      */
     public void videoPreview(Context context, String path) {
-        PictureSelector.create((Activity) context).externalPictureVideo(path);
+        try {
+            // 创建全屏对话框
+            Dialog dialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+            // 创建 StandardGSYVideoPlayer 实例
+            StandardGSYVideoPlayer videoPlayer = new StandardGSYVideoPlayer(context);
+
+            // 设置播放器配置
+            videoPlayer.setIsTouchWiget(true); // 支持手势
+            videoPlayer.setRotateViewAuto(false); // 不自动旋转
+            videoPlayer.setNeedLockFull(true); // 支持全屏锁定
+            videoPlayer.setShowFullAnimation(false); // 不显示动画
+            videoPlayer.setNeedShowWifiTip(false); // 不显示wifi提示
+
+            // 设置返回按钮点击监听
+            videoPlayer.getBackButton().setOnClickListener(v -> {
+                dialog.dismiss();
+            });
+
+            // 隐藏全屏按钮
+            videoPlayer.getFullscreenButton().setVisibility(View.GONE);
+
+            // 设置视频播放参数
+            videoPlayer.setUp(path, true, "");
+
+            // 设置对话框内容
+            dialog.setContentView(videoPlayer, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            ));
+
+            // 设置对话框关闭监听
+            dialog.setOnDismissListener(dialogInterface -> {
+                if (videoPlayer != null) {
+                    videoPlayer.onVideoPause();
+                    videoPlayer.release();
+                }
+            });
+
+            // 显示对话框并开始播放
+            dialog.show();
+            videoPlayer.startPlayLogic();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 如果启动失败，回退到系统播放器
+            fallbackToSystemPlayer(context, path);
+        }
+    }
+
+    /**
+     * 回退到系统播放器的方法
+     */
+    private void fallbackToSystemPlayer(Context context, String path) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri;
+
+            // 判断是网络URL还是本地文件路径
+            if (URLUtil.isNetworkUrl(path)) {
+                uri = Uri.parse(path);
+            } else {
+                uri = Uri.parse("file://" + path);
+            }
+
+            intent.setDataAndType(uri, "video/*");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
