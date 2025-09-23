@@ -1,6 +1,9 @@
 package app.eeui.framework.ui.module;
 
 
+import com.taobao.weex.annotation.JSMethod;
+import com.taobao.weex.bridge.JSCallback;
+
 import app.eeui.framework.extend.view.ExtendWebView;
 import app.eeui.framework.extend.view.webviewBridge.JsCallback;
 import app.eeui.framework.ui.eeui;
@@ -132,6 +135,27 @@ public class WebviewModule {
         if (callback != null) {
             eeui.HCallback(callback, canForward);
         }
+    }
+
+    /**
+     * 创建快照（仅支持ios，android无效）
+     */
+    public static void createSnapshot(ExtendWebView webView, JsCallback callback) {
+        //
+    }
+
+    /**
+     * 显示快照（仅支持ios，android无效）
+     */
+    public static void showSnapshot(ExtendWebView webView) {
+        //
+    }
+
+    /**
+     * 隐藏快照（仅支持ios，android无效）
+     */
+    public static void hideSnapshot(ExtendWebView webView) {
+        //
     }
 
     /**
