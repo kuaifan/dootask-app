@@ -555,14 +555,12 @@ Vue.mixin({
          */
         isLocalHost(url) {
             if (!url) {
-                return false
+                return false;
             }
-            try {
-                const uri = new URL(url)
-                return uri.hostname == "localhost"
-            } catch (e) {
-                return false
-            }
+            // 匹配以 http:// 或 https://（可选）开头，后面紧跟 localhost，并以端口、斜杠、查询、锚点或结尾结束
+            // 例如：localhost  http://localhost  https://localhost:8080/path
+            const reg = /^(?:https?:\/\/)?localhost(?:(?::\d+)?(?:[\/?#]|$))?/i;
+            return reg.test(url.trim());
         }
     }
 });
