@@ -264,8 +264,13 @@ export default {
                     this.refreshNotificationPermission()
                     break;
 
+                case 'setBadgeNum':
                 case 'setBdageNotify':
-                    notifications.setBadge(parseInt(message.bdage) || 0);
+                    umengPush.setBadgeNum(parseInt(message.bdage) || 0);
+                    break;
+
+                case 'clearAllNotify':
+                    notifications.clearAll();
                     break;
 
                 case 'gotoSetting':
