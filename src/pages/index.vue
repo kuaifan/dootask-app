@@ -78,6 +78,8 @@ export default {
         const javascript = `if (typeof window.__onAppActive === "function"){window.__onAppActive()}`;
         this.$refs.web.setJavaScript(javascript);
         this.startWebServer(false);
+        // 清除所有通知
+        notifications.clearAll();
     },
 
     // APP进入后台：App从【前台】切换至【后台】时触发
