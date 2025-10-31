@@ -151,4 +151,9 @@ public class eeuiUmengPushModule extends WXModuleBase {
         }
         return list;
     }
+
+    @JSMethod
+    public void setBadgeNum(int num) {
+        PAgent().setBadgeNum(num);
+    }
 }

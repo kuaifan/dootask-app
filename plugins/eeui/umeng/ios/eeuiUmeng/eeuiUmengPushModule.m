@@ -22,6 +22,7 @@ WX_EXPORT_METHOD(@selector(listTag:))
 WX_EXPORT_METHOD(@selector(addAlias:type:response:))
 WX_EXPORT_METHOD(@selector(addExclusiveAlias:type:response:))
 WX_EXPORT_METHOD(@selector(deleteAlias:type:response:))
+WX_EXPORT_METHOD(@selector(setBadgeNum:))
 
 - (void) initialize
 {
@@ -92,6 +93,20 @@ WX_EXPORT_METHOD(@selector(deleteAlias:type:response:))
 {
     [UMessage removeAlias:name type:type response:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
         [self handleAliasResponse:responseObject error:error completion:completion];
+    }];
+}
+
+- (void)setBadgeNum:(NSInteger)number
+{
+    [UMessage setBadge:number response:^(id  _Nullable responseObject, NSError * _Nullable error) {
+        if(responseObject)
+        {
+            NSLog(@"setBadge response: %@", responseObject);
+        }
+        else
+        {
+            NSLog(@"setBadge error: %@", error);
+        }
     }];
 }
 
