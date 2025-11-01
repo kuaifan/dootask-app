@@ -236,6 +236,7 @@ android {
             jvmArgs += ['-XX:-UseSplitVerifier', '-noverify','-Xverify:none']/* fix VerifyError  */
         }
     }
+    ndkVersion "20.1.5948944"
 }
 
 dependencies {
