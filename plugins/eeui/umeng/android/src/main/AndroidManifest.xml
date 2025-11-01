@@ -4,6 +4,7 @@
 
     <!-- 以下为需要的基本权限，需要自行添加至您的AndroidManifest文件中 start-->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
     <!-- 以下为需要的基本权限，需要自行添加至您的AndroidManifest文件中 end-->
 
     <application>
