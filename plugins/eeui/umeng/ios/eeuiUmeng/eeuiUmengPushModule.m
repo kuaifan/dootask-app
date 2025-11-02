@@ -96,8 +96,9 @@ WX_EXPORT_METHOD(@selector(setBadgeNum:))
     }];
 }
 
-- (void)setBadgeNum:(NSInteger)number
+- (void)setBadgeNum:(int)number
 {
+    [UIApplication sharedApplication].applicationIconBadgeNumber = number;
     [UMessage setBadge:number response:^(id  _Nullable responseObject, NSError * _Nullable error) {
         if(responseObject)
         {
