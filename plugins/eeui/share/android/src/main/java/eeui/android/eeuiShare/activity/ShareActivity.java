@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.view.ViewCompat;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -90,6 +91,25 @@ public class ShareActivity extends AppCompatActivity  {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share);
+        View rootContainer = findViewById(R.id.share_root_container);
+        if (rootContainer != null) {
+            final int originalPaddingLeft = rootContainer.getPaddingLeft();
+            final int originalPaddingTop = rootContainer.getPaddingTop();
+            final int originalPaddingRight = rootContainer.getPaddingRight();
+            final int originalPaddingBottom = rootContainer.getPaddingBottom();
+            ViewCompat.setOnApplyWindowInsetsListener(rootContainer, (v, insets) -> {
+                int topInset = insets.getSystemWindowInsetTop();
+                int bottomInset = insets.getSystemWindowInsetBottom();
+                v.setPadding(
+                    originalPaddingLeft,
+                    originalPaddingTop + topInset,
+                    originalPaddingRight,
+                    originalPaddingBottom + bottomInset
+                );
+                return insets;
+            });
+            ViewCompat.requestApplyInsets(rootContainer);
+        }
         back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
