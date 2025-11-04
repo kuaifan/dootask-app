@@ -117,8 +117,9 @@ WX_EXPORT_METHOD(@selector(hideSnapshot))
     __block NSString *originalUserAgent = nil;
     NSString *versionName = (NSString*)[[[NSBundle mainBundle] infoDictionary]  objectForKey:@"CFBundleShortVersionString"];
     NSString *systemTheme = [[eeuiNewPageManager sharedIntstance] getThemeName:_webInstance];
+    NSString *deviceType = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? @"iPad" : @"iPhone";
     if (@available(iOS 9.0, *)) {
-        originalUserAgent = [NSString stringWithFormat:@";system_theme/%@;ios_kuaifan_eeui/%@", systemTheme, versionName];
+        originalUserAgent = [NSString stringWithFormat:@";system_theme/%@;ios_kuaifan_eeui/%@;idiom/%@", systemTheme, versionName, deviceType];
         if (_userAgent.length > 0) {
             originalUserAgent = [NSString stringWithFormat:@"%@/%@", originalUserAgent, self->_userAgent];
         }
@@ -144,7 +145,8 @@ WX_EXPORT_METHOD(@selector(hideSnapshot))
                 wkWebView = nil;
                 if (!error) {
                     NSString *versionName = (NSString*)[[[NSBundle mainBundle] infoDictionary]  objectForKey:@"CFBundleShortVersionString"];
-                    originalUserAgent = [NSString stringWithFormat:@"%@;system_theme/%@;ios_kuaifan_eeui/%@", result, systemTheme, versionName];
+                    NSString *deviceType = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? @"iPad" : @"iPhone";
+                    originalUserAgent = [NSString stringWithFormat:@"%@;system_theme/%@;ios_kuaifan_eeui/%@;idiom/%@", result, systemTheme, versionName, deviceType];
                     if (self->_userAgent.length > 0) {
                         originalUserAgent = [NSString stringWithFormat:@"%@/%@", originalUserAgent, self->_userAgent];
                     }
