@@ -1343,7 +1343,10 @@ static int easyNavigationButtonTag = 8000;
     NSDictionary *defaultStyles = [Config getObject:@"navigationBarStyle"];
     defaultStyles = defaultStyles[position] ? defaultStyles[position] : nil;
     
+    CGFloat navBarHeight = self.navigationController.navigationBar.frame.size.height ?: 44.0f;
     UIView *buttonItems = [[UIView alloc] init];
+    UIButton *previousButton = nil;
+    
     for (NSDictionary *item in buttonArray)
     {
         NSString *title = item[@"title"] ? [WXConvert NSString:item[@"title"]] : (defaultStyles[@"title"] ? [WXConvert NSString:defaultStyles[@"title"]] : @"");
@@ -1365,6 +1368,21 @@ static int easyNavigationButtonTag = 8000;
         }
 
         UIButton *customButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        customButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        customButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        customButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [buttonItems addSubview:customButton];
+
+        // 使用约束确保垂直居中
+        CGFloat buttonWidth = (width > 0) ? [self NAVSCALE:width] : navBarHeight;
+        [NSLayoutConstraint activateConstraints:@[
+            [customButton.centerYAnchor constraintEqualToAnchor:buttonItems.centerYAnchor],
+            [customButton.heightAnchor constraintEqualToConstant:navBarHeight],
+            [customButton.widthAnchor constraintGreaterThanOrEqualToConstant:buttonWidth],
+            previousButton ? [customButton.leadingAnchor constraintEqualToAnchor:previousButton.trailingAnchor]
+                          : [customButton.leadingAnchor constraintEqualToAnchor:buttonItems.leadingAnchor]
+        ]];
+
         if (icon.length > 0) {
             if (![self isFontIcon:icon]) {
                 icon = [DeviceUtil rewriteUrl:icon mInstance:[[WXSDKManager bridgeMgr] topInstance]];
@@ -1372,7 +1390,9 @@ static int easyNavigationButtonTag = 8000;
                     if (image) {
                         WXPerformBlockOnMainThread(^{
                             [customButton setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake([self NAVSCALE:iconSize], [self NAVSCALE:iconSize]) icon:nil] forState:UIControlStateNormal];
-                            [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? [self NAVSCALE:spacing] : 0];
+                            if (title.length > 0) {
+                                [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:[self NAVSCALE:spacing]];
+                            }
                         });
                     }
                 }];
@@ -1389,27 +1409,29 @@ static int easyNavigationButtonTag = 8000;
             
             [customButton setTitle:title forState:UIControlStateNormal];
             [customButton setTitleColor:[WXConvert UIColor:titleColor] forState:UIControlStateNormal];
-            [customButton.titleLabel sizeToFit];
         }
-        [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? [self NAVSCALE:spacing] : 0];
+        if (icon.length > 0 && title.length > 0) {
+            [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:[self NAVSCALE:spacing]];
+        }
         if (callback) {
             customButton.tag = ++easyNavigationButtonTag;
             [customButton addTarget:self action:@selector(navigationItemClick:) forControlEvents:UIControlEventTouchUpInside];
             [_navigationCallbackDictionary setObject:@{@"callback":[callback copy], @"params":[item copy]} forKey:@(customButton.tag)];
         }
-        [customButton sizeToFit];
-        if (width > 0) {
-            CGRect customCGRect = customButton.frame;
-            customCGRect.size.width = [self NAVSCALE:width];
-            [customButton setFrame:customCGRect];
-        }
-        CGFloat bWitdh = buttonItems.frame.size.width;
-        CGFloat cWitdh = MAX(self.navigationController.navigationBar.frame.size.height, customButton.frame.size.width);
-        CGFloat cHeight = self.navigationController.navigationBar.frame.size.height;
-        [customButton setFrame:CGRectMake(bWitdh, 0, cWitdh, cHeight)];
-        [buttonItems setFrame:CGRectMake(0, 0, bWitdh + cWitdh, cHeight)];
-        [buttonItems addSubview:customButton];
+
+        previousButton = customButton;
     }
+
+    // 设置容器约束
+    if (previousButton) {
+        [NSLayoutConstraint activateConstraints:@[
+            [previousButton.trailingAnchor constraintEqualToAnchor:buttonItems.trailingAnchor],
+            [buttonItems.heightAnchor constraintEqualToConstant:navBarHeight]
+        ]];
+    }
+    [buttonItems layoutIfNeeded];
+    CGFloat width = [buttonItems systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].width ?: (navBarHeight * buttonArray.count);
+    buttonItems.bounds = CGRectMake(0, 0, width, navBarHeight);
 
     if ([position isEqualToString:@"right"]) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonItems];
