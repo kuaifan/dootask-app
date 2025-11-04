@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -1197,6 +1198,29 @@ public class eeui {
     }
 
     /**
+     * 当前窗口是否全屏显示
+     * @param context
+     * @return
+     */
+    public boolean isFullscreen(Context context) {
+        Activity activity = resolveActivity(context);
+        if (activity == null) {
+            return true;
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            if (activity.isInPictureInPictureMode()) {
+                return false;
+            }
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            if (activity.isInMultiWindowMode()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * 是否debug模式
      * @return
      */
@@ -1255,6 +1279,26 @@ public class eeui {
             return;
         }
         eeuiCommon.setCaches(context, key, value, eeuiParse.parseLong(expired));
+    }
+
+    private Activity resolveActivity(Context context) {
+        if (context instanceof Activity) {
+            return (Activity) context;
+        }
+        if (context instanceof ContextWrapper) {
+            Context baseContext = ((ContextWrapper) context).getBaseContext();
+            if (baseContext != null && baseContext != context) {
+                Activity activity = resolveActivity(baseContext);
+                if (activity != null) {
+                    return activity;
+                }
+            }
+        }
+        LinkedList<Activity> activities = getActivityList();
+        if (activities != null && !activities.isEmpty()) {
+            return activities.getLast();
+        }
+        return null;
     }
 
     /**

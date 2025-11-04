@@ -594,6 +594,7 @@ WX_EXPORT_METHOD(@selector(getIfaAsync:))
 WX_EXPORT_METHOD_SYNC(@selector(getSDKVersionCode))
 WX_EXPORT_METHOD_SYNC(@selector(getSDKVersionName))
 WX_EXPORT_METHOD_SYNC(@selector(isIPhoneXType))
+WX_EXPORT_METHOD_SYNC(@selector(isFullscreen))
 WX_EXPORT_METHOD_SYNC(@selector(isDebug))
 WX_EXPORT_METHOD(@selector(getSafeAreaInsets:))
 WX_EXPORT_METHOD(@selector(getDeviceInfo:))
@@ -708,6 +709,11 @@ WX_EXPORT_METHOD(@selector(getDeviceInfo:))
 - (Boolean)isIPhoneXType
 {
     return iPhoneXSeries;
+}
+
+- (Boolean)isFullscreen
+{
+    return [DeviceUtil isCurrentWindowFullscreen];
 }
 
 - (Boolean)isDebug

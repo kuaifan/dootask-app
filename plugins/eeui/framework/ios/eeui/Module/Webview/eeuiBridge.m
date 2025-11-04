@@ -588,6 +588,11 @@
     return iPhoneXSeries;
 }
 
+- (Boolean)isFullscreen
+{
+    return [DeviceUtil isCurrentWindowFullscreen];
+}
+
 - (Boolean)isDebug
 {
 #ifdef DEBUG

@@ -8,6 +8,7 @@
 
 #import "DeviceUtil.h"
 #import <sys/sysctl.h>
+#import <math.h>
 #import "WeexSDKManager.h"
 #import "TBCityIconInfo.h"
 #import "TBCityIconFont.h"
@@ -21,6 +22,62 @@
 #define DEVICE_HEIGHT MAX([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height)
 
 #define NSEC_PER_SEC 1000000000ull //1000000000纳秒/秒
+
+static UIWindow *eeuiActiveKeyWindow(void) {
+    UIApplication *application = [UIApplication sharedApplication];
+    if (@available(iOS 13.0, *)) {
+        NSSet<UIScene *> *connectedScenes = application.connectedScenes;
+        for (UIScene *scene in connectedScenes) {
+            if (scene.activationState != UISceneActivationStateForegroundActive) {
+                continue;
+            }
+            if (![scene isKindOfClass:[UIWindowScene class]]) {
+                continue;
+            }
+            UIWindowScene *windowScene = (UIWindowScene *)scene;
+            for (UIWindow *window in windowScene.windows) {
+                if (window.isHidden) {
+                    continue;
+                }
+                if (window.isKeyWindow) {
+                    return window;
+                }
+            }
+            
+            // Fallback to first visible window in the scene
+            for (UIWindow *window in windowScene.windows) {
+                if (!window.isHidden) {
+                    return window;
+                }
+            }
+        }
+    }
+    
+    UIWindow *keyWindow = application.keyWindow;
+    if (keyWindow != nil) {
+        return keyWindow;
+    }
+    
+    for (UIWindow *window in application.windows.reverseObjectEnumerator) {
+        if (!window.isHidden) {
+            return window;
+        }
+    }
+    
+    return application.windows.lastObject;
+}
+
+static BOOL eeuiRectsAlmostEqual(CGRect rect1, CGRect rect2) {
+    rect1 = CGRectStandardize(rect1);
+    rect2 = CGRectStandardize(rect2);
+    const CGFloat tolerance = 0.5f;
+    
+    BOOL originsEqual = fabs(rect1.origin.x - rect2.origin.x) <= tolerance &&
+                        fabs(rect1.origin.y - rect2.origin.y) <= tolerance;
+    BOOL sizesEqual = fabs(rect1.size.width - rect2.size.width) <= tolerance &&
+                      fabs(rect1.size.height - rect2.size.height) <= tolerance;
+    return originsEqual && sizesEqual;
+}
 
 @implementation DeviceUtil
 
@@ -705,6 +762,48 @@ static NSInteger is58InchScreen = -1;
         @"width": @(screenSize.width),
         @"height": @(screenSize.height)
     };
+}
+
++ (BOOL)isCurrentWindowFullscreen {
+    __block BOOL isFullscreen = YES;
+    
+    void (^evaluateBlock)(void) = ^{
+        UIWindow *window = eeuiActiveKeyWindow();
+        if (window == nil) {
+            isFullscreen = YES;
+            return;
+        }
+        
+        UIScreen *screen = window.screen ?: UIScreen.mainScreen;
+        
+        if (@available(iOS 13.0, *)) {
+            UIWindowScene *windowScene = window.windowScene;
+            if (windowScene != nil) {
+                UIScreen *sceneScreen = windowScene.screen ?: screen;
+                CGRect sceneBounds = windowScene.coordinateSpace.bounds;
+                CGRect screenBounds = sceneScreen.coordinateSpace.bounds;
+                isFullscreen = eeuiRectsAlmostEqual(sceneBounds, screenBounds);
+                return;
+            }
+        }
+        
+        CGRect windowFrame = [window convertRect:window.bounds toCoordinateSpace:screen.coordinateSpace];
+        CGRect screenBounds = screen.coordinateSpace.bounds;
+        isFullscreen = eeuiRectsAlmostEqual(windowFrame, screenBounds);
+    };
+    
+    if (NSThread.isMainThread) {
+        evaluateBlock();
+    } else {
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            evaluateBlock();
+            dispatch_semaphore_signal(semaphore);
+        });
+        dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+    }
+    
+    return isFullscreen;
 }
 
 + (NSString *)getDeviceModelName

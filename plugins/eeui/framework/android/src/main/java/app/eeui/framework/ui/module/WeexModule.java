@@ -482,6 +482,15 @@ public class WeexModule extends WXModule {
     }
 
     /**
+     * 当前窗口是否全屏显示
+     * @return
+     */
+    @JSMethod(uiThread = false)
+    public boolean isFullscreen() {
+        return myApp().isFullscreen(mWXSDKInstance.getContext());
+    }
+
+    /**
      * 是否debug模式
      * @return
      */

@@ -437,6 +437,14 @@ public class WebModule {
     }
 
     /**
+     * 当前窗口是否全屏显示
+     * @return
+     */
+    public static boolean isFullscreen(ExtendWebView webView) {
+        return myApp().isFullscreen(webView.getContext());
+    }
+
+    /**
      * 是否debug模式
      * @return
      */

@@ -73,5 +73,7 @@ static NSMutableDictionary * mAppboardWifi;
 
 + (BOOL)isNotchedScreen;
 
++ (BOOL)isCurrentWindowFullscreen;
+
 + (NSString *)getDeviceModelName;
 @end
