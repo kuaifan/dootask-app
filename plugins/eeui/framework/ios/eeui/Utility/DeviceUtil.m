@@ -875,7 +875,11 @@ static NSInteger is58InchScreen = -1;
         @"iPhone17,2": @"iPhone 16 Pro Max",
         @"iPhone17,3": @"iPhone 16",
         @"iPhone17,4": @"iPhone 16 Plus",
-        @"iPhone17,5": @"iPhone 16e",
+        @"iPhone17,5": @"iPhone SE (4th generation)",
+        @"iPhone18,1": @"iPhone 17 Pro",
+        @"iPhone18,2": @"iPhone 17 Pro Max",
+        @"iPhone18,3": @"iPhone 17",
+        @"iPhone18,4": @"iPhone 17 Air",
         
         // iPod
         @"iPod1,1": @"iPod touch",
@@ -984,6 +988,10 @@ static NSInteger is58InchScreen = -1;
         @"iPad16,4": @"iPad Pro (11-inch) (M4)",
         @"iPad16,5": @"iPad Pro (13-inch) (M4)",
         @"iPad16,6": @"iPad Pro (13-inch) (M4)",
+        @"iPad17,1": @"iPad Pro (11-inch) (M5)",
+        @"iPad17,2": @"iPad Pro (11-inch) (M5)",
+        @"iPad17,3": @"iPad Pro (13-inch) (M5)",
+        @"iPad17,4": @"iPad Pro (13-inch) (M5)",
         
         // Apple TV
         @"AppleTV5,3": @"Apple TV HD",
@@ -1033,14 +1041,19 @@ static NSInteger is58InchScreen = -1;
         @"Watch6,18": @"Apple Watch Ultra",
         @"Watch7,3": @"Apple Watch Series 9 41mm",
         @"Watch7,4": @"Apple Watch Series 9 45mm",
-        @"Watch7,5": @"Apple Watch Ultra2",
+        @"Watch7,5": @"Apple Watch Ultra 2",
         @"Watch7,8": @"Apple Watch Series 10 42mm",
         @"Watch7,9": @"Apple Watch Series 10 46mm",
         @"Watch7,10": @"Apple Watch Series 10 42mm",
         @"Watch7,11": @"Apple Watch Series 10 46mm",
+        @"Watch8,1": @"Apple Watch Ultra 3 (49mm)",
+        @"Watch8,2": @"Apple Watch Ultra 3 (49mm)",
         
         // HomePod
         @"AudioAccessory1,1": @"HomePod",
+        @"AudioAccessory1,2": @"HomePod mini",
+        @"AudioAccessory5,1": @"HomePod (2nd generation)",
+        @"AudioAccessory6,1": @"HomePod mini (2nd generation)",
         
         // 模拟器
         @"i386": @"iPhone Simulator",
