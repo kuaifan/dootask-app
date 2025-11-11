@@ -109,6 +109,7 @@
     CGFloat plusY = self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height;
     
     self.scanStyle = [[LBXScanViewStyle alloc] init];
+    self.scanStyle.notRecoginitonArea = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
     self.scanStyle.animationImage = [UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_weixin_line"];
     self.scanStyle.colorAngle = [UIColor greenColor];
     self.scanView = [[LBXScanView alloc] initWithFrame:CGRectMake(0, plusY, self.view.frame.size.width, self.view.frame.size.height) style:self.scanStyle];

@@ -13,6 +13,7 @@
         android:id="@+id/viewfinderView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:maskColor="@android:color/transparent"
         app:gridHeight="0dp"
         app:labelTextLocation="bottom"
         app:laserStyle="grid" />
