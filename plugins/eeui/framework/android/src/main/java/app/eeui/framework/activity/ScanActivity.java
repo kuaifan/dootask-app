@@ -17,7 +17,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
@@ -87,7 +88,7 @@ public class ScanActivity extends AppCompatActivity implements OnCaptureCallback
         continuous = getIntent().getBooleanExtra("continuous", false);
         tvTitle.setText(TextUtils.isEmpty(title) ? "" : title);
         viewfinderView.setLabelText(TextUtils.isEmpty(desc) ? "" : desc);
-        eeuiCommon.setMargins(findViewById(R.id.llTop), 0, eeuiCommon.getStatusBarHeight(this), 0, 0);
+        adjustTopBarForStatusBar();
         findViewById(R.id.iconBack).setOnClickListener(v -> finish());
         //
         mCaptureHelper = new CaptureHelper(this, surfaceView, viewfinderView, null, true);
@@ -135,6 +136,23 @@ public class ScanActivity extends AppCompatActivity implements OnCaptureCallback
         });
         //
         findViewById(R.id.iconPic).setOnClickListener(v -> checkExternalStoragePermissions());
+    }
+    private void adjustTopBarForStatusBar() {
+        View statusSpacer = findViewById(R.id.statusSpacer);
+        if (statusSpacer == null) {
+            return;
+        }
+        int defaultHeight = eeuiCommon.getStatusBarHeight(this);
+        eeuiCommon.setViewWidthHeight(statusSpacer, -1, defaultHeight);
+        ViewCompat.setOnApplyWindowInsetsListener(statusSpacer, (view, insets) -> {
+            int insetTop = insets != null ? insets.getSystemWindowInsetTop() : 0;
+            if (insetTop == 0) {
+                insetTop = eeuiCommon.getStatusBarHeight(view.getContext());
+            }
+            eeuiCommon.setViewWidthHeight(view, -1, insetTop);
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(statusSpacer);
     }
 
     @Override

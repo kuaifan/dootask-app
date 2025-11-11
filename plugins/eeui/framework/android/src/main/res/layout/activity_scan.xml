@@ -19,35 +19,47 @@
         app:laserStyle="grid" />
 
     <LinearLayout
-        android:id="@+id/llTop"
+        android:id="@+id/topContainer"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <app.eeui.framework.extend.integration.iconify.widget.IconTextView
-            android:id="@+id/iconBack"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:gravity="center"
-            android:text="{tb-back-android}"
-            android:textColor="@color/eeui_white"
-            android:textSize="28sp" />
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:singleLine="true"
-            android:textColor="@color/eeui_white"
-            android:textSize="18sp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <View
-            android:layout_width="52dp"
-            android:layout_height="52dp" />
+            android:id="@+id/statusSpacer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+        <LinearLayout
+            android:id="@+id/llTop"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <app.eeui.framework.extend.integration.iconify.widget.IconTextView
+                android:id="@+id/iconBack"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:gravity="center"
+                android:text="{tb-back-android}"
+                android:textColor="@color/eeui_white"
+                android:textSize="28sp" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/eeui_white"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="52dp"
+                android:layout_height="52dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
