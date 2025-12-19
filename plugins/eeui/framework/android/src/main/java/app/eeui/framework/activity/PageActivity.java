@@ -36,6 +36,8 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -113,6 +115,8 @@ import app.eeui.framework.ui.eeui;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
+import androidx.annotation.RequiresApi;
+
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class PageActivity extends AppCompatActivity {
@@ -135,6 +139,7 @@ public class PageActivity extends AppCompatActivity {
 
     private Map<String, OnBackPressed> mOnBackPresseds = new HashMap<>();
     public interface OnBackPressed { boolean onBackPressed(); }
+    private Object mOnBackInvokedCallback;
 
     private OnRefreshListener mOnRefreshListener;
     public interface OnRefreshListener { void refresh(String pageName); }
@@ -304,6 +309,7 @@ public class PageActivity extends AppCompatActivity {
                 break;
         }
         setupNaviBar();
+        registerBackInvokedCallback();
         invokeAndKeepAlive("create", null);
     }
 
@@ -410,6 +416,7 @@ public class PageActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        unregisterBackInvokedCallback();
         if (mWXSDKInstance != null) {
             mWXSDKInstance.onActivityDestroy();
         }
@@ -434,6 +441,27 @@ public class PageActivity extends AppCompatActivity {
         //
         eeui.finishingNumber--;
         Log.d("gggggggg", "onDestroy: " + (mPageInfo == null ? "" : mPageInfo.getPageName()));
+    }
+
+    private void registerBackInvokedCallback() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+        if (mOnBackInvokedCallback != null) {
+            return;
+        }
+        mOnBackInvokedCallback = Api33Impl.registerOnBackInvokedCallback(this, this::onBackPressed);
+    }
+
+    private void unregisterBackInvokedCallback() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+        if (mOnBackInvokedCallback == null) {
+            return;
+        }
+        Api33Impl.unregisterOnBackInvokedCallback(this, mOnBackInvokedCallback);
+        mOnBackInvokedCallback = null;
     }
 
     @Override
@@ -2681,5 +2709,25 @@ public class PageActivity extends AppCompatActivity {
         }
         mBody.removeView(mPageVersionUpdateView);
         mPageVersionUpdateView = null;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private static class Api33Impl {
+        private static Object registerOnBackInvokedCallback(Activity activity, Runnable handler) {
+            OnBackInvokedCallback callback = handler::run;
+            activity.getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                callback
+            );
+            return callback;
+        }
+
+        private static void unregisterOnBackInvokedCallback(Activity activity, Object callback) {
+            if (!(callback instanceof OnBackInvokedCallback)) {
+                return;
+            }
+            activity.getOnBackInvokedDispatcher()
+                .unregisterOnBackInvokedCallback((OnBackInvokedCallback) callback);
+        }
     }
 }
