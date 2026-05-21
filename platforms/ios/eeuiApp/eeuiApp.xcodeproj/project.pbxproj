@@ -115,10 +115,10 @@
 		3A0DC3302DB4E127008D986B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3AE14375282DB85800B5E14E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		3AE14378282E153500B5E14E /* UMDevice.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UMDevice.framework; path = ../../../../../Downloads/UMDevice.framework; sourceTree = "<group>"; };
-		4DD47481746A33D998BAC3E1 /* Pods-dootask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dootask.debug.xcconfig"; path = "Pods/Target Support Files/Pods-dootask/Pods-dootask.debug.xcconfig"; sourceTree = "<group>"; };
+		4DD47481746A33D998BAC3E1 /* Pods-DooTask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DooTask.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DooTask/Pods-DooTask.debug.xcconfig"; sourceTree = "<group>"; };
 		53D698B8183819BE34033A88 /* Pods-DooTask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DooTask.release.xcconfig"; path = "Pods/Target Support Files/Pods-DooTask/Pods-DooTask.release.xcconfig"; sourceTree = "<group>"; };
 		5B7109449833C8668CA8EA08 /* Pods-eeuiApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-eeuiApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-eeuiApp/Pods-eeuiApp.debug.xcconfig"; sourceTree = "<group>"; };
-		8468EBCABF04E29FA8A8E8C6 /* Pods-dootask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dootask.release.xcconfig"; path = "Pods/Target Support Files/Pods-dootask/Pods-dootask.release.xcconfig"; sourceTree = "<group>"; };
+		8468EBCABF04E29FA8A8E8C6 /* Pods-DooTask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DooTask.release.xcconfig"; path = "Pods/Target Support Files/Pods-DooTask/Pods-DooTask.release.xcconfig"; sourceTree = "<group>"; };
 		95526B5EB63E184E1D5E1E22 /* Pods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		A738B4F9AF20CA0CE1F3B5EB /* libPods-DooTask.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DooTask.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD4231092A29FA92002D1F86 /* ShareAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ShareAssets.xcassets; sourceTree = "<group>"; };
@@ -363,8 +363,8 @@
 				D8F4A873379E80A140D7BD31 /* Pods-eeuiApp.release.xcconfig */,
 				95526B5EB63E184E1D5E1E22 /* Pods-ShareExtension.debug.xcconfig */,
 				D238E6D44FDE0B1722A31614 /* Pods-ShareExtension.release.xcconfig */,
-				4DD47481746A33D998BAC3E1 /* Pods-dootask.debug.xcconfig */,
-				8468EBCABF04E29FA8A8E8C6 /* Pods-dootask.release.xcconfig */,
+				4DD47481746A33D998BAC3E1 /* Pods-DooTask.debug.xcconfig */,
+				8468EBCABF04E29FA8A8E8C6 /* Pods-DooTask.release.xcconfig */,
 				D6D5AB4308DC986678F7CAFE /* Pods-DooTask.debug.xcconfig */,
 				53D698B8183819BE34033A88 /* Pods-DooTask.release.xcconfig */,
 			);
