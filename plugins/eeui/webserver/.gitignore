@@ -1,5 +1,0 @@
-android/build
-ios/*.xcuserdatad
-__MACOSX
-.DS_Store
-*.iml

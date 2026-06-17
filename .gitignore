@@ -1,21 +1,48 @@
-/.idea
-/.temp
-/common/backup
-/common/differ
-/common/dist
-/common/zip
-/common/tools
-/node_modules
-/plugins-dev
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native (prebuild 生成)
+/ios
+/android
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
 .DS_Store
-*.xcuserdatad
-package-lock.json
-local.properties
-platforms/android/eeuiApp/app/src/main/assets/eeui/appboard
-platforms/android/eeuiApp/app/src/main/assets/eeui/public
-platforms/android/eeuiApp/app/src/main/assets/eeui/pages
-platforms/ios/eeuiApp/bundlejs/eeui/appboard
-platforms/ios/eeuiApp/bundlejs/eeui/public
-platforms/ios/eeuiApp/bundlejs/eeui/pages
-src/public
-.gradle
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# 旧 EEUI 工程归档（仅本地参考，不纳入版本库）
+/.legacy-eeui/
+
+# 离线包：前端构建产物，由 electron/build.js 同步进来，不纳入版本库
+/assets/web/
+
+# 推送/会议厂商凭证（prebuild 时由 config plugin 注入，禁止提交）
+google-services.json
+GoogleService-Info.plist
+agconnect-services.json

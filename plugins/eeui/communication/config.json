@@ -1,6 +1,0 @@
-{
-	"desc": "直接拨打电话、发送短信、发送邮件",
-	"requireFormatName": "eeuiCommunication",
-	"requireName": "eeui/communication",
-	"title": "通讯模块"
-}
