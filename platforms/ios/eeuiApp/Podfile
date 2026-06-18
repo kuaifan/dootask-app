@@ -1,6 +1,7 @@
 source 'https://cdn.cocoapods.org/'
 platform :ios, '9.0'
 def common
+    pod 'WeexPluginLoader', :path => '../../../plugins/eeui/WeexPluginLoader'
     pod 'WeexSDK', :path => '../../../plugins/eeui/WeexSDK'
     pod 'eeui', :path => '../../../plugins/eeui/framework/ios'
     pod 'SocketRocket', '0.5.1'
@@ -43,7 +44,6 @@ post_install do |installer_representation|
     target.build_configurations.each do |config|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
       config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
-      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
     end
   end
 

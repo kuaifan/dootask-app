@@ -9,6 +9,7 @@
 #import "WeexSDKManager.h"
 #import "WeexSDK.h"
 #import "WXImgLoaderDefaultImpl.h"
+#import <WeexPluginLoader/WeexPluginLoader.h>
 
 @implementation WeexSDKManager
 
@@ -41,6 +42,7 @@
     [WXAppConfiguration setAppGroup:@"EEUI"];
 
     [WXSDKEngine initSDKEnvironment];
+    [WPRegister registerPlugins];
 
     //Handler
     [WXSDKEngine registerHandler:[WXImgLoaderDefaultImpl new] withProtocol:@protocol(WXImgLoaderProtocol)];

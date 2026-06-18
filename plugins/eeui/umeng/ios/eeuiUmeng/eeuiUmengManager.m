@@ -6,7 +6,6 @@
 #import "eeuiNewPageManager.h"
 #import <UMCommon/UMCommon.h>
 #import <UMCommon/MobClick.h>
-#import <UMCommonLog/UMCommonLogHeaders.h>
 
 @implementation eeuiUmengManager
 
@@ -23,8 +22,6 @@
 {
     NSString * deviceID =[UMConfigure deviceIDForIntegration];
     NSLog(@"集成测试的deviceID:%@", deviceID);
-    //开发者需要显式的调用此函数，日志系统才能工作
-    [UMCommonLogManager setUpUMCommonLogManager];
     #if DEBUG
     [UMConfigure setLogEnabled:YES];
     #endif
