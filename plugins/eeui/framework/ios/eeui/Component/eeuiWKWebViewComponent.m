@@ -18,8 +18,12 @@ NSString * const WKProcessPoolDidCrashNotification = @"WKProcessPoolDidCrashNoti
 @interface _NoInputAccessoryView : NSObject
 @end
 @implementation _NoInputAccessoryView
-- (id)inputAccessoryView {
-    return nil;
+- (UIView *)inputAccessoryView {
+    // 返回零高度视图而不是 nil。第三方输入法需要完整的 accessory 生命周期；
+    // 返回 nil 会触发 WebKit 在首次激活键盘时重新布局 WKContentView。
+    UIView *accessoryView = [[UIView alloc] initWithFrame:CGRectZero];
+    accessoryView.backgroundColor = UIColor.clearColor;
+    return accessoryView;
 }
 @end
 
